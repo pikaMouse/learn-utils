@@ -3,8 +3,7 @@
     android:layout_height="match_parent"
     android:layout_width="match_parent">
 
-    <TextView
-        android:id="@+id/tv_text"
+    <com.example.pikamouse.learn_utils.view.MemoryView
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
