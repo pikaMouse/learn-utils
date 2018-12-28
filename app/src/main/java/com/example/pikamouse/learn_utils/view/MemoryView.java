@@ -57,6 +57,7 @@ public class MemoryView extends SurfaceView implements Runnable, SurfaceHolder.C
     private Container mContainer;
     private MemoryGraph mMemoryGraph;
     private Abscissa mAbscissa;
+    private Ordinate mOrdinate;
 
     public MemoryView(Context context) {
         this(context, null);
@@ -86,6 +87,8 @@ public class MemoryView extends SurfaceView implements Runnable, SurfaceHolder.C
         mContainer.addChildren(mMemoryGraph);
         mAbscissa = new Abscissa();
         mContainer.addChildren(mAbscissa);
+        mOrdinate = new Ordinate();
+        mContainer.addChildren(mOrdinate);
     }
 
     private void initPaint() {
@@ -143,16 +146,6 @@ public class MemoryView extends SurfaceView implements Runnable, SurfaceHolder.C
         try {
             mCanvas = mHolder.lockCanvas();
             mCanvas.drawColor(Color.WHITE);
-            /*绘制边框竖线*/
-            mCanvas.drawLine(mBrokenLineLeft, mBrokenLineTop, mBrokenLineLeft, mViewHeight - mBrokenLineBottom, mBorderLinePaint);
-
-            int len = valueText.length;
-            float averageHeight = mNeedDrawHeight / (len - 1);
-            for (int i = 0; i < len; i++) {
-                float height = averageHeight * i;
-                mCanvas.drawLine(mBrokenLineLeft, mBrokenLineTop + height, mViewWidth - mBrokenLinerRight, mBrokenLineTop + height, mBrokenLinePaint);
-                mCanvas.drawText(valueText[i] + "", mBrokenLineLeft - DisplayUtil.dp2px(15), mBrokenLineTop + height, mTextPaint);
-            }
             mContainer.draw(mCanvas);
         } catch (Exception e) {
             e.printStackTrace();
@@ -168,6 +161,11 @@ public class MemoryView extends SurfaceView implements Runnable, SurfaceHolder.C
      */
     private class Abscissa extends Container {
 
+        /**边框文本*/
+        private int[] valueText = new int[]{0,10,20,30,40};
+        /**横坐标的分度**/
+        private int abscissaScale = 10;
+
         public Abscissa() {
 
         }
@@ -175,8 +173,35 @@ public class MemoryView extends SurfaceView implements Runnable, SurfaceHolder.C
         @Override
         public void childDraw(Canvas canvas) {
             super.childDraw(canvas);
-            /*绘制边框横线*/
             canvas.drawLine(mBrokenLineLeft, mViewHeight - mBrokenLineBottom, mViewWidth - mBrokenLinerRight, mViewHeight - mBrokenLineBottom, mBorderLinePaint);
+            /*绘制竖线*/
+            float width = (mNeedDrawWidth / abscissaScale);
+            for (int i = 0; i <= abscissaScale; i++) {
+                float left = mBrokenLineLeft + width * i;
+                canvas.drawLine(left, mBrokenLineTop, left, mViewHeight - mBrokenLineBottom, mBorderLinePaint);
+            }
+        }
+    }
+    /**
+     * 纵坐标
+     */
+    private class Ordinate extends Container {
+
+        public Ordinate(){
+
+        }
+
+        @Override
+        public void childDraw(Canvas canvas) {
+            super.childDraw(canvas);
+            /*绘制横线*/
+            int len = valueText.length;
+            float averageHeight = mNeedDrawHeight / (len - 1);
+            for (int i = 0; i < len; i++) {
+                float height = averageHeight * i;
+                mCanvas.drawLine(mBrokenLineLeft, mBrokenLineTop + height, mViewWidth - mBrokenLinerRight, mBrokenLineTop + height, mBrokenLinePaint);
+                mCanvas.drawText(valueText[i] + "", mBrokenLineLeft - DisplayUtil.dp2px(15), mBrokenLineTop + height, mTextPaint);
+            }
         }
     }
     /**
