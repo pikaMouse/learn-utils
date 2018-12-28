@@ -7,18 +7,25 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
+import android.graphics.Xfermode;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import com.example.pikamouse.learn_utils.MyApplication;
 import com.example.pikamouse.learn_utils.R;
 import com.example.pikamouse.learn_utils.utils.DisplayUtil;
+import com.example.pikamouse.learn_utils.utils.MemoryUtil;
 import com.example.pikamouse.learn_utils.view.container.Container;
 
 /**
  * create by liting 2018/12/27
  */
 public class MemoryView extends SurfaceView implements Runnable, SurfaceHolder.Callback{
+
+    private static final String TAG = "MemoryView";
+    private static final int ORDINATE_SCAL = 4;
 
     private SurfaceHolder mHolder;
     private Canvas mCanvas;
@@ -30,7 +37,7 @@ public class MemoryView extends SurfaceView implements Runnable, SurfaceHolder.C
     private Paint mBorderLinePaint;
     private Paint mTextPaint;
     private Paint mBrokenLinePaint;
-    private int maxValue = 40;
+    private int mMaxValue = 0;
 
     private int mViewWidth;
     private int mViewHeight;
@@ -47,12 +54,14 @@ public class MemoryView extends SurfaceView implements Runnable, SurfaceHolder.C
     private float mNeedDrawWidth;
     /**需要绘制的高度*/
     private float mNeedDrawHeight;
-    /**边框文本*/
-    private int[] valueText = new int[]{40,30,20,10,0};
-    /**数据值*/
-    private int[] value = new int[]{11,10,15,12,34,12,22,23,33,13};
+    /**纵坐标文本*/
+    private int[] mOrdinateValueText;
     /**是否绘制到了屏幕边际**/
     private boolean mIsOnRightBorder = false;
+    /**纵坐标的刻度**/
+    private float averageHeight;
+
+    private float mValue;
 
     private Container mContainer;
     private MemoryGraph mMemoryGraph;
@@ -113,6 +122,19 @@ public class MemoryView extends SurfaceView implements Runnable, SurfaceHolder.C
         paint.setColor(Color.BLACK);
     }
 
+    public void setData(MemoryUtil.DalvikHeapInfo dalvikHeapInfo) {
+        mValue = (dalvikHeapInfo.allocatedMem / 1024);
+        mMaxValue = (int) mValue;
+        Log.d(TAG, "MaxValue: " + mValue);
+        if (mMaxValue <= ORDINATE_SCAL) {
+            mMaxValue = ORDINATE_SCAL;
+        }
+        mOrdinateValueText = new int[mMaxValue];
+        for (int i = mMaxValue - 1, j = 0; i > 0; i--, j++) {
+            mOrdinateValueText[j] = i;
+        }
+    }
+
     @Override
     public void surfaceCreated(SurfaceHolder surfaceHolder) {
         mViewWidth = getMeasuredWidth();
@@ -122,6 +144,7 @@ public class MemoryView extends SurfaceView implements Runnable, SurfaceHolder.C
         mIsDrawing = true;
         mMemoryGraph.setWidth(mViewWidth);
         mMemoryGraph.setMoveToLeft(true);
+        mMemoryGraph.setHeight(mViewHeight);
         new Thread(this).start();
     }
 
@@ -138,6 +161,13 @@ public class MemoryView extends SurfaceView implements Runnable, SurfaceHolder.C
     @Override
     public void run() {
         while (mIsDrawing) {
+            MemoryUtil.getDalvikInfo(MyApplication.getAppContext(), new MemoryUtil.OnGetDalvikInfoCallback() {
+
+                @Override
+                public void onGetDalvikInfo(MemoryUtil.DalvikHeapInfo dalvikHeapInfo) {
+                    setData(dalvikHeapInfo);
+                }
+            });
             draw();
         }
     }
@@ -161,10 +191,8 @@ public class MemoryView extends SurfaceView implements Runnable, SurfaceHolder.C
      */
     private class Abscissa extends Container {
 
-        /**边框文本*/
-        private int[] valueText = new int[]{0,10,20,30,40};
         /**横坐标的分度**/
-        private int abscissaScale = 10;
+        private final static int ABSCISSA_SCALE = 10;
 
         public Abscissa() {
 
@@ -175,8 +203,8 @@ public class MemoryView extends SurfaceView implements Runnable, SurfaceHolder.C
             super.childDraw(canvas);
             canvas.drawLine(mBrokenLineLeft, mViewHeight - mBrokenLineBottom, mViewWidth - mBrokenLinerRight, mViewHeight - mBrokenLineBottom, mBorderLinePaint);
             /*绘制竖线*/
-            float width = (mNeedDrawWidth / abscissaScale);
-            for (int i = 0; i <= abscissaScale; i++) {
+            float width = (mNeedDrawWidth / ABSCISSA_SCALE);
+            for (int i = 0; i <= ABSCISSA_SCALE; i++) {
                 float left = mBrokenLineLeft + width * i;
                 canvas.drawLine(left, mBrokenLineTop, left, mViewHeight - mBrokenLineBottom, mBorderLinePaint);
             }
@@ -195,12 +223,11 @@ public class MemoryView extends SurfaceView implements Runnable, SurfaceHolder.C
         public void childDraw(Canvas canvas) {
             super.childDraw(canvas);
             /*绘制横线*/
-            int len = valueText.length;
-            float averageHeight = mNeedDrawHeight / (len - 1);
-            for (int i = 0; i < len; i++) {
+             averageHeight = mNeedDrawHeight / (mMaxValue - 1);
+            for (int i = 0; i < mMaxValue; i++) {
                 float height = averageHeight * i;
                 mCanvas.drawLine(mBrokenLineLeft, mBrokenLineTop + height, mViewWidth - mBrokenLinerRight, mBrokenLineTop + height, mBrokenLinePaint);
-                mCanvas.drawText(valueText[i] + "", mBrokenLineLeft - DisplayUtil.dp2px(15), mBrokenLineTop + height, mTextPaint);
+                mCanvas.drawText(mOrdinateValueText[i] + "", mBrokenLineLeft - DisplayUtil.dp2px(15), mBrokenLineTop + height, mTextPaint);
             }
         }
     }
@@ -208,8 +235,8 @@ public class MemoryView extends SurfaceView implements Runnable, SurfaceHolder.C
      * 内存曲线图
      */
     private class MemoryGraph extends Container {
-        private int x;
-        private int y;
+        private float x = 0;
+        private float y = 0;
         private Paint mGraphPaint;
         private Path mGraphPath;
         private boolean mIsMoveToLeft = false;
@@ -233,7 +260,7 @@ public class MemoryView extends SurfaceView implements Runnable, SurfaceHolder.C
                 this.setX(getX() - 1);
             }
             /*复位*/
-            if (x >= Integer.MAX_VALUE || y >= Integer.MAX_VALUE) {
+            if (x >= Float.MAX_VALUE || y >= Float.MAX_VALUE) {
                 reset();
             }
             x += 1;
@@ -245,8 +272,13 @@ public class MemoryView extends SurfaceView implements Runnable, SurfaceHolder.C
             mIsMoveToLeft = moveToLeft;
         }
 
-        public void setWidth(int mWidth) {
-            this.mWidth = mWidth;
+        public void setWidth(int width) {
+            this.mWidth = width;
+            x = mBrokenLineLeft;
+        }
+
+        public void setHeight(int height){
+            y = (height - mBrokenLineBottom);
         }
 
         public void reset() {

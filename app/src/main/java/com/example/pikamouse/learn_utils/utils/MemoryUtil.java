@@ -54,7 +54,7 @@ public class MemoryUtil {
         public boolean isLowMem;             //是否低内存运行状态
     }
 
-    public static DalvikHeapInfo getDalvikHeapInfo() {
+    private static DalvikHeapInfo getDalvikHeapInfo() {
         Runtime runtime = Runtime.getRuntime();
         DalvikHeapInfo dalvikHeapInfo = new DalvikHeapInfo();
         dalvikHeapInfo.maxMem = runtime.maxMemory() / 1024;
@@ -63,7 +63,7 @@ public class MemoryUtil {
         return dalvikHeapInfo;
     }
 
-    public static PSSInfo getAppPSSInfo(Context context, int pid) {
+    private static PSSInfo getAppPSSInfo(Context context, int pid) {
         ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         Debug.MemoryInfo memoryInfo = am.getProcessMemoryInfo(new int[]{pid})[0];
         PSSInfo pssInfo = new PSSInfo();
@@ -74,7 +74,7 @@ public class MemoryUtil {
         return pssInfo;
     }
 
-    public static RAMInfo getRAMInfo(Context context) {
+    private static RAMInfo getRAMInfo(Context context) {
         ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
         am.getMemoryInfo(memoryInfo);
@@ -103,15 +103,27 @@ public class MemoryUtil {
         return ramInfo;
     }
 
-    public static int KB2M(Object o) {
-        if (o instanceof Long) {
-            long l = (long) o;
-            return (int) l / 1024;
-        } else if (o instanceof Integer) {
-            return ((int) o) /1024;
-        }
-        return 0;
+
+    public interface OnGetPSSInfoCallback {
+        void onGetPSSInfo(PSSInfo pssInfo);
     }
 
+    public interface OnGetDalvikInfoCallback {
+        void onGetDalvikInfo(DalvikHeapInfo dalvikHeapInfo);
+    }
+
+    public static void getPSSInfoSync(final Context context, OnGetPSSInfoCallback callback) {
+        getPSSInfoSync(context, ProcessUtil.getCurrentPid(), callback);
+    }
+
+    public static void getPSSInfoSync(final Context context, int pid, OnGetPSSInfoCallback callback) {
+        PSSInfo info = getAppPSSInfo(context, pid);
+        callback.onGetPSSInfo(info);
+    }
+
+    public static void getDalvikInfo(final Context context, OnGetDalvikInfoCallback callback) {
+        DalvikHeapInfo dalvikHeapInfo = getDalvikHeapInfo();
+        callback.onGetDalvikInfo(dalvikHeapInfo);
+    }
 
 }

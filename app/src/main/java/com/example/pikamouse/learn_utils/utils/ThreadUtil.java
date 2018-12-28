@@ -1,6 +1,9 @@
 package com.example.pikamouse.learn_utils.utils;
 
 
+import android.os.Handler;
+import android.os.Looper;
+
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executor;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -44,5 +47,12 @@ public class ThreadUtil {
 
     public static void executeInExcecutor(Runnable r) {
         THREAD_POOL_EXECUTOR.execute(r);
+    }
+
+
+    private final static Handler HANDLER = new Handler(Looper.getMainLooper());
+
+    public static void runOnUiThread(Runnable r) {
+        HANDLER.post(r);
     }
 }
