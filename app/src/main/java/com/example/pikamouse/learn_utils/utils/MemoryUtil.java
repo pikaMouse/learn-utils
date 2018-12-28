@@ -103,5 +103,15 @@ public class MemoryUtil {
         return ramInfo;
     }
 
+    public static int KB2M(Object o) {
+        if (o instanceof Long) {
+            long l = (long) o;
+            return (int) l / 1024;
+        } else if (o instanceof Integer) {
+            return ((int) o) /1024;
+        }
+        return 0;
+    }
+
 
 }
