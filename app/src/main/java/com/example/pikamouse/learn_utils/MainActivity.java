@@ -5,28 +5,27 @@ import android.os.Bundle;
 import android.view.SurfaceView;
 import android.widget.TextView;
 
+import com.example.pikamouse.learn_utils.test.FloatCurveView;
+import com.example.pikamouse.learn_utils.test.MemoryMonitor;
 import com.example.pikamouse.learn_utils.utils.MemoryUtil;
 import com.example.pikamouse.learn_utils.utils.ProcessUtil;
 import com.example.pikamouse.learn_utils.view.MemoryView;
 
 public class MainActivity extends AppCompatActivity {
 
-    private MemoryView mMemory;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mMemory = findViewById(R.id.sv_memory_view);
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                for (int i = 0; i < Integer.MAX_VALUE; i++) {
-                    String s = new String();
-                }
-            }
-        });
+        MemoryMonitor.getInstance().start(FloatCurveView.MEMORY_TYPE_HEAP);
+
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        MemoryMonitor.getInstance().stop();
 
+    }
 }

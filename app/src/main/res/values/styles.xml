@@ -8,4 +8,24 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <declare-styleable name="CurveChartView">
+        <attr format="integer" name="ccv_XTextPadding"/>
+        <attr format="integer" name="ccv_YTextPadding"/>
+        <attr format="float" name="ccv_MaxValueMulti"/>
+        <attr format="float" name="ccv_MinValueMulti"/>
+        <attr format="integer" name="ccv_YPartCount"/>
+        <attr format="integer" name="ccv_DataSize"/>
+        <attr format="string" name="ccv_YFormat"/>
+        <attr format="color" name="ccv_XYColor"/>
+        <attr format="float" name="ccv_XYStrokeWidth"/>
+        <attr format="color" name="ccv_LineColor"/>
+        <attr format="float" name="ccv_LineStrokeWidth"/>
+        <attr format="color" name="ccv_FillColor"/>
+        <attr format="color" name="ccv_YLabelColor"/>
+        <attr format="float" name="ccv_YLabelSize"/>
+        <attr format="color" name="ccv_GraduatedLineColor"/>
+        <attr format="float" name="ccv_GraduatedLineStrokeWidth"/>
+    </declare-styleable>
+
+
 </resources>

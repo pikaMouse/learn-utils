@@ -5,11 +5,9 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
-import android.graphics.Xfermode;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.Display;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -43,13 +41,13 @@ public class MemoryView extends SurfaceView implements Runnable, SurfaceHolder.C
     private int mViewHeight;
 
     /**边框的左边距*/
-    private float mBrokenLineLeft = DisplayUtil.dp2px(40);
+    private float mBrokenLineLeft = 0;
     /**边框的上边距*/
     private float mBrokenLineTop = DisplayUtil.dp2px(40);
     /**边框的下边距*/
     private float mBrokenLineBottom = DisplayUtil.dp2px(40);
     /**边框的右边距*/
-    private float mBrokenLinerRight = DisplayUtil.dp2px(20);
+    private float mBrokenLinerRight = 0;
     /**需要绘制的宽度*/
     private float mNeedDrawWidth;
     /**需要绘制的高度*/
@@ -227,7 +225,7 @@ public class MemoryView extends SurfaceView implements Runnable, SurfaceHolder.C
             for (int i = 0; i < mMaxValue; i++) {
                 float height = averageHeight * i;
                 mCanvas.drawLine(mBrokenLineLeft, mBrokenLineTop + height, mViewWidth - mBrokenLinerRight, mBrokenLineTop + height, mBrokenLinePaint);
-                mCanvas.drawText(mOrdinateValueText[i] + "", mBrokenLineLeft - DisplayUtil.dp2px(15), mBrokenLineTop + height, mTextPaint);
+                mCanvas.drawText(mOrdinateValueText[i] + "", DisplayUtil.dp2px(15), mBrokenLineTop + height - DisplayUtil.dp2px(8), mTextPaint);
             }
         }
     }
@@ -241,12 +239,14 @@ public class MemoryView extends SurfaceView implements Runnable, SurfaceHolder.C
         private Path mGraphPath;
         private boolean mIsMoveToLeft = false;
         private int mWidth;
+        private int mStartY;
+        private boolean isFirst = true;
 
         public MemoryGraph() {
             mGraphPaint = new Paint();
             mGraphPath = new Path();
-            mGraphPaint.setColor(getResources().getColor(R.color.colorPrimaryDark));
             mGraphPaint.setStyle(Paint.Style.STROKE);
+            mGraphPaint.setColor(getResources().getColor(R.color.colorPrimaryDark));
             mGraphPaint.setAntiAlias(true);
             mGraphPaint.setStrokeWidth(5);
         }
@@ -254,7 +254,6 @@ public class MemoryView extends SurfaceView implements Runnable, SurfaceHolder.C
         @Override
         public void childDraw(Canvas canvas) {
             super.childDraw(canvas);
-            canvas.drawPath(mGraphPath, mGraphPaint);
             /*控制移动*/
             if (mIsMoveToLeft && x >= mWidth) {
                 this.setX(getX() - 1);
@@ -263,9 +262,19 @@ public class MemoryView extends SurfaceView implements Runnable, SurfaceHolder.C
             if (x >= Float.MAX_VALUE || y >= Float.MAX_VALUE) {
                 reset();
             }
-            x += 1;
-            y = (int)(100 * Math.sin(x * 2 * Math.PI / 180) + 400);
+            /*起点*/
+            if (isFirst) {
+                isFirst = false;
+                mStartY = (int) (mViewHeight - mBrokenLineBottom - mValue * averageHeight);
+            }
+            mGraphPath.moveTo(0, mStartY);
             mGraphPath.lineTo(x, y);
+            mGraphPath.lineTo(x, mViewHeight - mBrokenLineBottom);
+            mGraphPath.lineTo(0, mViewHeight - mBrokenLineBottom);
+            mGraphPath.lineTo(0, mStartY);
+            canvas.drawPath(mGraphPath, mGraphPaint);
+            x += 1;
+            y = mViewHeight - mBrokenLineBottom - mValue * averageHeight;
         }
 
         public void setMoveToLeft(boolean moveToLeft) {

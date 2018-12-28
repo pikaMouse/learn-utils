@@ -3,6 +3,8 @@ package com.example.pikamouse.learn_utils;
 import android.app.Application;
 import android.content.Context;
 
+import com.example.pikamouse.learn_utils.test.MemoryMonitor;
+
 /**
  * @author: jiangfeng
  * @date: 2018/12/26
@@ -15,6 +17,7 @@ public class MyApplication extends Application {
     public void onCreate() {
         super.onCreate();
         sContext = getApplicationContext();
+        MemoryMonitor.getInstance().init(this);
     }
 
     public static Context getAppContext() {
