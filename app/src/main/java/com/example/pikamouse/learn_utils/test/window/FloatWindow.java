@@ -45,7 +45,7 @@ public class FloatWindow implements IFloatWindow, View.OnTouchListener {
         if (view.getParent() != null) {
             return;
         }
-        this.mLp.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
+        this.mLp.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE;
         this.mLp.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
         this.mLp.format = PixelFormat.TRANSLUCENT;
 
