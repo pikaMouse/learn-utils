@@ -1,4 +1,4 @@
-package com.example.pikamouse.learn_utils.test;
+package com.example.pikamouse.learn_utils.test.view;
 
 /**
  * create by liting 2018/12/29
@@ -14,13 +14,12 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.example.pikamouse.learn_utils.R;
+import com.example.pikamouse.learn_utils.test.Config;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class CurveChartView
-        extends View
-{
+public class CurveChartView extends View {
     private Config mConfig;
     private float yMaxValue = -2.14748365E9F;
     private float yMinValue = 2.14748365E9F;
@@ -181,7 +180,7 @@ public class CurveChartView
         int size = this.mDatas.size();
         for (int i = 0; i < size; i++)
         {
-            float v = ((Float)this.mDatas.get(i)).floatValue();
+            float v = (Float) this.mDatas.get(i);
             if (v > maxValue) {
                 maxValue = v;
             }
@@ -199,7 +198,8 @@ public class CurveChartView
             return;
         }
         for (int i = 0; i < this.mConfig.mYPartCount; i++) {
-            this.mYLabels[i] = String.format(this.mConfig.mYFormat, new Object[] { Float.valueOf((this.yMaxValue - this.yMinValue) * i / (this.mConfig.mYPartCount - 1) + this.yMinValue) });
+            this.mYLabels[i] = String.format(this.mConfig.mYFormat,
+                    new Object[] { Float.valueOf((this.yMaxValue - this.yMinValue) * i / (this.mConfig.mYPartCount - 1) + this.yMinValue) });
         }
     }
 

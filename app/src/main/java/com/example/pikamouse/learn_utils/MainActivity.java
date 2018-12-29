@@ -7,31 +7,34 @@ import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
 
-import com.example.pikamouse.learn_utils.test.FloatCurveView;
+import com.example.pikamouse.learn_utils.test.view.FloatContainerView;
 import com.example.pikamouse.learn_utils.test.MemoryMonitor;
-import com.example.pikamouse.learn_utils.utils.MemoryUtil;
-import com.example.pikamouse.learn_utils.utils.ProcessUtil;
-import com.example.pikamouse.learn_utils.view.MemoryView;
 
 public class MainActivity extends AppCompatActivity {
 
     private final static String TAG = "MainActivity";
-    private Button mStart;
+    private Button mStartPSS;
+    private Button mStartHeap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mStart = (Button)findViewById(R.id.btn_start_float);
-        mStart.setOnClickListener(new View.OnClickListener() {
+        mStartPSS = (Button)findViewById(R.id.btn_start_pss_float);
+        mStartHeap = (Button)findViewById(R.id.btn_start_heap_float);
+        mStartPSS.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MemoryMonitor.getInstance().start(FloatCurveView.MEMORY_TYPE_HEAP);
+                MemoryMonitor.getInstance().start(FloatContainerView.MEMORY_TYPE_PSS);
+            }
+        });
+        mStartHeap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MemoryMonitor.getInstance().start(FloatContainerView.MEMORY_TYPE_HEAP);
             }
         });
         requestAlertWindowPermission();
@@ -42,8 +45,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         MemoryMonitor.getInstance().stop();
-
     }
+
     private static final int REQUEST_CODE = 1;
 
     private void requestAlertWindowPermission() {

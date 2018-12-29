@@ -1,11 +1,11 @@
-package com.example.pikamouse.learn_utils.test;
+package com.example.pikamouse.learn_utils.test.window;
 
 import android.view.View;
 
 /**
  * create by liting 2018/12/29
  */
-public interface IFloatView {
+public interface IFloatWindow {
 
     void release();
 

@@ -1,14 +1,16 @@
-package com.example.pikamouse.learn_utils.test;
+package com.example.pikamouse.learn_utils.test.view;
 
 import android.content.Context;
 import android.support.annotation.StringDef;
 import android.util.AttributeSet;
 import android.view.Gravity;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.pikamouse.learn_utils.R;
+import com.example.pikamouse.learn_utils.test.window.FloatWindow;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -20,7 +22,7 @@ import java.lang.annotation.RetentionPolicy;
  * Copyright: Ctrip
  */
 
-public class FloatCurveView extends RelativeLayout {
+public class FloatContainerView extends RelativeLayout implements View.OnClickListener {
 
     private static final String VALUE_FORMAT = "%.1fM";
     private static final String VALUE_FORMAT_TXT = "%1$s:%2$.1fM";
@@ -46,26 +48,32 @@ public class FloatCurveView extends RelativeLayout {
         String type;
     }
 
-    private FloatContainer mFloatContainer;
+    private FloatWindow mFloatWindow;
 
     private CurveChartView mCurveChartView;
 
     private TextView mNameAndValueTv;
 
-    public FloatCurveView(Context context) {
+    private TextView mClose;
+
+    private Callback mCallback;
+
+    public FloatContainerView(Context context) {
         this(context, null);
     }
 
-    public FloatCurveView(Context context, AttributeSet attrs) {
+    public FloatContainerView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        setUp();
+        initView();
     }
 
-    private void setUp() {
-        mFloatContainer = new FloatContainer(getContext());
+    private void initView() {
+        mFloatWindow = new FloatWindow(getContext());
         inflate(getContext(), R.layout.mem_monitor_view_floatcurveview, this);
         mCurveChartView = (CurveChartView) this.findViewById(R.id.mem_monitor_view_floatcurveview);
         mNameAndValueTv = (TextView) this.findViewById(R.id.mem_monitor_view_namevalue);
+        mClose = (TextView) this.findViewById(R.id.mem_monitor_view_close);
+        mClose.setOnClickListener(this);
     }
 
     private String mPrefix;
@@ -82,11 +90,11 @@ public class FloatCurveView extends RelativeLayout {
                 .setYLabelSize(20f);
         mCurveChartView.setUp(builder.create());
         mCurveChartView.setPadding(config.padding, config.padding, config.padding, config.padding);
-        mFloatContainer.attachToWindow(this, Gravity.LEFT | Gravity.TOP, config.x, config.y, config.width, config.height);
+        mFloatWindow.attachToWindow(this, Gravity.LEFT | Gravity.TOP, config.x, config.y, config.width, config.height);
     }
 
     public void release() {
-        mFloatContainer.release();
+        mFloatWindow.release();
     }
 
     public void setText(float value) {
@@ -95,5 +103,24 @@ public class FloatCurveView extends RelativeLayout {
 
     public void addData(float data) {
         mCurveChartView.addData(data);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.mem_monitor_view_close:
+                if (mCallback != null) mCallback.onClose();
+                break;
+            default:
+                break;
+        }
+    }
+
+    public void setCallback(Callback callback) {
+        this.mCallback = callback;
+    }
+
+    public interface Callback {
+        void onClose();
     }
 }

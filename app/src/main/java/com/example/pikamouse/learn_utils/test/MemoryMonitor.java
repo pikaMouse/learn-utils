@@ -2,11 +2,13 @@ package com.example.pikamouse.learn_utils.test;
 
 import android.app.Application;
 import android.content.Context;
+import android.util.Log;
 
 
 import com.example.pikamouse.learn_utils.R;
 import com.example.pikamouse.learn_utils.test.util.MemoryUtil;
 import com.example.pikamouse.learn_utils.test.util.ProcessUtil;
+import com.example.pikamouse.learn_utils.test.view.FloatContainerView;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -18,7 +20,10 @@ import java.util.TimerTask;
  * Copyright: Ctrip
  */
 
-public class MemoryMonitor {
+public class MemoryMonitor implements FloatContainerView.Callback {
+
+    private final static String TAG = "MemoryMonitor";
+
     private static class InstanceHolder {
         private static MemoryMonitor sInstance = new MemoryMonitor();
     }
@@ -32,7 +37,7 @@ public class MemoryMonitor {
 
     private Context mContext;
     private Timer mTimer;
-    private FloatCurveView mFloatCurveView;
+    private FloatContainerView mFloatContainerView;
     private boolean mIsRunning;
 
     private static final long DURATION = 500;
@@ -45,32 +50,33 @@ public class MemoryMonitor {
         this.mContext = context;
     }
 
-    public void start(final @FloatCurveView.MemoryType String type) {
+    public void start(final @FloatContainerView.MemoryType String type) {
         if (mContext == null) {
             throw new IllegalStateException("init must be called");
         }
         stop();
-        if (mFloatCurveView == null) {
-            mFloatCurveView = new FloatCurveView(mContext);
+        if (mFloatContainerView == null) {
+            mFloatContainerView = new FloatContainerView(mContext);
         }
-        FloatCurveView.Config config = new FloatCurveView.Config();
+        FloatContainerView.Config config = new FloatContainerView.Config();
         config.height = mContext.getResources().getDimensionPixelSize(R.dimen.mem_monitor_height);
         config.padding = mContext.getResources().getDimensionPixelSize(R.dimen.mem_monitor_padding);
         config.dataSize = 40;
         config.yPartCount = 8;
         config.type = type;
-        mFloatCurveView.attachToWindow(config);
+        mFloatContainerView.attachToWindow(config);
+        mFloatContainerView.setCallback(this);
 
         if (mTimer == null) {
             mTimer = new Timer();
         }
         TimerTask timerTask = null;
         switch (type) {
-            case FloatCurveView.MEMORY_TYPE_PSS:
-                timerTask = new PssTimerTask(mContext, mFloatCurveView);
+            case FloatContainerView.MEMORY_TYPE_PSS:
+                timerTask = new PssTimerTask(mContext, mFloatContainerView);
                 break;
-            case FloatCurveView.MEMORY_TYPE_HEAP:
-                timerTask = new HeapTimerTask(mFloatCurveView);
+            case FloatContainerView.MEMORY_TYPE_HEAP:
+                timerTask = new HeapTimerTask(mFloatContainerView);
                 break;
             default:
                 break;
@@ -82,7 +88,7 @@ public class MemoryMonitor {
     public static class PssTimerTask extends MemoryTimerTask {
         private Context mContext;
 
-        public PssTimerTask(Context context, FloatCurveView floatCurveView) {
+        public PssTimerTask(Context context, FloatContainerView floatCurveView) {
             super(floatCurveView);
             this.mContext = context;
         }
@@ -91,39 +97,41 @@ public class MemoryMonitor {
         public float getValue() {
             final int pid = ProcessUtil.getCurrentPid();
             MemoryUtil.PssInfo pssInfo = MemoryUtil.getAppPssInfo(mContext, pid);
+            Log.d(TAG, "pssInfo.totalPss: " + pssInfo.totalPss);
             return (float) pssInfo.totalPss / 1024;
         }
     }
 
     public static class HeapTimerTask extends MemoryTimerTask {
 
-        public HeapTimerTask(FloatCurveView floatCurveView) {
+        public HeapTimerTask(FloatContainerView floatCurveView) {
             super(floatCurveView);
         }
 
         @Override
         public float getValue() {
             final MemoryUtil.DalvikHeapMem dalvikHeapMem = MemoryUtil.getAppDalvikHeapMem();
+            Log.d(TAG, "dalvikHeapMem.allocated: " + dalvikHeapMem.allocated);
             return (float) dalvikHeapMem.allocated / 1024;
         }
     }
 
     public static abstract class MemoryTimerTask extends TimerTask {
-        protected FloatCurveView mFloatCurveView;
+        protected FloatContainerView mFloatContainerView;
 
-        public MemoryTimerTask(FloatCurveView floatCurveView) {
-            this.mFloatCurveView = floatCurveView;
+        public MemoryTimerTask(FloatContainerView floatCurveView) {
+            this.mFloatContainerView = floatCurveView;
         }
 
         public abstract float getValue();
 
         @Override
         public void run() {
-            mFloatCurveView.addData(getValue());
-            mFloatCurveView.post(new Runnable() {
+            mFloatContainerView.addData(getValue());
+            mFloatContainerView.post(new Runnable() {
                 @Override
                 public void run() {
-                    mFloatCurveView.setText(getValue());
+                    mFloatContainerView.setText(getValue());
                 }
             });
         }
@@ -135,18 +143,23 @@ public class MemoryMonitor {
             mTimer.cancel();
             mTimer = null;
         }
-        if (mFloatCurveView != null) {
-            mFloatCurveView.release();
-            mFloatCurveView = null;
+        if (mFloatContainerView != null) {
+            mFloatContainerView.release();
+            mFloatContainerView = null;
         }
         mIsRunning = false;
     }
 
-    public void toggle(final @FloatCurveView.MemoryType String type) {
+    public void toggle(final @FloatContainerView.MemoryType String type) {
         if (mIsRunning) {
             stop();
         } else {
             start(type);
         }
+    }
+
+    @Override
+    public void onClose() {
+        stop();
     }
 }

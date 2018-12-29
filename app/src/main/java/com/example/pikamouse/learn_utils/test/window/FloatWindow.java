@@ -1,4 +1,4 @@
-package com.example.pikamouse.learn_utils.test;
+package com.example.pikamouse.learn_utils.test.window;
 
 import android.content.Context;
 import android.graphics.PixelFormat;
@@ -9,13 +9,14 @@ import android.view.WindowManager;
 /**
  * create by liting 2018/12/29
  */
-public class FloatContainer implements IFloatView {
-    private static final String TAG = "FloatContainer";
+public class FloatWindow implements IFloatWindow {
+
+    private static final String TAG = "FloatWindow";
     private WindowManager mWm;
     private WindowManager.LayoutParams mLp;
     private View mContentView;
 
-    public FloatContainer(Context context)
+    public FloatWindow(Context context)
     {
         this.mWm = ((WindowManager)context.getSystemService(Context.WINDOW_SERVICE));
         this.mLp = new WindowManager.LayoutParams();
@@ -49,7 +50,7 @@ public class FloatContainer implements IFloatView {
         }
         catch (Exception e)
         {
-            Log.d("FloatContainer", "悬浮窗添加失败:" + e.getLocalizedMessage());
+            Log.d("FloatWindow", "悬浮窗添加失败:" + e.getLocalizedMessage());
         }
     }
 }

@@ -8,10 +8,19 @@
         <!--android:layout_width="match_parent"-->
         <!--android:layout_height="300dp" />-->
     <Button
-        android:id="@+id/btn_start_float"
+        android:text="PSS"
+        android:id="@+id/btn_start_pss_float"
         android:layout_width="100dp"
         android:layout_height="48dp"
         android:layout_centerInParent="true"/>
+
+    <Button
+        android:text="HEAP"
+        android:id="@+id/btn_start_heap_float"
+        android:layout_width="100dp"
+        android:layout_height="48dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/btn_start_pss_float"/>
 
 </RelativeLayout>
 

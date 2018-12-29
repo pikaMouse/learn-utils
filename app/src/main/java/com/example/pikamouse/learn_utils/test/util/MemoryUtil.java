@@ -15,7 +15,6 @@ import java.util.concurrent.atomic.AtomicLong;
 /**
  * 内存相关工具类
  * 所有结果以KB为单位
- * Created by hui.zhao on 2016/6/6.
  */
 public class MemoryUtil {
 
