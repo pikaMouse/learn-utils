@@ -2,9 +2,12 @@ package com.example.pikamouse.learn_utils.test.view;
 
 import android.content.Context;
 import android.support.annotation.StringDef;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -17,9 +20,6 @@ import java.lang.annotation.RetentionPolicy;
 
 /**
  * Description: <悬浮内存显示曲线图，M为内存单位>
- * Author: hui.zhao
- * Date: 2016/9/29
- * Copyright: Ctrip
  */
 
 public class FloatContainerView extends RelativeLayout implements View.OnClickListener {
@@ -69,6 +69,7 @@ public class FloatContainerView extends RelativeLayout implements View.OnClickLi
 
     private void initView() {
         mFloatWindow = new FloatWindow(getContext());
+        setBackgroundColor(ContextCompat.getColor(getContext(), R.color.bg_chart));
         inflate(getContext(), R.layout.mem_monitor_view_floatcurveview, this);
         mCurveChartView = (CurveChartView) this.findViewById(R.id.mem_monitor_view_floatcurveview);
         mNameAndValueTv = (TextView) this.findViewById(R.id.mem_monitor_view_namevalue);
@@ -80,7 +81,7 @@ public class FloatContainerView extends RelativeLayout implements View.OnClickLi
 
     public void attachToWindow(Config config) {
         mPrefix = config.type;
-        com.example.pikamouse.learn_utils.test.Config.Builder builder = new com.example.pikamouse.learn_utils.test.Config.Builder();
+        CurveChartConfig.Builder builder = new CurveChartConfig.Builder();
         builder.setYFormat(VALUE_FORMAT)
                 .setDataSize(config.dataSize)
                 .setMaxValueMulti(1.2f)

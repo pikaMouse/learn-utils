@@ -1,4 +1,4 @@
-package com.example.pikamouse.learn_utils.test;
+package com.example.pikamouse.learn_utils.test.view;
 
 /**
  * create by liting 2018/12/29
@@ -6,7 +6,7 @@ package com.example.pikamouse.learn_utils.test;
 
 import android.graphics.Color;
 
-public class Config
+public class CurveChartConfig
 {
     public static final int DEFAULT_X_TEXT_PADDING = 0;
     public static final int DEFAULT_Y_TEXT_PADDING = 0;
@@ -43,11 +43,11 @@ public class Config
 
     public static class Builder
     {
-        private Config mConfig;
+        private CurveChartConfig mConfig;
 
         public Builder()
         {
-            this.mConfig = new Config();
+            this.mConfig = new CurveChartConfig();
         }
 
         public Builder setXTextPadding(int XTextPadding)
@@ -146,7 +146,7 @@ public class Config
             return this;
         }
 
-        public Config create()
+        public CurveChartConfig create()
         {
             return this.mConfig;
         }

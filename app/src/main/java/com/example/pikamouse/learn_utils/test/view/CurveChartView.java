@@ -14,13 +14,12 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.example.pikamouse.learn_utils.R;
-import com.example.pikamouse.learn_utils.test.Config;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class CurveChartView extends View {
-    private Config mConfig;
+    private CurveChartConfig mConfig;
     private float yMaxValue = -2.14748365E9F;
     private float yMinValue = 2.14748365E9F;
     private String[] mYLabels;
@@ -46,16 +45,16 @@ public class CurveChartView extends View {
         this.mPaint.setAntiAlias(true);
         this.mLinePath = new Path();
         this.mFillPath = new Path();
-        Config config;
+        CurveChartConfig config;
         if (attrs == null)
         {
-            config = new Config();
+            config = new CurveChartConfig();
         }
         else
         {
             TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CurveChartView);
 
-            Config.Builder builder = new Config.Builder()
+            CurveChartConfig.Builder builder = new CurveChartConfig.Builder()
                     .setXTextPadding(a.getInteger(R.styleable.CurveChartView_ccv_XTextPadding, 0))
                     .setYTextPadding(a.getInteger(R.styleable.CurveChartView_ccv_YTextPadding, 0))
                     .setMaxValueMulti(a.getFloat(R.styleable.CurveChartView_ccv_MaxValueMulti, 1.2F))
@@ -67,10 +66,10 @@ public class CurveChartView extends View {
                     .setXYStrokeWidth(a.getFloat(R.styleable.CurveChartView_ccv_XYStrokeWidth, 2.0F))
                     .setLineColor(a.getColor(R.styleable.CurveChartView_ccv_LineColor, -7829368))
                     .setLineStrokeWidth(a.getFloat(R.styleable.CurveChartView_ccv_LineStrokeWidth, 2.0F))
-                    .setFillColor(a.getColor(R.styleable.CurveChartView_ccv_FillColor, Config.DEFAULT_FILL_COLOR))
+                    .setFillColor(a.getColor(R.styleable.CurveChartView_ccv_FillColor, CurveChartConfig.DEFAULT_FILL_COLOR))
                     .setYLabelColor(a.getColor(R.styleable.CurveChartView_ccv_YLabelColor, -7829368))
                     .setYLabelSize(a.getFloat(R.styleable.CurveChartView_ccv_YLabelSize, 12.0F))
-                    .setGraduatedLineColor(a.getColor(R.styleable.CurveChartView_ccv_GraduatedLineColor, Config.DEFAULT_GRADUATEDLINE_COLOR))
+                    .setGraduatedLineColor(a.getColor(R.styleable.CurveChartView_ccv_GraduatedLineColor, CurveChartConfig.DEFAULT_GRADUATEDLINE_COLOR))
                     .setGraduatedStrokeWidth(a.getFloat(R.styleable.CurveChartView_ccv_GraduatedLineStrokeWidth, 1.0F));
             a.recycle();
             config = builder.create();
@@ -78,7 +77,7 @@ public class CurveChartView extends View {
         setUp(config);
     }
 
-    public void setUp(Config config)
+    public void setUp(CurveChartConfig config)
     {
         if (config == null) {
             return;

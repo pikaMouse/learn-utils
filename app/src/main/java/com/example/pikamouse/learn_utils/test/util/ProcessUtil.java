@@ -11,7 +11,7 @@ import java.util.List;
 
 /**
  * 进程相关工具类
- * Created by hui.zhao on 2016/6/6.
+ * Created by jiangfeng on 2018/6/6.
  */
 public class ProcessUtil {
     /**

@@ -34,7 +34,7 @@ public class FloatWindow implements IFloatWindow {
         if (view.getParent() != null) {
             return;
         }
-        this.mLp.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL;
+        this.mLp.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
         this.mLp.type = WindowManager.LayoutParams.TYPE_SYSTEM_ERROR;
         this.mLp.format = PixelFormat.TRANSLUCENT;
 
