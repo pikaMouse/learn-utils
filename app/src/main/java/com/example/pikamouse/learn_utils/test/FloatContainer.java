@@ -1,6 +1,7 @@
 package com.example.pikamouse.learn_utils.test;
 
 import android.content.Context;
+import android.graphics.PixelFormat;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -8,9 +9,7 @@ import android.view.WindowManager;
 /**
  * create by liting 2018/12/29
  */
-public class FloatContainer
-        implements IFloatView
-{
+public class FloatContainer implements IFloatView {
     private static final String TAG = "FloatContainer";
     private WindowManager mWm;
     private WindowManager.LayoutParams mLp;
@@ -34,9 +33,9 @@ public class FloatContainer
         if (view.getParent() != null) {
             return;
         }
-        this.mLp.type = 2005;
-        this.mLp.format = -3;
-        this.mLp.flags = 24;
+        this.mLp.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL;
+        this.mLp.type = WindowManager.LayoutParams.TYPE_SYSTEM_ERROR;
+        this.mLp.format = PixelFormat.TRANSLUCENT;
 
         this.mLp.gravity = gravity;
         this.mLp.width = (width == 0 ? -2 : width);

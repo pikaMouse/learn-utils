@@ -56,7 +56,23 @@ public class CurveChartView
         {
             TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CurveChartView);
 
-            Config.Builder builder = new Config.Builder().setXTextPadding(a.getInteger(R.styleable.CurveChartView_ccv_XTextPadding, 0)).setYTextPadding(a.getInteger(R.styleable.CurveChartView_ccv_YTextPadding, 0)).setMaxValueMulti(a.getFloat(R.styleable.CurveChartView_ccv_MaxValueMulti, 1.2F)).setMinValueMulti(a.getFloat(R.styleable.CurveChartView_ccv_MinValueMulti, 0.8F)).setYPartCount(a.getInteger(R.styleable.CurveChartView_ccv_YPartCount, 5)).setDataSize(a.getInteger(R.styleable.CurveChartView_ccv_DataSize, 30)).setYFormat(a.getString(R.styleable.CurveChartView_ccv_YFormat)).setXYColor(a.getColor(R.styleable.CurveChartView_ccv_XYColor, -7829368)).setXYStrokeWidth(a.getFloat(R.styleable.CurveChartView_ccv_XYStrokeWidth, 2.0F)).setLineColor(a.getColor(R.styleable.CurveChartView_ccv_LineColor, -7829368)).setLineStrokeWidth(a.getFloat(R.styleable.CurveChartView_ccv_LineStrokeWidth, 2.0F)).setFillColor(a.getColor(R.styleable.CurveChartView_ccv_FillColor, Config.DEFAULT_FILL_COLOR)).setYLabelColor(a.getColor(R.styleable.CurveChartView_ccv_YLabelColor, -7829368)).setYLabelSize(a.getFloat(R.styleable.CurveChartView_ccv_YLabelSize, 12.0F)).setGraduatedLineColor(a.getColor(R.styleable.CurveChartView_ccv_GraduatedLineColor, Config.DEFAULT_GRADUATEDLINE_COLOR)).setGraduatedStrokeWidth(a.getFloat(R.styleable.CurveChartView_ccv_GraduatedLineStrokeWidth, 1.0F));
+            Config.Builder builder = new Config.Builder()
+                    .setXTextPadding(a.getInteger(R.styleable.CurveChartView_ccv_XTextPadding, 0))
+                    .setYTextPadding(a.getInteger(R.styleable.CurveChartView_ccv_YTextPadding, 0))
+                    .setMaxValueMulti(a.getFloat(R.styleable.CurveChartView_ccv_MaxValueMulti, 1.2F))
+                    .setMinValueMulti(a.getFloat(R.styleable.CurveChartView_ccv_MinValueMulti, 0.8F))
+                    .setYPartCount(a.getInteger(R.styleable.CurveChartView_ccv_YPartCount, 5))
+                    .setDataSize(a.getInteger(R.styleable.CurveChartView_ccv_DataSize, 30))
+                    .setYFormat(a.getString(R.styleable.CurveChartView_ccv_YFormat))
+                    .setXYColor(a.getColor(R.styleable.CurveChartView_ccv_XYColor, -7829368))
+                    .setXYStrokeWidth(a.getFloat(R.styleable.CurveChartView_ccv_XYStrokeWidth, 2.0F))
+                    .setLineColor(a.getColor(R.styleable.CurveChartView_ccv_LineColor, -7829368))
+                    .setLineStrokeWidth(a.getFloat(R.styleable.CurveChartView_ccv_LineStrokeWidth, 2.0F))
+                    .setFillColor(a.getColor(R.styleable.CurveChartView_ccv_FillColor, Config.DEFAULT_FILL_COLOR))
+                    .setYLabelColor(a.getColor(R.styleable.CurveChartView_ccv_YLabelColor, -7829368))
+                    .setYLabelSize(a.getFloat(R.styleable.CurveChartView_ccv_YLabelSize, 12.0F))
+                    .setGraduatedLineColor(a.getColor(R.styleable.CurveChartView_ccv_GraduatedLineColor, Config.DEFAULT_GRADUATEDLINE_COLOR))
+                    .setGraduatedStrokeWidth(a.getFloat(R.styleable.CurveChartView_ccv_GraduatedLineStrokeWidth, 1.0F));
             a.recycle();
             config = builder.create();
         }

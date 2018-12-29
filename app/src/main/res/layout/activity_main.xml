@@ -7,6 +7,11 @@
         <!--android:id="@+id/sv_memory_view"-->
         <!--android:layout_width="match_parent"-->
         <!--android:layout_height="300dp" />-->
+    <Button
+        android:id="@+id/btn_start_float"
+        android:layout_width="100dp"
+        android:layout_height="48dp"
+        android:layout_centerInParent="true"/>
 
 </RelativeLayout>
 
