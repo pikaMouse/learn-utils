@@ -20,7 +20,7 @@ import java.util.TimerTask;
  * Copyright: Ctrip
  */
 
-public class MemoryMonitor implements FloatContainerView.Callback {
+public class MemoryMonitor {
 
     private final static String TAG = "MemoryMonitor";
 
@@ -41,6 +41,13 @@ public class MemoryMonitor implements FloatContainerView.Callback {
     private boolean mIsRunning;
 
     private static final long DURATION = 500;
+
+    private FloatContainerView.Callback mCallBack = new FloatContainerView.CallbackAdapter() {
+        @Override
+        public void onClose() {
+            stop();
+        }
+    };
 
 
     public void init(Context context) {
@@ -65,8 +72,7 @@ public class MemoryMonitor implements FloatContainerView.Callback {
         config.yPartCount = 8;
         config.type = type;
         mFloatContainerView.attachToWindow(config);
-        mFloatContainerView.setCallback(this);
-
+        mFloatContainerView.setCallback(mCallBack);
         if (mTimer == null) {
             mTimer = new Timer();
         }
@@ -158,8 +164,4 @@ public class MemoryMonitor implements FloatContainerView.Callback {
         }
     }
 
-    @Override
-    public void onClose() {
-        stop();
-    }
 }

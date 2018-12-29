@@ -7,7 +7,6 @@ import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -57,6 +56,8 @@ public class FloatContainerView extends RelativeLayout implements View.OnClickLi
     private TextView mClose;
 
     private Callback mCallback;
+
+    private WindowManager.LayoutParams mLayoutParams;
 
     public FloatContainerView(Context context) {
         this(context, null);
@@ -123,5 +124,14 @@ public class FloatContainerView extends RelativeLayout implements View.OnClickLi
 
     public interface Callback {
         void onClose();
+        void onMove(WindowManager.LayoutParams layoutParams);
+    }
+
+    public abstract static class CallbackAdapter implements Callback {
+        @Override
+        public void onClose() {}
+
+        @Override
+        public void onMove(WindowManager.LayoutParams layoutParams) {}
     }
 }
