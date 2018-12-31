@@ -1,6 +1,10 @@
-package com.example.pikamouse.learn_utils.utils;
+package com.example.pikamouse.learn_utils.test.util;
 
+import android.content.Context;
+import android.content.res.Resources;
+import android.util.DisplayMetrics;
 import android.util.TypedValue;
+import android.view.WindowManager;
 
 import com.example.pikamouse.learn_utils.MyApplication;
 
@@ -9,6 +13,21 @@ import com.example.pikamouse.learn_utils.MyApplication;
  * @date: 2018/12/28
  */
 public class DisplayUtil {
+
+    public static int getScreenWidth(Context context) {
+        Resources resources = context.getResources();
+        DisplayMetrics displayMetrics = resources.getDisplayMetrics();
+        int width = displayMetrics.widthPixels;
+        return width;
+    }
+
+    public static int getScreenHeight(Context context) {
+        Resources resources = context.getResources();
+        DisplayMetrics displayMetrics = resources.getDisplayMetrics();
+        int height = displayMetrics.heightPixels;
+        return height;
+    }
+
     /**
      * dp转px
      *

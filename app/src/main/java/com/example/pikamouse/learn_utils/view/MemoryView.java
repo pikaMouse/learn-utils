@@ -7,13 +7,12 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.Display;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import com.example.pikamouse.learn_utils.MyApplication;
 import com.example.pikamouse.learn_utils.R;
-import com.example.pikamouse.learn_utils.utils.DisplayUtil;
+import com.example.pikamouse.learn_utils.test.util.DisplayUtil;
 import com.example.pikamouse.learn_utils.utils.MemoryUtil;
 import com.example.pikamouse.learn_utils.view.container.Container;
 

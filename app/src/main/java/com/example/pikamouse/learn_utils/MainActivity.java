@@ -10,49 +10,45 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
-import com.example.pikamouse.learn_utils.test.view.FloatContainerView;
+import com.example.pikamouse.learn_utils.test.DebugBall;
+import com.example.pikamouse.learn_utils.test.view.FloatMemoryView;
 import com.example.pikamouse.learn_utils.test.MemoryMonitor;
+import com.example.pikamouse.learn_utils.test.window.FloatBallWindow;
+
+import java.lang.ref.SoftReference;
 
 public class MainActivity extends AppCompatActivity {
 
     private final static String TAG = "MainActivity";
-    private Button mStartPSS;
-    private Button mStartHeap;
+    public static SoftReference<AppCompatActivity> mActivityRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mStartPSS = (Button)findViewById(R.id.btn_start_pss_float);
-        mStartHeap = (Button)findViewById(R.id.btn_start_heap_float);
-        mStartPSS.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                MemoryMonitor.getInstance().start(FloatContainerView.MEMORY_TYPE_PSS);
-            }
-        });
-        mStartHeap.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                MemoryMonitor.getInstance().start(FloatContainerView.MEMORY_TYPE_HEAP);
-            }
-        });
+        mActivityRef = new SoftReference<AppCompatActivity>(this);
         requestAlertWindowPermission();
+        DebugBall.getInstance().start();
     }
 
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        MemoryMonitor.getInstance().stop();
+        mActivityRef.clear();
+        DebugBall.getInstance().stop();
     }
 
     private static final int REQUEST_CODE = 1;
 
     private void requestAlertWindowPermission() {
-        Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
-        intent.setData(Uri.parse("package:" + getPackageName()));
-        startActivityForResult(intent, REQUEST_CODE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (!Settings.canDrawOverlays(this)) {
+                Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
+                intent.setData(Uri.parse("package:" + getPackageName()));
+                startActivityForResult(intent, REQUEST_CODE);
+            }
+        }
     }
 
     @Override

@@ -4,24 +4,24 @@ import android.content.Context;
 import android.support.annotation.StringDef;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
-import android.view.Gravity;
-import android.view.MotionEvent;
-import android.view.View;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.pikamouse.learn_utils.R;
+import com.example.pikamouse.learn_utils.test.window.FloatMemWindow;
 import com.example.pikamouse.learn_utils.test.window.FloatWindow;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
+ * create by jiangfeng 2018/12/30
+ *
  * Description: <悬浮内存显示曲线图，M为内存单位>
  */
 
-public class FloatContainerView extends RelativeLayout implements View.OnClickListener {
+public class FloatMemoryView extends RelativeLayout {
 
     private static final String VALUE_FORMAT = "%.1fM";
     private static final String VALUE_FORMAT_TXT = "%1$s:%2$.1fM";
@@ -40,42 +40,34 @@ public class FloatContainerView extends RelativeLayout implements View.OnClickLi
         public int padding = 0;
         public int x = 0;
         public int y = 0;
-        public int dataSize = 10;
-        public int yPartCount = 5;
+        public int dataSize = 10;                            //采样数量
+        public int yPartCount = 5;                          //纵坐标刻度数
         public
         @MemoryType
         String type;
     }
 
-    private FloatWindow mFloatWindow;
+    private FloatMemWindow mFloatWindow;
 
     private CurveChartView mCurveChartView;
 
     private TextView mNameAndValueTv;
 
-    private TextView mClose;
-
-    private Callback mCallback;
-
-    private WindowManager.LayoutParams mLayoutParams;
-
-    public FloatContainerView(Context context) {
+    public FloatMemoryView(Context context) {
         this(context, null);
     }
 
-    public FloatContainerView(Context context, AttributeSet attrs) {
+    public FloatMemoryView(Context context, AttributeSet attrs) {
         super(context, attrs);
         initView();
     }
 
     private void initView() {
-        mFloatWindow = new FloatWindow(getContext());
+        mFloatWindow = new FloatMemWindow(getContext());
         setBackgroundColor(ContextCompat.getColor(getContext(), R.color.bg_chart));
         inflate(getContext(), R.layout.mem_monitor_view_floatcurveview, this);
-        mCurveChartView = (CurveChartView) this.findViewById(R.id.mem_monitor_view_floatcurveview);
-        mNameAndValueTv = (TextView) this.findViewById(R.id.mem_monitor_view_namevalue);
-        mClose = (TextView) this.findViewById(R.id.mem_monitor_view_close);
-        mClose.setOnClickListener(this);
+        mCurveChartView = findViewById(R.id.mem_monitor_view_floatcurveview);
+        mNameAndValueTv = findViewById(R.id.mem_monitor_view_namevalue);
     }
 
     private String mPrefix;
@@ -92,7 +84,12 @@ public class FloatContainerView extends RelativeLayout implements View.OnClickLi
                 .setYLabelSize(20f);
         mCurveChartView.setUp(builder.create());
         mCurveChartView.setPadding(config.padding, config.padding, config.padding, config.padding);
-        mFloatWindow.attachToWindow(this, Gravity.LEFT | Gravity.TOP, config.x, config.y, config.width, config.height);
+        WindowManager.LayoutParams layoutParams = new FloatWindow.WMLayoutParamsBuilder()
+                .setFlag(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                .setWidth(config.width)
+                .setHeight(config.height)
+                .build();
+        mFloatWindow.attachToWindow(this, layoutParams);
     }
 
     public void release() {
@@ -107,31 +104,4 @@ public class FloatContainerView extends RelativeLayout implements View.OnClickLi
         mCurveChartView.addData(data);
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.mem_monitor_view_close:
-                if (mCallback != null) mCallback.onClose();
-                break;
-            default:
-                break;
-        }
-    }
-
-    public void setCallback(Callback callback) {
-        this.mCallback = callback;
-    }
-
-    public interface Callback {
-        void onClose();
-        void onMove(WindowManager.LayoutParams layoutParams);
-    }
-
-    public abstract static class CallbackAdapter implements Callback {
-        @Override
-        public void onClose() {}
-
-        @Override
-        public void onMove(WindowManager.LayoutParams layoutParams) {}
-    }
 }

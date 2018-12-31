@@ -1,13 +1,16 @@
 package com.example.pikamouse.learn_utils.test.window;
 
+import android.support.annotation.NonNull;
 import android.view.View;
+import android.view.WindowManager;
 
 /**
- * create by liting 2018/12/29
+ * create by jiangfeng 2018/12/31
  */
 public interface IFloatWindow {
 
     void release();
 
-    void attachToWindow(View paramView, int paramInt1, int paramInt2, int paramInt3, int paramInt4, int paramInt5);
+    void attachToWindow(@NonNull View view, @NonNull WindowManager.LayoutParams layoutParams);
+
 }

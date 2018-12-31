@@ -3,93 +3,131 @@ package com.example.pikamouse.learn_utils.test.window;
 import android.content.Context;
 import android.graphics.PixelFormat;
 import android.util.Log;
-import android.view.MotionEvent;
+import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
 
-import com.example.pikamouse.learn_utils.test.view.FloatContainerView;
-
 /**
- * create by liting 2018/12/29
+ * create by jiangfeng 2018/12/30
+ * Window层
  */
-public class FloatWindow implements IFloatWindow, View.OnTouchListener {
+public abstract class FloatWindow implements IFloatWindow {
 
-    private static final String TAG = "FloatWindow";
-    private WindowManager mWm;
-    private WindowManager.LayoutParams mLp;
-    private View mContentView;
-    private boolean isAddSucess;
+    protected WindowManager mWindowManager;
+    protected WindowManager.LayoutParams mLayoutParams;
+    protected View mContentView;
+    protected Context mContext;
+    private boolean isAddWindowSuccess;
 
-    private FloatContainerView.Callback mCallback = new FloatContainerView.CallbackAdapter() {
-        @Override
-        public void onMove(WindowManager.LayoutParams layoutParams) {
-            super.onMove(layoutParams);
-        }
-    };
 
-    public FloatWindow(Context context)
-    {
-        this.mWm = ((WindowManager)context.getSystemService(Context.WINDOW_SERVICE));
-        this.mLp = new WindowManager.LayoutParams();
+    public FloatWindow(Context context) {
+        mWindowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        mLayoutParams = new WindowManager.LayoutParams();
+        mContext = context;
     }
 
-    public void release()
-    {
-        if ((this.mContentView != null) && (this.mContentView.getParent() != null)) {
-            this.mWm.removeView(this.mContentView);
-        }
-    }
-
-    public void attachToWindow(View view, int gravity, int x, int y, int width, int height)
-    {
-        if (view.getParent() != null) {
-            return;
-        }
-        this.mLp.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE;
-        this.mLp.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
-        this.mLp.format = PixelFormat.TRANSLUCENT;
-
-        this.mLp.gravity = gravity;
-        this.mLp.width = (width == 0 ? -2 : width);
-        this.mLp.height = (height == 0 ? -2 : height);
-        this.mLp.x = x;
-        this.mLp.y = y;
-        try
-        {
-            this.mContentView = view;
-            this.mContentView.setOnTouchListener(this);
-            this.mWm.addView(this.mContentView, this.mLp);
-            isAddSucess = true;
-        }
-        catch (Exception e)
-        {
-            isAddSucess = false;
-            Log.d("FloatWindow", "悬浮窗添加失败:" + e.getLocalizedMessage());
+    @Override
+    public void release() {
+        if (mContentView != null && mContentView.getParent() != null) {
+            mWindowManager.removeView(mContentView);
         }
     }
 
     @Override
-    public boolean onTouch(View v, MotionEvent event) {
-        if (!isAddSucess) return false;
-        int rawX = (int) event.getRawX();
-        int rawY = (int) event.getRawY();
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN: {
-                break;
-            }
-            case MotionEvent.ACTION_MOVE: {
-                mLp.x = rawX;
-                mLp.y = rawY;
-                mWm.updateViewLayout(mContentView, mLp);
-                break;
-            }
-            case MotionEvent.ACTION_UP: {
-                break;
-            }
-            default:
-                break;
+    public void attachToWindow(View view, WindowManager.LayoutParams layoutParams) {
+        if (view.getParent() != null) {
+            Log.d("FloatWindow", "view添加失败: Parent of view is not null !" );
+            return;
         }
-        return false;
+        mLayoutParams.flags = layoutParams.flags;
+        mLayoutParams.type = layoutParams.type;
+        mLayoutParams.format = layoutParams.format;
+        mLayoutParams.gravity = layoutParams.gravity;
+        mLayoutParams.x = layoutParams.x;
+        mLayoutParams.y = layoutParams.y;
+        mLayoutParams.width = layoutParams.width;
+        mLayoutParams.height = layoutParams.height;
+        try {
+            mContentView = view;
+            mWindowManager.addView(mContentView, mLayoutParams);
+            isAddWindowSuccess = true;
+        } catch (Exception e) {
+            isAddWindowSuccess = false;
+            Log.d("FloatWindow", "悬浮窗添加失败: " + e.getLocalizedMessage());
+        }
+
+    }
+
+    public boolean isAddWindowSuccess() {
+        return isAddWindowSuccess;
+    }
+
+    public static class WMLayoutParamsBuilder {
+
+        private final static int DEFAULT_FORMAT = PixelFormat.TRANSLUCENT;
+        private final static int DEFAULT_FLAG = WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE;
+        private final static int DEFAULT_TYPE = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
+        private final static int DEFAULT_GRAVITY = Gravity.TOP | Gravity.LEFT;
+        private final static int DEFAULT_WIDTH = WindowManager.LayoutParams.WRAP_CONTENT;
+        private final static int DEFAULT_HEIGHT = WindowManager.LayoutParams.WRAP_CONTENT;
+        private final static int DEFAULT_X = 0;
+        private final static int DEFAULT_Y = 0;
+        private WindowManager.LayoutParams mLayoutParams;
+
+        public WMLayoutParamsBuilder() {
+            mLayoutParams = new WindowManager.LayoutParams();
+            mLayoutParams.format = DEFAULT_FORMAT;
+            mLayoutParams.flags = DEFAULT_FLAG;
+            mLayoutParams.type = DEFAULT_TYPE;
+            mLayoutParams.gravity = DEFAULT_GRAVITY;
+            mLayoutParams.width = DEFAULT_WIDTH;
+            mLayoutParams.height = DEFAULT_HEIGHT;
+            mLayoutParams.x = DEFAULT_X;
+            mLayoutParams.y = DEFAULT_Y;
+        }
+
+        public WMLayoutParamsBuilder setFormat(int format) {
+            this.mLayoutParams.format = format;
+            return this;
+        }
+
+        public WMLayoutParamsBuilder setFlag(int flag) {
+            this.mLayoutParams.flags = flag;
+            return this;
+        }
+
+        public WMLayoutParamsBuilder setType(int type) {
+            this.mLayoutParams.type = type;
+            return this;
+        }
+
+        public WMLayoutParamsBuilder setGravity(int gravity) {
+            this.mLayoutParams.gravity = gravity;
+            return this;
+        }
+
+        public WMLayoutParamsBuilder setWidth(int width) {
+            this.mLayoutParams.width = (width == 0 ? WindowManager.LayoutParams.WRAP_CONTENT : width );
+            return this;
+        }
+
+        public WMLayoutParamsBuilder setHeight(int height) {
+            this.mLayoutParams.height = (height == 0 ? WindowManager.LayoutParams.WRAP_CONTENT : height );
+            return this;
+        }
+
+        public WMLayoutParamsBuilder setX(int x) {
+            this.mLayoutParams.x = x;
+            return this;
+        }
+
+        public WMLayoutParamsBuilder setY(int y) {
+            this.mLayoutParams.y = y;
+            return this;
+        }
+
+        public WindowManager.LayoutParams build () {
+            return mLayoutParams;
+        }
     }
 }
-
