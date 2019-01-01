@@ -60,7 +60,10 @@ public class FloatBallView extends AppCompatTextView implements View.OnClickList
                         DebugDialog debugDialog = new DebugDialog();
                         if (appCompatActivity.getFragmentManager().findFragmentByTag("debug_tools") == null) {
                             FragmentTransaction transaction = appCompatActivity.getFragmentManager().beginTransaction();
-                            debugDialog.show(transaction, "debug_tools");
+                            transaction.add(debugDialog,"debug_tools");
+                            //fixed bug: Can not perform this action after onSaveInstanceState
+                            transaction.commitAllowingStateLoss();
+                            transaction.show(debugDialog);
                             debugDialog.setCallback(this);
                         }
                     }
