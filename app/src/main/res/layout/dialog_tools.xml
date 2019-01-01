@@ -6,9 +6,9 @@
     android:orientation="vertical">
 
     <Button
-        android:text="PSS"
+        android:text="Total"
         android:textAllCaps="false"
-        android:id="@+id/btn_start_pss_float"
+        android:id="@+id/btn_start_total_float"
         android:layout_width="100dp"
         android:layout_height="48dp"
         android:layout_centerInParent="true"
@@ -16,7 +16,18 @@
         app:layout_constraintRight_toRightOf="parent"/>
 
     <Button
-        android:text="HEAP"
+        android:text="PSS"
+        android:textAllCaps="false"
+        android:id="@+id/btn_start_pss_float"
+        android:layout_width="100dp"
+        android:layout_height="48dp"
+        android:layout_centerInParent="true"
+        app:layout_constraintTop_toBottomOf="@+id/btn_start_total_float"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
+
+    <Button
+        android:text="Heap"
         android:textAllCaps="false"
         android:id="@+id/btn_start_heap_float"
         android:layout_width="100dp"
