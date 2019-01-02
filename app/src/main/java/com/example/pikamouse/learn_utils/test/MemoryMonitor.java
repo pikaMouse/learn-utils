@@ -20,15 +20,15 @@ public class MemoryMonitor {
 
     private final static String TAG = "MemoryMonitor";
 
-    private static class InstanceHolder {
-        private static MemoryMonitor sInstance = new MemoryMonitor();
+    private static class SingleHolder {
+        private final static MemoryMonitor MEMORY_MONITOR = new MemoryMonitor();
     }
 
     private MemoryMonitor() {
     }
 
     public static MemoryMonitor getInstance() {
-        return InstanceHolder.sInstance;
+        return SingleHolder.MEMORY_MONITOR;
     }
 
     private Context mContext;

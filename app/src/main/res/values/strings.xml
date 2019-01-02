@@ -3,7 +3,7 @@
     <string name="mem_monitor_dialog_pss">PSS info</string>
     <string name="mem_monitor_dialog_total">Total info</string>
     <string name="mem_monitor_dialog_heap">Heap info</string>
-    <string name="mem_monitoer_unit">&lt;unit:&#160;kb&gt;</string>
+    <string name="mem_monitor_unit">&lt;unit:&#160;kb&gt;</string>
     <string name="mem_monitor_total_pss">PSS Total:&#160;&#160;</string>
     <string name="mem_monitor_dalvik_pss">PSS Dalvik:&#160;&#160;</string>
     <string name="mem_monitor_native_pss">PSS Native:&#160;&#160;</string>

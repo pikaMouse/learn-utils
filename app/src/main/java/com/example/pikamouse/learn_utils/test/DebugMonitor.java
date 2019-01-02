@@ -20,8 +20,8 @@ public class DebugMonitor {
     private FloatBallView mBall;
     private FloatBallWindow mFloatBallWin;
 
-    private static class Holder {
-      private static DebugMonitor sBallMonitor = new DebugMonitor();
+    private static class SingleHolder {
+      private final static DebugMonitor DEBUG_MONITOR = new DebugMonitor();
     }
 
     private DebugMonitor() {
@@ -29,7 +29,7 @@ public class DebugMonitor {
     }
 
     public static DebugMonitor getInstance() {
-        return Holder.sBallMonitor;
+        return SingleHolder.DEBUG_MONITOR;
     }
 
     public void init(Context context) {

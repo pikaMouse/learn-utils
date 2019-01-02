@@ -223,7 +223,7 @@
         android:visibility="gone"/>
 
     <TextView
-        android:text="@string/mem_monitoer_unit"
+        android:text="@string/mem_monitor_unit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingLeft="10dp"
