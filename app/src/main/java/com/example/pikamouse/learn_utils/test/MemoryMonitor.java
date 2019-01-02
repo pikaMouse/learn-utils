@@ -90,8 +90,8 @@ public class MemoryMonitor {
         public float getValue() {
             final int pid = ProcessUtil.getCurrentPid();
             MemoryUtil.PssInfo pssInfo = MemoryUtil.getAppPssInfo(mContext, pid);
-            Log.d(TAG, "pssInfo.totalPss: " + pssInfo.totalPss);
-            return (float) pssInfo.totalPss / 1024;
+            Log.d(TAG, "pssInfo.mTotalPss: " + pssInfo.mTotalPss);
+            return (float) pssInfo.mTotalPss / 1024;
         }
     }
 
@@ -104,8 +104,8 @@ public class MemoryMonitor {
         @Override
         public float getValue() {
             final MemoryUtil.DalvikHeapMem dalvikHeapMem = MemoryUtil.getAppDalvikHeapMem();
-            Log.d(TAG, "dalvikHeapMem.allocatedMem: " + dalvikHeapMem.allocatedMem);
-            return (float) dalvikHeapMem.allocatedMem / 1024;
+            Log.d(TAG, "dalvikHeapMem.mAllocatedMem: " + dalvikHeapMem.mAllocatedMem);
+            return (float) dalvikHeapMem.mAllocatedMem / 1024;
         }
     }
 

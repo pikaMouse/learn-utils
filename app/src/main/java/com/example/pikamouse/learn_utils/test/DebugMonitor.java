@@ -2,39 +2,33 @@ package com.example.pikamouse.learn_utils.test;
 
 import android.app.Application;
 import android.content.Context;
-import android.support.v4.content.ContextCompat;
-import android.util.DisplayMetrics;
-import android.view.View;
 import android.view.WindowManager;
-import android.widget.TextView;
 
-import com.example.pikamouse.learn_utils.R;
 import com.example.pikamouse.learn_utils.test.util.DisplayUtil;
 import com.example.pikamouse.learn_utils.test.view.FloatBallView;
-import com.example.pikamouse.learn_utils.test.view.FloatMemoryView;
 import com.example.pikamouse.learn_utils.test.window.FloatBallWindow;
 import com.example.pikamouse.learn_utils.test.window.FloatWindow;
 
 /**
  * create by jiangfeng 2018/12/30
  */
-public class DebugBall {
+public class DebugMonitor {
 
-    private final static String TAG = "DebugBall";
+    private final static String TAG = "DebugMonitor";
 
     private Context mContext;
     private FloatBallView mBall;
     private FloatBallWindow mFloatBallWin;
 
     private static class Holder {
-      private static DebugBall sBallMonitor = new DebugBall();
+      private static DebugMonitor sBallMonitor = new DebugMonitor();
     }
 
-    private DebugBall() {
+    private DebugMonitor() {
 
     }
 
-    public static DebugBall getInstance() {
+    public static DebugMonitor getInstance() {
         return Holder.sBallMonitor;
     }
 
@@ -42,6 +36,8 @@ public class DebugBall {
         if (!(context instanceof Application)) {
             throw new IllegalArgumentException("you must init with application context");
         }
+        MemoryMonitor.getInstance().init(context);
+        AllInfoMonitor.getInstance().init(context);
         mContext = context;
     }
 
@@ -65,6 +61,7 @@ public class DebugBall {
             mFloatBallWin.release();
         }
         MemoryMonitor.getInstance().stop();
+        AllInfoMonitor.getInstance().stop();
     }
 
 

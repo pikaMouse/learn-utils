@@ -9,7 +9,6 @@
 
     <com.example.pikamouse.learn_utils.test.view.CurveChartView
         android:id="@+id/mem_monitor_view_floatcurveview"
-        android:layout_below="@+id/mem_monitor_view_close"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 

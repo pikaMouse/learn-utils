@@ -6,12 +6,12 @@ import android.os.Build;
 import android.os.Debug;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.lang.annotation.ElementType;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -24,20 +24,20 @@ public class MemoryUtil {
      * Dalvik堆内存，只要App用到的内存都算（包括共享内存）
      */
     public static class DalvikHeapMem {
-        public long freeMem;     //java虚拟机（这个进程）从操作系统那里挖到但还没用上的内存
-        public long maxMem;     //java虚拟机（这个进程）能够从操作系统那里挖到的最大的内存
-        public long totalMem;  //java虚拟机（这个进程）现在已经从操作系统那里挖过来的内存大小
-        public long allocatedMem;  //java虚拟机（这个进程)实际占用的内存大小
+        public long mFreeMem;     //java虚拟机（这个进程）从操作系统那里挖到但还没用上的内存
+        public long mMaxMem;     //java虚拟机（这个进程）能够从操作系统那里挖到的最大的内存
+        public long mTotalMem;  //java虚拟机（这个进程）现在已经从操作系统那里挖过来的内存大小
+        public long mAllocatedMem;  //java虚拟机（这个进程)实际占用的内存大小
     }
 
     /**
      * 应用实际占用内存（共享按比例分配）
      */
     public static class PssInfo {
-        public int totalPss;
-        public int dalvikPss;
-        public int nativePss;
-        public int otherPss;
+        public int mTotalPss;
+        public int mDalvikPss;
+        public int mNativePss;
+        public int mOtherPss;
     }
 
     /**
@@ -45,10 +45,19 @@ public class MemoryUtil {
      * 物理内存信息
      */
     public static class RamMemoryInfo {
-        public long availMem;           //可用RAM
-        public long totalMem;           //手机总RAM
-        public long lowMemThreshold;   //内存占用满的阀值，超过即认为低内存运行状态，可能会Kill process
-        public boolean isLowMemory;     //是否低内存状态运行
+        public long mAvailMem;           //可用RAM
+        public long mTotalMem;           //手机总RAM
+        public long mLowMemThreshold;   //内存占用满的阀值，超过即认为低内存运行状态，可能会Kill process
+        public boolean mIsLowMemory;     //是否低内存状态运行
+    }
+
+    /**
+     * 所有信息
+     */
+    public static class AllInfo {
+        public DalvikHeapMem mDalvikHeapMem;
+        public PssInfo mPssInfo;
+        public RamMemoryInfo mRamMemoryInfo;
     }
 
     /**
@@ -81,7 +90,7 @@ public class MemoryUtil {
     /**
      * 同步获取总体内存使用情况
      */
-    public static void getMemoryInfoSync(final Context context, final OnGetMemoryInfoCallback onGetMemoryInfoCallback) {
+    public static @NonNull AllInfo getMemoryInfoSync(final Context context) {
         //package name
         final String pkgName = context.getPackageName();
         //pid
@@ -89,10 +98,15 @@ public class MemoryUtil {
         //ram
         final RamMemoryInfo ramMemoryInfo = getSystemRamSync(context);
         //pss
-        final PssInfo pssInfo = MemoryUtil.getAppPssInfo(context, pid);
+        final PssInfo pssInfo = getAppPssInfo(context, pid);
         //dalvik heap
-        final DalvikHeapMem dalvikHeapMem = MemoryUtil.getAppDalvikHeapMem();
-        onGetMemoryInfoCallback.onGetMemoryInfo(pkgName, pid, ramMemoryInfo, pssInfo, dalvikHeapMem);
+        final DalvikHeapMem dalvikHeapMem = getAppDalvikHeapMem();
+        //all info
+        final AllInfo allInfo = new AllInfo();
+        allInfo.mDalvikHeapMem = dalvikHeapMem;
+        allInfo.mPssInfo = pssInfo;
+        allInfo.mRamMemoryInfo = ramMemoryInfo;
+        return allInfo;
     }
 
     /**
@@ -108,10 +122,10 @@ public class MemoryUtil {
                 if (am != null) {
                     am.getMemoryInfo(mi);
                     ramMemoryInfo = new RamMemoryInfo();
-                    ramMemoryInfo.availMem = mi.availMem / 1024;
-                    ramMemoryInfo.isLowMemory = mi.lowMemory;
-                    ramMemoryInfo.lowMemThreshold = mi.threshold / 1024;
-                    ramMemoryInfo.totalMem = totalMem;
+                    ramMemoryInfo.mAvailMem = mi.availMem / 1024;
+                    ramMemoryInfo.mIsLowMemory = mi.lowMemory;
+                    ramMemoryInfo.mLowMemThreshold = mi.threshold / 1024;
+                    ramMemoryInfo.mTotalMem = totalMem;
                 }
                 onGetRamMemoryInfoCallback.onGetRamMemoryInfo(ramMemoryInfo);
             }
@@ -127,10 +141,10 @@ public class MemoryUtil {
             ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
             am.getMemoryInfo(memoryInfo);
             RamMemoryInfo ramMemoryInfo = new RamMemoryInfo();
-            ramMemoryInfo.availMem = memoryInfo.availMem / 1024;
-            ramMemoryInfo.isLowMemory = memoryInfo.lowMemory;
-            ramMemoryInfo.lowMemThreshold = memoryInfo.threshold / 1024;
-            ramMemoryInfo.totalMem = getRamTotalMemSync(context);
+            ramMemoryInfo.mAvailMem = memoryInfo.availMem / 1024;
+            ramMemoryInfo.mIsLowMemory = memoryInfo.lowMemory;
+            ramMemoryInfo.mLowMemThreshold = memoryInfo.threshold / 1024;
+            ramMemoryInfo.mTotalMem = getRamTotalMemSync(context);
             return ramMemoryInfo;
         }
         return null;
@@ -146,10 +160,10 @@ public class MemoryUtil {
         if (am != null) {
             memoryInfo = am.getProcessMemoryInfo(new int[]{pid})[0];
             pssInfo = new PssInfo();
-            pssInfo.totalPss = memoryInfo.getTotalPss();
-            pssInfo.dalvikPss = memoryInfo.dalvikPss;
-            pssInfo.nativePss = memoryInfo.nativePss;
-            pssInfo.otherPss = memoryInfo.otherPss;
+            pssInfo.mTotalPss = memoryInfo.getTotalPss();
+            pssInfo.mDalvikPss = memoryInfo.dalvikPss;
+            pssInfo.mNativePss = memoryInfo.nativePss;
+            pssInfo.mOtherPss = memoryInfo.otherPss;
         }
         return pssInfo;
     }
@@ -160,10 +174,10 @@ public class MemoryUtil {
     public static DalvikHeapMem getAppDalvikHeapMem() {
         Runtime runtime = Runtime.getRuntime();
         DalvikHeapMem dalvikHeapMem = new DalvikHeapMem();
-        dalvikHeapMem.freeMem = runtime.freeMemory() / 1024;                                  //对应dumpsys meminfo的Heap Free
-        dalvikHeapMem.maxMem = runtime.maxMemory() / 1024;
-        dalvikHeapMem.totalMem = runtime.totalMemory() / 1024;                                 //对应dumpsys meminfo的Heap Size
-        dalvikHeapMem.allocatedMem = (dalvikHeapMem.totalMem - dalvikHeapMem.freeMem); //对应dumpsys meminfo的Heap Alloc
+        dalvikHeapMem.mFreeMem = runtime.freeMemory() / 1024;                                  //对应dumpsys meminfo的Heap Free
+        dalvikHeapMem.mMaxMem = runtime.maxMemory() / 1024;
+        dalvikHeapMem.mTotalMem = runtime.totalMemory() / 1024;                                 //对应dumpsys meminfo的Heap Size
+        dalvikHeapMem.mAllocatedMem = (dalvikHeapMem.mTotalMem - dalvikHeapMem.mFreeMem); //对应dumpsys meminfo的Heap Alloc
         return dalvikHeapMem;
     }
 

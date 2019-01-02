@@ -3,10 +3,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp">
 
     <Button
-        android:text="Total"
+        android:text="@string/mem_monitor_dialog_total"
         android:textAllCaps="false"
         android:id="@+id/btn_start_total_float"
         android:layout_width="100dp"
@@ -16,7 +18,7 @@
         app:layout_constraintRight_toRightOf="parent"/>
 
     <Button
-        android:text="PSS"
+        android:text="@string/mem_monitor_dialog_pss"
         android:textAllCaps="false"
         android:id="@+id/btn_start_pss_float"
         android:layout_width="100dp"
@@ -27,7 +29,7 @@
         app:layout_constraintRight_toRightOf="parent"/>
 
     <Button
-        android:text="Heap"
+        android:text="@string/mem_monitor_dialog_heap"
         android:textAllCaps="false"
         android:id="@+id/btn_start_heap_float"
         android:layout_width="100dp"

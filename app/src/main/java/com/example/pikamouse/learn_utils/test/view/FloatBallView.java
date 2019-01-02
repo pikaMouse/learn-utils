@@ -12,7 +12,9 @@ import android.view.View;
 
 import com.example.pikamouse.learn_utils.MainActivity;
 import com.example.pikamouse.learn_utils.R;
-import com.example.pikamouse.learn_utils.test.DebugDialog;
+import com.example.pikamouse.learn_utils.test.AllInfoMonitor;
+import com.example.pikamouse.learn_utils.test.DebugMonitor;
+import com.example.pikamouse.learn_utils.test.dialog.DebugDialog;
 import com.example.pikamouse.learn_utils.test.MemoryMonitor;
 import com.example.pikamouse.learn_utils.test.util.DisplayUtil;
 
@@ -24,6 +26,8 @@ public class FloatBallView extends AppCompatTextView implements View.OnClickList
     private Context mContext;
 
     private boolean isShowClose;
+
+    private final static String DEBUG_TOOLS_DIALOG = "debug_tools_dialog";
 
     public FloatBallView(Context context) {
         this(context, null);
@@ -58,9 +62,9 @@ public class FloatBallView extends AppCompatTextView implements View.OnClickList
                     AppCompatActivity appCompatActivity = MainActivity.mActivityRef.get();
                     if (appCompatActivity != null) {
                         DebugDialog debugDialog = new DebugDialog();
-                        if (appCompatActivity.getFragmentManager().findFragmentByTag("debug_tools") == null) {
+                        if (appCompatActivity.getFragmentManager().findFragmentByTag(DEBUG_TOOLS_DIALOG) == null) {
                             FragmentTransaction transaction = appCompatActivity.getFragmentManager().beginTransaction();
-                            transaction.add(debugDialog,"debug_tools");
+                            transaction.add(debugDialog,DEBUG_TOOLS_DIALOG);
                             //fixed bug: Can not perform this action after onSaveInstanceState
                             transaction.commitAllowingStateLoss();
                             transaction.show(debugDialog);
@@ -69,6 +73,7 @@ public class FloatBallView extends AppCompatTextView implements View.OnClickList
                     }
                 } else {
                     MemoryMonitor.getInstance().stop();
+                    AllInfoMonitor.getInstance().stop();
                     setBackgroundDrawable(ContextCompat.getDrawable(mContext, R.drawable.bg_float_tools_open));
                     isShowClose = false;
                 }
