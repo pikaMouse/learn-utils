@@ -6,10 +6,12 @@ import android.os.Build;
 import android.os.Debug;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.Nullable;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.annotation.ElementType;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -19,115 +21,13 @@ import java.util.concurrent.atomic.AtomicLong;
 public class MemoryUtil {
 
     /**
-     * 获取总体内存使用情况
-     *
-     * @param context
-     * @param onGetMemoryInfoCallback
-     */
-    public static void getMemoryInfo(final Context context, final OnGetMemoryInfoCallback onGetMemoryInfoCallback) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                final String pkgName = context.getPackageName();
-                final int pid = ProcessUtil.getCurrentPid();
-                ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-                final ActivityManager.MemoryInfo mi = new ActivityManager.MemoryInfo();
-                am.getMemoryInfo(mi);
-                //1. ram
-                final RamMemoryInfo ramMemoryInfo = new RamMemoryInfo();
-                ramMemoryInfo.availMem = mi.availMem / 1024;
-                ramMemoryInfo.isLowMemory = mi.lowMemory;
-                ramMemoryInfo.lowMemThreshold = mi.threshold / 1024;
-                ramMemoryInfo.totalMem = MemoryUtil.getRamTotalMemSync(context);
-                //2. pss
-                final PssInfo pssInfo = MemoryUtil.getAppPssInfo(context, pid);
-                //3. dalvik heap
-                final DalvikHeapMem dalvikHeapMem = MemoryUtil.getAppDalvikHeapMem();
-                new Handler(Looper.getMainLooper()).post(new Runnable() {
-                    @Override
-                    public void run() {
-                        onGetMemoryInfoCallback.onGetMemoryInfo(pkgName, pid, ramMemoryInfo, pssInfo, dalvikHeapMem);
-                    }
-                });
-            }
-        }).start();
-    }
-
-    /**
-     * 获取手机RAM的存储情况
-     *
-     * @param context
-     * @param onGetRamMemoryInfoCallback
-     * @return
-     */
-    public static void getSystemRam(final Context context, final OnGetRamMemoryInfoCallback onGetRamMemoryInfoCallback) {
-        getRamTotalMem(context, new OnGetRamTotalMemCallback() {
-            @Override
-            public void onGetRamTotalMem(long totalMem) {
-                ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-                final ActivityManager.MemoryInfo mi = new ActivityManager.MemoryInfo();
-                am.getMemoryInfo(mi);
-                RamMemoryInfo ramMemoryInfo = new RamMemoryInfo();
-                ramMemoryInfo.availMem = mi.availMem / 1024;
-                ramMemoryInfo.isLowMemory = mi.lowMemory;
-                ramMemoryInfo.lowMemThreshold = mi.threshold / 1024;
-                ramMemoryInfo.totalMem = totalMem;
-                onGetRamMemoryInfoCallback.onGetRamMemoryInfo(ramMemoryInfo);
-            }
-        });
-    }
-
-    /**
-     * 获取应用实际占用内存
-     *
-     * @param context
-     * @param pid
-     * @return 应用pss信息KB
-     */
-    public static PssInfo getAppPssInfo(Context context, int pid) {
-        ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-        Debug.MemoryInfo memoryInfo = am.getProcessMemoryInfo(new int[]{pid})[0];
-        PssInfo pssInfo = new PssInfo();
-        pssInfo.totalPss = memoryInfo.getTotalPss();
-        pssInfo.dalvikPss = memoryInfo.dalvikPss;
-        pssInfo.nativePss = memoryInfo.nativePss;
-        pssInfo.otherPss = memoryInfo.otherPss;
-        return pssInfo;
-    }
-
-    /**
-     * 获取应用dalvik内存信息
-     *
-     * @return dalvik堆内存KB
-     */
-    public static DalvikHeapMem getAppDalvikHeapMem() {
-        Runtime runtime = Runtime.getRuntime();
-        DalvikHeapMem dalvikHeapMem = new DalvikHeapMem();
-        dalvikHeapMem.freeMem = runtime.freeMemory() / 1024;
-        dalvikHeapMem.maxMem = Runtime.getRuntime().maxMemory() / 1024;
-        dalvikHeapMem.allocated = (Runtime.getRuntime().totalMemory() - runtime.freeMemory()) / 1024;
-        return dalvikHeapMem;
-    }
-
-    /**
-     * 获取应用能够获取的max dalvik堆内存大小
-     * 和Runtime.getRuntime().maxMemory()一样
-     *
-     * @param context
-     * @return 单位M
-     */
-    public static long getAppTotalDalvikHeapSize(Context context) {
-        ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-        return manager.getMemoryClass();
-    }
-
-    /**
      * Dalvik堆内存，只要App用到的内存都算（包括共享内存）
      */
     public static class DalvikHeapMem {
-        public long freeMem;
-        public long maxMem;
-        public long allocated;
+        public long freeMem;     //java虚拟机（这个进程）从操作系统那里挖到但还没用上的内存
+        public long maxMem;     //java虚拟机（这个进程）能够从操作系统那里挖到的最大的内存
+        public long totalMem;  //java虚拟机（这个进程）现在已经从操作系统那里挖过来的内存大小
+        public long allocatedMem;  //java虚拟机（这个进程)实际占用的内存大小
     }
 
     /**
@@ -145,25 +45,134 @@ public class MemoryUtil {
      * 物理内存信息
      */
     public static class RamMemoryInfo {
-        //可用RAM
-        public long availMem;
-        //手机总RAM
-        public long totalMem;
-        //内存占用满的阀值，超过即认为低内存运行状态，可能会Kill process
-        public long lowMemThreshold;
-        //是否低内存状态运行
-        public boolean isLowMemory;
+        public long availMem;           //可用RAM
+        public long totalMem;           //手机总RAM
+        public long lowMemThreshold;   //内存占用满的阀值，超过即认为低内存运行状态，可能会Kill process
+        public boolean isLowMemory;     //是否低内存状态运行
     }
 
     /**
-     * 内存相关的所有数据
+     * 异步获取总体内存使用情况
      */
+    public static void getMemoryInfoAsync(final Context context, final OnGetMemoryInfoCallback onGetMemoryInfoCallback) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                //package name
+                final String pkgName = context.getPackageName();
+                //pid
+                final int pid = ProcessUtil.getCurrentPid();
+                //ram
+                final RamMemoryInfo ramMemoryInfo = getSystemRamSync(context);
+                //pss
+                final PssInfo pssInfo = MemoryUtil.getAppPssInfo(context, pid);
+                //dalvik heap
+                final DalvikHeapMem dalvikHeapMem = MemoryUtil.getAppDalvikHeapMem();
+                ThreadUtil.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        onGetMemoryInfoCallback.onGetMemoryInfo(pkgName, pid, ramMemoryInfo, pssInfo, dalvikHeapMem);
+                    }
+                });
+            }
+        }).start();
+    }
+
+    /**
+     * 同步获取总体内存使用情况
+     */
+    public static void getMemoryInfoSync(final Context context, final OnGetMemoryInfoCallback onGetMemoryInfoCallback) {
+        //package name
+        final String pkgName = context.getPackageName();
+        //pid
+        final int pid = ProcessUtil.getCurrentPid();
+        //ram
+        final RamMemoryInfo ramMemoryInfo = getSystemRamSync(context);
+        //pss
+        final PssInfo pssInfo = MemoryUtil.getAppPssInfo(context, pid);
+        //dalvik heap
+        final DalvikHeapMem dalvikHeapMem = MemoryUtil.getAppDalvikHeapMem();
+        onGetMemoryInfoCallback.onGetMemoryInfo(pkgName, pid, ramMemoryInfo, pssInfo, dalvikHeapMem);
+    }
+
+    /**
+     * 异步获取手机RAM的存储情况
+     */
+    public static void getSystemRamAsync(final Context context, final OnGetRamMemoryInfoCallback onGetRamMemoryInfoCallback) {
+        getRamTotalMemAsync(context, new OnGetRamTotalMemCallback() {
+            @Override
+            public void onGetRamTotalMem(long totalMem) {
+                ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+                final ActivityManager.MemoryInfo mi = new ActivityManager.MemoryInfo();
+                RamMemoryInfo ramMemoryInfo = null;
+                if (am != null) {
+                    am.getMemoryInfo(mi);
+                    ramMemoryInfo = new RamMemoryInfo();
+                    ramMemoryInfo.availMem = mi.availMem / 1024;
+                    ramMemoryInfo.isLowMemory = mi.lowMemory;
+                    ramMemoryInfo.lowMemThreshold = mi.threshold / 1024;
+                    ramMemoryInfo.totalMem = totalMem;
+                }
+                onGetRamMemoryInfoCallback.onGetRamMemoryInfo(ramMemoryInfo);
+            }
+        });
+    }
+
+    /**
+     * 同步获取手机RAM的存储情况
+     */
+    private static @Nullable RamMemoryInfo getSystemRamSync(final Context context) {
+        ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        if (am != null) {
+            ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
+            am.getMemoryInfo(memoryInfo);
+            RamMemoryInfo ramMemoryInfo = new RamMemoryInfo();
+            ramMemoryInfo.availMem = memoryInfo.availMem / 1024;
+            ramMemoryInfo.isLowMemory = memoryInfo.lowMemory;
+            ramMemoryInfo.lowMemThreshold = memoryInfo.threshold / 1024;
+            ramMemoryInfo.totalMem = getRamTotalMemSync(context);
+            return ramMemoryInfo;
+        }
+        return null;
+    }
+
+    /**
+     * 获取应用实际占用内存
+     */
+    public static @Nullable PssInfo getAppPssInfo(Context context, int pid) {
+        ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        Debug.MemoryInfo memoryInfo;
+        PssInfo pssInfo = null;
+        if (am != null) {
+            memoryInfo = am.getProcessMemoryInfo(new int[]{pid})[0];
+            pssInfo = new PssInfo();
+            pssInfo.totalPss = memoryInfo.getTotalPss();
+            pssInfo.dalvikPss = memoryInfo.dalvikPss;
+            pssInfo.nativePss = memoryInfo.nativePss;
+            pssInfo.otherPss = memoryInfo.otherPss;
+        }
+        return pssInfo;
+    }
+
+    /**
+     * 获取应用dalvik内存信息
+     */
+    public static DalvikHeapMem getAppDalvikHeapMem() {
+        Runtime runtime = Runtime.getRuntime();
+        DalvikHeapMem dalvikHeapMem = new DalvikHeapMem();
+        dalvikHeapMem.freeMem = runtime.freeMemory() / 1024;                                  //对应dumpsys meminfo的Heap Free
+        dalvikHeapMem.maxMem = runtime.maxMemory() / 1024;
+        dalvikHeapMem.totalMem = runtime.totalMemory() / 1024;                                 //对应dumpsys meminfo的Heap Size
+        dalvikHeapMem.allocatedMem = (dalvikHeapMem.totalMem - dalvikHeapMem.freeMem); //对应dumpsys meminfo的Heap Alloc
+        return dalvikHeapMem;
+    }
+
     public interface OnGetMemoryInfoCallback {
-        void onGetMemoryInfo(String pkgName, int pid, RamMemoryInfo ramMemoryInfo, PssInfo pssInfo, DalvikHeapMem dalvikHeapMem);
+        void onGetMemoryInfo(String pkgName, int pid, @Nullable RamMemoryInfo ramMemoryInfo, @Nullable PssInfo pssInfo, DalvikHeapMem dalvikHeapMem);
     }
 
     public interface OnGetRamMemoryInfoCallback {
-        void onGetRamMemoryInfo(RamMemoryInfo ramMemoryInfo);
+        void onGetRamMemoryInfo(@Nullable RamMemoryInfo ramMemoryInfo);
     }
 
     private interface OnGetRamTotalMemCallback {
@@ -172,13 +181,9 @@ public class MemoryUtil {
     }
 
     /**
-     * 获取手机RAM容量/手机实际内存
-     * 单位
-     *
-     * @param context
-     * @param onGetRamTotalMemCallback
+     * 异步获取系统的总ram大小
      */
-    private static void getRamTotalMem(final Context context, final OnGetRamTotalMemCallback onGetRamTotalMemCallback) {
+    private static void getRamTotalMemAsync(final Context context, final OnGetRamTotalMemCallback onGetRamTotalMemCallback) {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -195,15 +200,14 @@ public class MemoryUtil {
 
     /**
      * 同步获取系统的总ram大小
-     *
-     * @param context
-     * @return
      */
     private static long getRamTotalMemSync(Context context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
             ActivityManager.MemoryInfo mi = new ActivityManager.MemoryInfo();
-            am.getMemoryInfo(mi);
+            if (am != null) {
+                am.getMemoryInfo(mi);
+            }
             return mi.totalMem / 1024;
         } else if (sTotalMem.get() > 0L) {//如果已经从文件获取过值，则不需要再次获取
             return sTotalMem.get();
@@ -218,8 +222,6 @@ public class MemoryUtil {
 
     /**
      * 获取手机的RAM容量，其实和activityManager.getMemoryInfo(mi).totalMem效果一样，也就是说，在API16以上使用系统API获取，低版本采用这个文件读取方式
-     *
-     * @return 容量KB
      */
     private static long getRamTotalMemByFile() {
         final String dir = "/proc/meminfo";
@@ -230,9 +232,7 @@ public class MemoryUtil {
             String subMemoryLine = memoryLine.substring(memoryLine
                     .indexOf("MemTotal:"));
             br.close();
-            long totalMemorySize = Integer.parseInt(subMemoryLine.replaceAll(
-                    "\\D+", ""));
-            return totalMemorySize;
+            return (long) Integer.parseInt(subMemoryLine.replaceAll("\\D+", ""));
         } catch (IOException e) {
             e.printStackTrace();
         }

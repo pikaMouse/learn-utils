@@ -104,8 +104,8 @@ public class MemoryMonitor {
         @Override
         public float getValue() {
             final MemoryUtil.DalvikHeapMem dalvikHeapMem = MemoryUtil.getAppDalvikHeapMem();
-            Log.d(TAG, "dalvikHeapMem.allocated: " + dalvikHeapMem.allocated);
-            return (float) dalvikHeapMem.allocated / 1024;
+            Log.d(TAG, "dalvikHeapMem.allocatedMem: " + dalvikHeapMem.allocatedMem);
+            return (float) dalvikHeapMem.allocatedMem / 1024;
         }
     }
 
