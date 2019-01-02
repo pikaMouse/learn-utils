@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="150dp"
+    android:layout_height="wrap_content"
+    android:background="#56bfbfbf"
+    android:paddingStart="10dp"
+    android:paddingLeft="10dp"
+    android:paddingRight="0dp"
+    android:paddingEnd="0dp"
+    android:paddingTop="10dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        android:text="@string/mem_monitor_total_pss"
+        android:textSize="12sp"
+        android:id="@+id/mem_monitor_total_pss_title"
+        android:layout_width="wrap_content"
+        android:gravity="center"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        tools:text="0"
+        android:textSize="12sp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:maxWidth="80dp"
+        android:id="@+id/mem_monitor_total_pss_info"
+        app:layout_constraintLeft_toRightOf="@+id/mem_monitor_total_pss_title"
+        android:layout_width="wrap_content"
+        android:gravity="center"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:text="@string/mem_monitor_dalvik_pss"
+        android:textSize="12sp"
+        android:id="@+id/mem_monitor_dalvik_pss_title"
+        app:layout_constraintTop_toBottomOf="@+id/mem_monitor_total_pss_title"
+        android:layout_width="wrap_content"
+        android:gravity="center"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        tools:text="0"
+        android:textSize="12sp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:maxWidth="80dp"
+        android:id="@+id/mem_monitor_dalvik_pss_info"
+        app:layout_constraintLeft_toRightOf="@+id/mem_monitor_dalvik_pss_title"
+        app:layout_constraintTop_toBottomOf="@id/mem_monitor_total_pss_info"
+        android:layout_width="wrap_content"
+        android:gravity="center"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:text="@string/mem_monitor_native_pss"
+        android:textSize="12sp"
+        android:id="@+id/mem_monitor_native_pss_title"
+        app:layout_constraintTop_toBottomOf="@+id/mem_monitor_dalvik_pss_title"
+        android:layout_width="wrap_content"
+        android:gravity="center"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        tools:text="0"
+        android:textSize="12sp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:maxWidth="80dp"
+        android:id="@+id/mem_monitor_native_pss_info"
+        app:layout_constraintLeft_toRightOf="@+id/mem_monitor_native_pss_title"
+        app:layout_constraintTop_toBottomOf="@id/mem_monitor_dalvik_pss_info"
+        android:layout_width="wrap_content"
+        android:gravity="center"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:text="@string/mem_monitor_other_pss"
+        android:textSize="12sp"
+        android:id="@+id/mem_monitor_other_pss_title"
+        app:layout_constraintTop_toBottomOf="@+id/mem_monitor_native_pss_title"
+        android:layout_width="wrap_content"
+        android:gravity="center"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        tools:text="0"
+        android:textSize="12sp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:maxWidth="80dp"
+        android:id="@+id/mem_monitor_other_pss_info"
+        app:layout_constraintLeft_toRightOf="@+id/mem_monitor_other_pss_title"
+        app:layout_constraintTop_toBottomOf="@id/mem_monitor_native_pss_info"
+        android:layout_width="wrap_content"
+        android:gravity="center"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:text="@string/mem_monitor_total_heap"
+        android:textSize="12sp"
+        android:id="@+id/mem_monitor_total_heap_title"
+        android:layout_marginTop="10dp"
+        app:layout_constraintTop_toBottomOf="@+id/mem_monitor_other_pss_title"
+        android:layout_width="wrap_content"
+        android:gravity="center"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        tools:text="0"
+        android:textSize="12sp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:maxWidth="80dp"
+        android:id="@+id/mem_monitor_total_heap_info"
+        android:layout_marginTop="10dp"
+        app:layout_constraintLeft_toRightOf="@+id/mem_monitor_total_heap_title"
+        app:layout_constraintTop_toBottomOf="@id/mem_monitor_other_pss_info"
+        android:layout_width="wrap_content"
+        android:gravity="center"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:text="@string/mem_monitor_free_heap"
+        android:textSize="12sp"
+        android:id="@+id/mem_monitor_free_heap_title"
+        app:layout_constraintTop_toBottomOf="@+id/mem_monitor_total_heap_title"
+        android:layout_width="wrap_content"
+        android:gravity="center"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        tools:text="0"
+        android:textSize="12sp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:maxWidth="80dp"
+        android:id="@+id/mem_monitor_free_heap_info"
+        app:layout_constraintLeft_toRightOf="@+id/mem_monitor_free_heap_title"
+        app:layout_constraintTop_toBottomOf="@id/mem_monitor_total_heap_info"
+        android:layout_width="wrap_content"
+        android:gravity="center"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:text="@string/mem_monitor_allocated_heap"
+        android:textSize="12sp"
+        android:id="@+id/mem_monitor_allocated_heap_title"
+        app:layout_constraintTop_toBottomOf="@+id/mem_monitor_free_heap_title"
+        android:layout_width="wrap_content"
+        android:gravity="center"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        tools:text="0"
+        android:textSize="12sp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:maxWidth="80dp"
+        android:id="@+id/mem_monitor_allocated_heap_info"
+        app:layout_constraintLeft_toRightOf="@+id/mem_monitor_allocated_heap_title"
+        app:layout_constraintTop_toBottomOf="@id/mem_monitor_free_heap_info"
+        android:layout_width="wrap_content"
+        android:gravity="center"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:text="@string/mem_monitor_total_mem"
+        android:textSize="12sp"
+        android:layout_marginTop="10dp"
+        android:id="@+id/mem_monitor_total_mem_title"
+        app:layout_constraintTop_toBottomOf="@+id/mem_monitor_allocated_heap_title"
+        android:layout_width="wrap_content"
+        android:gravity="center"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        tools:text="0"
+        android:textSize="12sp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:maxWidth="80dp"
+        android:layout_marginTop="10dp"
+        android:id="@+id/mem_monitor_total_mem_info"
+        app:layout_constraintLeft_toRightOf="@+id/mem_monitor_total_mem_title"
+        app:layout_constraintTop_toBottomOf="@id/mem_monitor_allocated_heap_info"
+        android:layout_width="wrap_content"
+        android:gravity="center"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:text="@string/mem_monitor_avail_mem"
+        android:textSize="12sp"
+        android:id="@+id/mem_monitor_avail_mem_title"
+        app:layout_constraintTop_toBottomOf="@+id/mem_monitor_total_mem_title"
+        android:layout_width="wrap_content"
+        android:gravity="center"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        tools:text="0"
+        android:textSize="12sp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:maxWidth="80dp"
+        android:id="@+id/mem_monitor_avail_mem_info"
+        app:layout_constraintLeft_toRightOf="@+id/mem_monitor_avail_mem_title"
+        app:layout_constraintTop_toBottomOf="@id/mem_monitor_total_mem_info"
+        android:layout_width="wrap_content"
+        android:gravity="center"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:text="@string/mem_monitor_is_low_mem"
+        android:textSize="12sp"
+        android:textColor="#FFD81B2B"
+        android:id="@+id/mem_monitor_is_low_mem_info"
+        app:layout_constraintTop_toBottomOf="@+id/mem_monitor_avail_mem_title"
+        android:layout_width="wrap_content"
+        android:gravity="center"
+        android:layout_height="wrap_content"
+        android:visibility="gone"/>
+
+    <TextView
+        android:text="@string/mem_monitoer_unit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dp"
+        android:paddingRight="0dp"
+        android:paddingEnd="0dp"
+        android:paddingTop="10dp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/mem_monitor_is_low_mem_info"
+        android:paddingStart="10dp" />
+
+</android.support.constraint.ConstraintLayout>

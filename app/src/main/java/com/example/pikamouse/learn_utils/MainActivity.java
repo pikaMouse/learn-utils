@@ -7,13 +7,8 @@ import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
 
-import com.example.pikamouse.learn_utils.test.DebugBall;
-import com.example.pikamouse.learn_utils.test.view.FloatMemoryView;
-import com.example.pikamouse.learn_utils.test.MemoryMonitor;
-import com.example.pikamouse.learn_utils.test.window.FloatBallWindow;
+import com.example.pikamouse.learn_utils.test.DebugMonitor;
 
 import java.lang.ref.SoftReference;
 
@@ -28,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         mActivityRef = new SoftReference<AppCompatActivity>(this);
         requestAlertWindowPermission();
-        DebugBall.getInstance().start();
+        DebugMonitor.getInstance().start();
     }
 
 
@@ -36,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         mActivityRef.clear();
-        DebugBall.getInstance().stop();
+        DebugMonitor.getInstance().stop();
     }
 
     private static final int REQUEST_CODE = 1;

@@ -1,3 +1,18 @@
 <resources>
     <string name="app_name">learn-utils</string>
+    <string name="mem_monitor_dialog_pss">PSS info</string>
+    <string name="mem_monitor_dialog_total">Total info</string>
+    <string name="mem_monitor_dialog_heap">Heap info</string>
+    <string name="mem_monitoer_unit">&lt;unit:&#160;kb&gt;</string>
+    <string name="mem_monitor_total_pss">PSS Total:&#160;&#160;</string>
+    <string name="mem_monitor_dalvik_pss">PSS Dalvik:&#160;&#160;</string>
+    <string name="mem_monitor_native_pss">PSS Native:&#160;&#160;</string>
+    <string name="mem_monitor_other_pss">PSS Other:&#160;&#160;</string>
+    <string name="mem_monitor_free_heap">Heap Free:&#160;&#160;</string>
+    <string name="mem_monitor_total_heap">Heap Size:&#160;&#160;</string>
+    <string name="mem_monitor_allocated_heap">Heap Alloc:&#160;&#160;</string>
+    <string name="mem_monitor_avail_mem">Avail Mem:&#160;&#160;</string>
+    <string name="mem_monitor_total_mem">Total Mem:&#160;&#160;</string>
+    <string name="mem_monitor_is_low_mem">Low memory !</string>
+
 </resources>

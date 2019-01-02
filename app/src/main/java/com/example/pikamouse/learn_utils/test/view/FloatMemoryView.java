@@ -65,7 +65,7 @@ public class FloatMemoryView extends RelativeLayout {
     private void initView() {
         mFloatWindow = new FloatMemWindow(getContext());
         setBackgroundColor(ContextCompat.getColor(getContext(), R.color.bg_chart));
-        inflate(getContext(), R.layout.mem_monitor_view_floatcurveview, this);
+        inflate(getContext(), R.layout.mem_monitor_float_curveview, this);
         mCurveChartView = findViewById(R.id.mem_monitor_view_floatcurveview);
         mNameAndValueTv = findViewById(R.id.mem_monitor_view_namevalue);
     }
