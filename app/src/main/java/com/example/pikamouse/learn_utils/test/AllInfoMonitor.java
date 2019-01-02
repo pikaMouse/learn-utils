@@ -65,13 +65,12 @@ public class AllInfoMonitor {
     }
 
     public void stop() {
+        if (mFloatAllInfoView != null) {
+            mFloatAllInfoWindow.release();
+        }
         if (mTimer != null) {
             mTimer.cancel();
             mTimer = null;
-        }
-        if (mFloatAllInfoView != null) {
-            mFloatAllInfoWindow.release();
-            mFloatAllInfoView = null;
         }
     }
     private class AllInfoTimerTask extends TimerTask {
