@@ -45,10 +45,10 @@ public class MemoryUtil {
      * 物理内存信息
      */
     public static class RamMemoryInfo {
-        public long mAvailMem;           //可用RAM
-        public long mTotalMem;           //手机总RAM
-        public long mLowMemThreshold;   //内存占用满的阀值，超过即认为低内存运行状态，可能会Kill process
-        public boolean mIsLowMemory;     //是否低内存状态运行
+        public long mAvailRAM;           //可用RAM
+        public long mTotalRAM;           //手机总RAM
+        public long mLowRAMThreshold;   //内存占用满的阀值，超过即认为低内存运行状态，可能会Kill process
+        public boolean mIsLowRAM;     //是否低内存状态运行
     }
 
     /**
@@ -122,10 +122,10 @@ public class MemoryUtil {
                 if (am != null) {
                     am.getMemoryInfo(mi);
                     ramMemoryInfo = new RamMemoryInfo();
-                    ramMemoryInfo.mAvailMem = mi.availMem / 1024;
-                    ramMemoryInfo.mIsLowMemory = mi.lowMemory;
-                    ramMemoryInfo.mLowMemThreshold = mi.threshold / 1024;
-                    ramMemoryInfo.mTotalMem = totalMem;
+                    ramMemoryInfo.mAvailRAM = mi.availMem / 1024;
+                    ramMemoryInfo.mIsLowRAM = mi.lowMemory;
+                    ramMemoryInfo.mLowRAMThreshold = mi.threshold / 1024;
+                    ramMemoryInfo.mTotalRAM = totalMem;
                 }
                 onGetRamMemoryInfoCallback.onGetRamMemoryInfo(ramMemoryInfo);
             }
@@ -141,10 +141,10 @@ public class MemoryUtil {
             ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
             am.getMemoryInfo(memoryInfo);
             RamMemoryInfo ramMemoryInfo = new RamMemoryInfo();
-            ramMemoryInfo.mAvailMem = memoryInfo.availMem / 1024;
-            ramMemoryInfo.mIsLowMemory = memoryInfo.lowMemory;
-            ramMemoryInfo.mLowMemThreshold = memoryInfo.threshold / 1024;
-            ramMemoryInfo.mTotalMem = getRamTotalMemSync(context);
+            ramMemoryInfo.mAvailRAM = memoryInfo.availMem / 1024;
+            ramMemoryInfo.mIsLowRAM = memoryInfo.lowMemory;
+            ramMemoryInfo.mLowRAMThreshold = memoryInfo.threshold / 1024;
+            ramMemoryInfo.mTotalRAM = getRamTotalMemSync(context);
             return ramMemoryInfo;
         }
         return null;

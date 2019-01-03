@@ -9,6 +9,8 @@ import android.widget.TextView;
 import com.example.pikamouse.learn_utils.R;
 import com.example.pikamouse.learn_utils.test.util.MemoryUtil;
 
+import java.util.Locale;
+
 /**
  * @author: jiangfeng
  * @date: 2019/1/2
@@ -27,6 +29,8 @@ public class FloatAllInfoView extends ConstraintLayout {
     private TextView mMemTotal;
     private TextView mMemAvail;
     private TextView mIsLowMem;
+
+    private static final String VALUE_FORMAT_TXT = "%.1f";
 
 
 
@@ -62,34 +66,34 @@ public class FloatAllInfoView extends ConstraintLayout {
         final MemoryUtil.DalvikHeapMem dalvikHeapMem = allInfo.mDalvikHeapMem;
         final MemoryUtil.RamMemoryInfo ramMemoryInfo = allInfo.mRamMemoryInfo;
         if (mTotalPSS != null && pssInfo != null) {
-            mTotalPSS.setText(String.valueOf(pssInfo.mTotalPss));
+            mTotalPSS.setText(String.format(Locale.getDefault(), VALUE_FORMAT_TXT, (float)pssInfo.mTotalPss / 1024));
         }
         if (mDalvikPSS != null && pssInfo != null) {
-            mDalvikPSS.setText(String.valueOf(pssInfo.mDalvikPss));
+            mDalvikPSS.setText(String.format(Locale.getDefault(), VALUE_FORMAT_TXT, (float)pssInfo.mDalvikPss / 1024));
         }
         if (mNativePSS != null && pssInfo != null) {
-            mNativePSS.setText(String.valueOf(pssInfo.mNativePss));
+            mNativePSS.setText(String.format(Locale.getDefault(), VALUE_FORMAT_TXT, (float)pssInfo.mNativePss / 1024));
         }
         if (mOtherPSS != null && pssInfo != null) {
-            mOtherPSS.setText(String.valueOf(pssInfo.mOtherPss));
+            mOtherPSS.setText(String.format(Locale.getDefault(), VALUE_FORMAT_TXT, (float)pssInfo.mOtherPss / 1024));
         }
         if (mHeapAlloc != null) {
-            mHeapAlloc.setText(String.valueOf(dalvikHeapMem.mAllocatedMem));
+            mHeapAlloc.setText(String.format(Locale.getDefault(), VALUE_FORMAT_TXT, (float)dalvikHeapMem.mAllocatedMem / 1024));
         }
         if (mHeapSize != null) {
-            mHeapSize.setText(String.valueOf(dalvikHeapMem.mTotalMem));
+            mHeapSize.setText(String.format(Locale.getDefault(), VALUE_FORMAT_TXT, (float)dalvikHeapMem.mTotalMem / 1024));
         }
         if (mHeapFree != null) {
-            mHeapFree.setText(String.valueOf(dalvikHeapMem.mFreeMem));
+            mHeapFree.setText(String.format(Locale.getDefault(), VALUE_FORMAT_TXT, (float)dalvikHeapMem.mFreeMem / 1024));
         }
         if (mMemTotal != null && ramMemoryInfo != null) {
-            mMemTotal.setText(String.valueOf(ramMemoryInfo.mTotalMem));
+            mMemTotal.setText(String.format(Locale.getDefault(), VALUE_FORMAT_TXT, (float)ramMemoryInfo.mTotalRAM / 1024));
         }
         if (mMemAvail != null && ramMemoryInfo != null) {
-            mMemAvail.setText(String.valueOf(ramMemoryInfo.mAvailMem));
+            mMemAvail.setText(String.format(Locale.getDefault(), VALUE_FORMAT_TXT, (float)ramMemoryInfo.mAvailRAM / 1024));
         }
         if (mIsLowMem != null && ramMemoryInfo != null) {
-            if (ramMemoryInfo.mIsLowMemory) {
+            if (ramMemoryInfo.mIsLowRAM) {
                 mIsLowMem.setVisibility(VISIBLE);
             } else {
                 mIsLowMem.setVisibility(GONE);

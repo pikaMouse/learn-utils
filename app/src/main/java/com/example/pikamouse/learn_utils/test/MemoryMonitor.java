@@ -90,8 +90,8 @@ public class MemoryMonitor {
         public float getValue() {
             final int pid = ProcessUtil.getCurrentPid();
             MemoryUtil.PssInfo pssInfo = MemoryUtil.getAppPssInfo(mContext, pid);
-            Log.d(TAG, "pssInfo.mTotalPss: " + pssInfo.mTotalPss);
-            return (float) pssInfo.mTotalPss / 1024;
+            Log.d(TAG, "pssInfo.mTotalPss: " + (pssInfo != null ? pssInfo.mTotalPss : 0));
+            return (float) (pssInfo != null ? pssInfo.mTotalPss : 0) / 1024;
         }
     }
 
