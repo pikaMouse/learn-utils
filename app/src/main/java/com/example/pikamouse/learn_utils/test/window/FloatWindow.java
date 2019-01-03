@@ -2,6 +2,7 @@ package com.example.pikamouse.learn_utils.test.window;
 
 import android.content.Context;
 import android.graphics.PixelFormat;
+import android.os.Build;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -63,11 +64,23 @@ public abstract class FloatWindow implements IFloatWindow {
     }
 
     public static class WMLayoutParamsBuilder {
-
+        private final static int DEFAULT_TYPE;
+        static {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                //fixed bug: 8.0平台或更高平台版本不能使用
+                //       •TYPE_PHONE
+                //    •TYPE_PRIORITY_PHONE
+                //    •TYPE_SYSTEM_ALERT
+                //    •TYPE_SYSTEM_OVERLAY
+                //    •TYPE_SYSTEM_ERROR
+                DEFAULT_TYPE = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
+            } else {
+                DEFAULT_TYPE = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
+            }
+        }
         private final static int DEFAULT_FORMAT = PixelFormat.TRANSLUCENT;
         private final static int DEFAULT_FLAG = WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE;
-        private final static int DEFAULT_TYPE = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
-        private final static int DEFAULT_GRAVITY = Gravity.TOP | Gravity.LEFT;
+        private final static int DEFAULT_GRAVITY = Gravity.TOP | Gravity.START;
         private final static int DEFAULT_WIDTH = WindowManager.LayoutParams.WRAP_CONTENT;
         private final static int DEFAULT_HEIGHT = WindowManager.LayoutParams.WRAP_CONTENT;
         private final static int DEFAULT_X = 0;
