@@ -20,29 +20,16 @@ public class DebugMonitor implements IMonitor{
     private FloatBallView mBall;
     private FloatBallWindow mFloatBallWin;
 
-//    private static class SingleHolder {
-//        private final static DebugMonitor DEBUG_MONITOR = new DebugMonitor();
-//    }
-//
-//    private DebugMonitor() {
-//
-//    }
-//
-//    public static DebugMonitor getInstance() {
-//        return SingleHolder.DEBUG_MONITOR;
-//    }
 
     public void init(Context context) {
         if (!(context instanceof Application)) {
             throw new IllegalArgumentException("you must init with application context");
         }
-//        MemoryMonitor.getInstance().init(context);
-//        AllInfoMonitor.getInstance().init(context);
-//        NetInfoMonitor.getInstance().init(context);
         mContext = context;
     }
 
-    public void start() {
+    @Override
+    public void start(String type) {
         if (mContext == null) {
             throw new IllegalStateException("init must be called");
         }
@@ -57,13 +44,12 @@ public class DebugMonitor implements IMonitor{
         mFloatBallWin.attachToWindow(mBall, layoutParams);
     }
 
+    @Override
     public void stop() {
         if (mFloatBallWin != null) {
             mFloatBallWin.release();
         }
-//        MemoryMonitor.getInstance().stop();
-//        AllInfoMonitor.getInstance().stop();
-//        NetInfoMonitor.getInstance().stop();
+
     }
 
 

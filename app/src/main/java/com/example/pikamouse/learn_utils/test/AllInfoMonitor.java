@@ -29,16 +29,7 @@ public class AllInfoMonitor implements IMonitor{
     private AllInfoTimerTask mTask;
     private Timer mTimer;
 
-//    private AllInfoMonitor() {
-//
-//    }
-//    private static class SingleHolder {
-//        private final static AllInfoMonitor ALL_INFO_MONITOR = new AllInfoMonitor();
-//    }
-//    public static AllInfoMonitor getInstance() {
-//        return SingleHolder.ALL_INFO_MONITOR;
-//    }
-
+    @Override
     public void init(Context context) {
         if (!(context instanceof Application)) {
             throw new IllegalArgumentException("you must init with application context");
@@ -46,7 +37,8 @@ public class AllInfoMonitor implements IMonitor{
         mContext = context;
     }
 
-    public void start() {
+    @Override
+    public void start(String type) {
         if (mContext == null) {
             throw new IllegalStateException("init must be called");
         }
@@ -65,6 +57,7 @@ public class AllInfoMonitor implements IMonitor{
         mTimer.scheduleAtFixedRate(mTask, 0, DURATION);
     }
 
+    @Override
     public void stop() {
         if (mFloatAllInfoView != null) {
             mFloatAllInfoWindow.release();
@@ -74,6 +67,7 @@ public class AllInfoMonitor implements IMonitor{
             mTimer = null;
         }
     }
+
     private class AllInfoTimerTask extends TimerTask {
         @Override
         public void run() {

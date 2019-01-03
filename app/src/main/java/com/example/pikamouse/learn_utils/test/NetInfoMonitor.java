@@ -27,18 +27,6 @@ public class NetInfoMonitor implements IMonitor{
     private final static long DURATION = 500;
     private int mProcessUid;
 
-
-//    private NetInfoMonitor() {
-//
-//    }
-//
-//    private static class SingleHolder {
-//        private final static NetInfoMonitor INSTANCE = new NetInfoMonitor();
-//    }
-//
-//    public static NetInfoMonitor getInstance() {
-//        return SingleHolder.INSTANCE;
-//    }
     @Override
     public void init(Context context) {
         if (!(context instanceof Application)) {
@@ -47,7 +35,8 @@ public class NetInfoMonitor implements IMonitor{
         mContext = context;
     }
 
-    public void start() {
+    @Override
+    public void start(String type) {
         if (mContext == null) {
             throw new IllegalStateException("init must be called");
         }

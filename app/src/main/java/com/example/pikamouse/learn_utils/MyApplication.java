@@ -22,10 +22,10 @@ public class MyApplication extends Application {
         super.onCreate();
         sContext = getApplicationContext();
         MonitorManager.getInstance()
-                .add(MonitorManager.MONITOR_DEBUG, new DebugMonitor())
-                .add(MonitorManager.MONITOR_MEMORY, new MemoryMonitor())
-                .add(MonitorManager.MONITOR_ALL_INFO, new AllInfoMonitor())
-                .add(MonitorManager.MONITOR_NET_INFO, new NetInfoMonitor())
+                .add(MonitorManager.MONITOR_DEBUG_CLASS, new DebugMonitor())
+                .add(MonitorManager.MONITOR_MEMORY_CLASS, new MemoryMonitor())
+                .add(MonitorManager.MONITOR_MEMORY_ALL_CLASS, new AllInfoMonitor())
+                .add(MonitorManager.MONITOR_NET_INFO_CLASS, new NetInfoMonitor())
                 .init(this);
     }
 

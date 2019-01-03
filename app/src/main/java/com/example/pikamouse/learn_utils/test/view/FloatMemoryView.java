@@ -9,6 +9,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.pikamouse.learn_utils.R;
+import com.example.pikamouse.learn_utils.test.MonitorManager;
 import com.example.pikamouse.learn_utils.test.window.FloatMemWindow;
 import com.example.pikamouse.learn_utils.test.window.FloatWindow;
 
@@ -26,14 +27,6 @@ public class FloatMemoryView extends RelativeLayout {
     private static final String VALUE_FORMAT = "%.1fM";
     private static final String VALUE_FORMAT_TXT = "%1$s:%2$.1fM";
 
-    @Retention(RetentionPolicy.SOURCE)
-    @StringDef({MEMORY_TYPE_PSS, MEMORY_TYPE_HEAP})
-    public @interface MemoryType {
-    }
-
-    public static final String MEMORY_TYPE_PSS = "pss";
-    public static final String MEMORY_TYPE_HEAP = "heap";
-
     public static class Config {
         public int height = WindowManager.LayoutParams.MATCH_PARENT;
         public int width = WindowManager.LayoutParams.MATCH_PARENT;
@@ -43,7 +36,7 @@ public class FloatMemoryView extends RelativeLayout {
         public int dataSize = 10;                            //采样数量
         public int yPartCount = 5;                          //纵坐标刻度数
         public
-        @MemoryType
+        @MonitorManager.MonitorType
         String type;
     }
 

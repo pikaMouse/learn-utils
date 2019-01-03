@@ -3,12 +3,11 @@ package com.example.pikamouse.learn_utils.test;
 import android.content.Context;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
+import android.support.annotation.StringDef;
 import android.util.SparseArray;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author: jiangfeng
@@ -18,15 +17,26 @@ public class MonitorManager implements IMonitor{
 
     private static SparseArray<IMonitor> sMonitors = new SparseArray<>();
 
+    //提示信息只需要在源文件保留
     @Retention(RetentionPolicy.SOURCE)
-    @IntDef({MONITOR_DEBUG, MONITOR_MEMORY, MONITOR_ALL_INFO, MONITOR_NET_INFO})
+    @IntDef({MONITOR_DEBUG_CLASS, MONITOR_MEMORY_CLASS, MONITOR_MEMORY_ALL_CLASS, MONITOR_NET_INFO_CLASS})
+    public @interface MonitorClass {
+    }
+    @Retention(RetentionPolicy.SOURCE)
+    @StringDef({MONITOR_MEMORY_PSS_TYPE, MONITOR_MEMORY_HEAP_TYPE, MONITOR_MEMORY_ALL_TYPE, MONITOR_DEBUG_BALL_TYPE, MONITOR_NET_ALL_TYPE})
     public @interface MonitorType {
     }
 
-    public final static int MONITOR_DEBUG = 0;
-    public final static int MONITOR_MEMORY = 1;
-    public final static int MONITOR_ALL_INFO = 2;
-    public final static int MONITOR_NET_INFO = 3;
+    public final static int MONITOR_DEBUG_CLASS = 0;
+    public final static int MONITOR_MEMORY_CLASS = 1;
+    public final static int MONITOR_MEMORY_ALL_CLASS = 2;
+    public final static int MONITOR_NET_INFO_CLASS = 3;
+
+    public static final String MONITOR_DEBUG_BALL_TYPE = "ball";
+    public static final String MONITOR_MEMORY_ALL_TYPE = "all";
+    public static final String MONITOR_MEMORY_PSS_TYPE = "pss";
+    public static final String MONITOR_MEMORY_HEAP_TYPE = "heap";
+    public static final String MONITOR_NET_ALL_TYPE = "net";
 
     private static class SingleHolder {
         private final static MonitorManager MEMORY_MONITOR = new MonitorManager();
@@ -39,8 +49,10 @@ public class MonitorManager implements IMonitor{
         return SingleHolder.MEMORY_MONITOR;
     }
 
-    public MonitorManager add(@MonitorType int key, @NonNull IMonitor iMonitor) {
-        sMonitors.put(key, iMonitor);
+    public MonitorManager add(@MonitorClass int key, @NonNull IMonitor iMonitor) {
+        if (sMonitors.valueAt(key) == null) {
+            sMonitors.put(key, iMonitor);
+        }
         return this;
     }
 
@@ -53,6 +65,14 @@ public class MonitorManager implements IMonitor{
     }
 
     @Override
+    public void start(String type) {
+        IMonitor monitor = get(MONITOR_DEBUG_CLASS);
+        if (monitor != null) {
+            monitor.start(type);
+        }
+    }
+
+    @Override
     public void stop() {
         int len = sMonitors.size();
         for (int i = 0; i < len; i++) {
@@ -60,12 +80,8 @@ public class MonitorManager implements IMonitor{
         }
     }
 
-    public IMonitor get(@MonitorType int key) {
-        IMonitor monitor = sMonitors.get(key);
-        if (monitor instanceof  MemoryMonitor) {
-            return monitor;
-        }
-        return null;
+    public IMonitor get(@MonitorClass int key) {
+        return sMonitors.get(key);
     }
 
 

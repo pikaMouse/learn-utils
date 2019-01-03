@@ -9,14 +9,8 @@ import android.view.View;
 import android.widget.Button;
 
 import com.example.pikamouse.learn_utils.R;
-import com.example.pikamouse.learn_utils.test.AllInfoMonitor;
-import com.example.pikamouse.learn_utils.test.DebugMonitor;
-import com.example.pikamouse.learn_utils.test.MemoryMonitor;
 import com.example.pikamouse.learn_utils.test.MonitorManager;
 import com.example.pikamouse.learn_utils.test.NetInfoMonitor;
-import com.example.pikamouse.learn_utils.test.view.FloatAllInfoView;
-import com.example.pikamouse.learn_utils.test.view.FloatMemoryView;
-import com.example.pikamouse.learn_utils.test.window.FloatAllInfoWindow;
 
 
 /**
@@ -64,32 +58,37 @@ public class DebugDialog extends DialogFragment implements View.OnClickListener{
 
     @Override
     public void onClick(View v) {
+        String type;
         switch (v.getId()) {
             case R.id.btn_start_heap_float:
-                //MemoryMonitor.getInstance().start(FloatMemoryView.MEMORY_TYPE_HEAP);
+                type = MonitorManager.MONITOR_MEMORY_HEAP_TYPE;
+                MonitorManager.getInstance().get(MonitorManager.MONITOR_MEMORY_CLASS).start(type);
                 if (mCallback != null) {
-                    mCallback.onStartFloat();
+                    mCallback.onStartFloat(type);
                 }
                 dismiss();
                 break;
             case R.id.btn_start_pss_float:
-                //MemoryMonitor.getInstance().start(FloatMemoryView.MEMORY_TYPE_PSS);
+                type = MonitorManager.MONITOR_MEMORY_PSS_TYPE;
+                MonitorManager.getInstance().get(MonitorManager.MONITOR_MEMORY_CLASS).start(type);
                 if (mCallback != null) {
-                    mCallback.onStartFloat();
+                    mCallback.onStartFloat(type);
                 }
                 dismiss();
                 break;
             case R.id.btn_start_total_float:
-                //AllInfoMonitor.getInstance().start();
+                type = MonitorManager.MONITOR_MEMORY_ALL_TYPE;
+                MonitorManager.getInstance().get(MonitorManager.MONITOR_MEMORY_ALL_CLASS).start(type);
                 if (mCallback != null) {
-                    mCallback.onStartFloat();
+                    mCallback.onStartFloat(type);
                 }
                 dismiss();
                 break;
             case R.id.btn_start_net:
-                ((NetInfoMonitor)(MonitorManager.getInstance().get(MonitorManager.MONITOR_NET_INFO))).start();
+                type = MonitorManager.MONITOR_NET_ALL_TYPE;
+                MonitorManager.getInstance().get(MonitorManager.MONITOR_NET_INFO_CLASS).start(type);
                 if (mCallback != null) {
-                    mCallback.onStartFloat();
+                    mCallback.onStartFloat(type);
                 }
                 dismiss();
                 break;
@@ -108,7 +107,7 @@ public class DebugDialog extends DialogFragment implements View.OnClickListener{
     }
 
     public interface DebugDialogCallBack {
-        void onStartFloat();
+        void onStartFloat(@MonitorManager.MonitorType String type);
         void onDisMiss();
     }
 }

@@ -8,7 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.example.pikamouse.learn_utils.test.DebugMonitor;
+import com.example.pikamouse.learn_utils.test.MonitorManager;
 
 import java.lang.ref.SoftReference;
 
@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         mActivityRef = new SoftReference<AppCompatActivity>(this);
         requestAlertWindowPermission();
-        DebugMonitor.getInstance().start();
+        MonitorManager.getInstance().start(null);
     }
 
 
@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         mActivityRef.clear();
-        DebugMonitor.getInstance().stop();
+        MonitorManager.getInstance().stop();
     }
 
     private static final int REQUEST_CODE = 1;

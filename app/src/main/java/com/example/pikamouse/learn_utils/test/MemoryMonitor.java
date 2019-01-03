@@ -19,18 +19,6 @@ import java.util.TimerTask;
 public class MemoryMonitor implements IMonitor{
 
     private final static String TAG = "MemoryMonitor";
-
-//    private static class SingleHolder {
-//        private final static MemoryMonitor MEMORY_MONITOR = new MemoryMonitor();
-//    }
-//
-//    private MemoryMonitor() {
-//    }
-//
-//    public static MemoryMonitor getInstance() {
-//        return SingleHolder.MEMORY_MONITOR;
-//    }
-
     private Context mContext;
     private Timer mTimer;
     private FloatMemoryView mFloatMemoryView;
@@ -46,7 +34,8 @@ public class MemoryMonitor implements IMonitor{
         this.mContext = context;
     }
 
-    public void start(final @FloatMemoryView.MemoryType String type) {
+    @Override
+    public void start(final @MonitorManager.MonitorType String type) {
         if (mContext == null) {
             throw new IllegalStateException("init must be called");
         }
@@ -66,10 +55,10 @@ public class MemoryMonitor implements IMonitor{
         }
         TimerTask timerTask = null;
         switch (type) {
-            case FloatMemoryView.MEMORY_TYPE_PSS:
+            case MonitorManager.MONITOR_MEMORY_PSS_TYPE:
                 timerTask = new PssTimerTask(mContext, mFloatMemoryView);
                 break;
-            case FloatMemoryView.MEMORY_TYPE_HEAP:
+            case MonitorManager.MONITOR_MEMORY_HEAP_TYPE:
                 timerTask = new HeapTimerTask(mFloatMemoryView);
                 break;
             default:
@@ -142,14 +131,6 @@ public class MemoryMonitor implements IMonitor{
             mFloatMemoryView = null;
         }
         mIsRunning = false;
-    }
-
-    public void toggle(final @FloatMemoryView.MemoryType String type) {
-        if (mIsRunning) {
-            stop();
-        } else {
-            start(type);
-        }
     }
 
 }

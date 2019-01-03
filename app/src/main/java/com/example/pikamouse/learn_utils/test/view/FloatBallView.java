@@ -14,6 +14,7 @@ import com.example.pikamouse.learn_utils.MainActivity;
 import com.example.pikamouse.learn_utils.R;
 import com.example.pikamouse.learn_utils.test.AllInfoMonitor;
 import com.example.pikamouse.learn_utils.test.DebugMonitor;
+import com.example.pikamouse.learn_utils.test.MonitorManager;
 import com.example.pikamouse.learn_utils.test.NetInfoMonitor;
 import com.example.pikamouse.learn_utils.test.dialog.DebugDialog;
 import com.example.pikamouse.learn_utils.test.MemoryMonitor;
@@ -25,6 +26,7 @@ import com.example.pikamouse.learn_utils.test.util.DisplayUtil;
 public class FloatBallView extends AppCompatTextView implements View.OnClickListener, DebugDialog.DebugDialogCallBack{
 
     private Context mContext;
+    private String mType;
 
     private boolean isShowClose;
 
@@ -57,6 +59,7 @@ public class FloatBallView extends AppCompatTextView implements View.OnClickList
 
     @Override
     public void onClick(View v) {
+        label:
         switch (v.getId()) {
             case R.id.float_tools:
                 if (!isShowClose) {
@@ -65,7 +68,7 @@ public class FloatBallView extends AppCompatTextView implements View.OnClickList
                         DebugDialog debugDialog = new DebugDialog();
                         if (appCompatActivity.getFragmentManager().findFragmentByTag(DEBUG_TOOLS_DIALOG) == null) {
                             FragmentTransaction transaction = appCompatActivity.getFragmentManager().beginTransaction();
-                            transaction.add(debugDialog,DEBUG_TOOLS_DIALOG);
+                            transaction.add(debugDialog, DEBUG_TOOLS_DIALOG);
                             //fixed bug: Can not perform this action after onSaveInstanceState
                             transaction.commitAllowingStateLoss();
                             transaction.show(debugDialog);
@@ -73,11 +76,25 @@ public class FloatBallView extends AppCompatTextView implements View.OnClickList
                         }
                     }
                 } else {
-                    MemoryMonitor.getInstance().stop();
-                    AllInfoMonitor.getInstance().stop();
-                    NetInfoMonitor.getInstance().stop();
                     setBackgroundDrawable(ContextCompat.getDrawable(mContext, R.drawable.bg_float_tools_open));
                     isShowClose = false;
+                    switch (mType) {
+                        case MonitorManager.MONITOR_DEBUG_BALL_TYPE:
+                            MonitorManager.getInstance().stop();
+                            break;
+                        case MonitorManager.MONITOR_MEMORY_ALL_TYPE:
+                            MonitorManager.getInstance().get(MonitorManager.MONITOR_MEMORY_ALL_CLASS).stop();
+                            break ;
+                        case MonitorManager.MONITOR_MEMORY_HEAP_TYPE:
+                        case MonitorManager.MONITOR_MEMORY_PSS_TYPE:
+                            MonitorManager.getInstance().get(MonitorManager.MONITOR_MEMORY_CLASS).stop();
+                            break;
+                        case MonitorManager.MONITOR_NET_ALL_TYPE:
+                            MonitorManager.getInstance().get(MonitorManager.MONITOR_NET_INFO_CLASS).stop();
+                            break;
+                        default:
+                            break;
+                    }
                 }
                 break;
             default:
@@ -86,9 +103,10 @@ public class FloatBallView extends AppCompatTextView implements View.OnClickList
     }
 
     @Override
-    public void onStartFloat() {
+    public void onStartFloat(String type) {
         setBackgroundDrawable(ContextCompat.getDrawable(mContext, R.drawable.bg_float_tools_close));
         isShowClose = true;
+        mType = type == null ? "" : type;
     }
 
     @Override
