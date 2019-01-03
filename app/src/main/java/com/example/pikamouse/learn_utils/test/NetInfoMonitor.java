@@ -17,7 +17,7 @@ import java.util.TimerTask;
  * @author: jiangfeng
  * @date: 2019/1/3
  */
-public class NetInfoMonitor {
+public class NetInfoMonitor implements IMonitor{
 
     private Context mContext;
     private Timer mTimer;
@@ -28,18 +28,18 @@ public class NetInfoMonitor {
     private int mProcessUid;
 
 
-    private NetInfoMonitor() {
-
-    }
-
-    private static class SingleHolder {
-        private final static NetInfoMonitor INSTANCE = new NetInfoMonitor();
-    }
-
-    public static NetInfoMonitor getInstance() {
-        return SingleHolder.INSTANCE;
-    }
-
+//    private NetInfoMonitor() {
+//
+//    }
+//
+//    private static class SingleHolder {
+//        private final static NetInfoMonitor INSTANCE = new NetInfoMonitor();
+//    }
+//
+//    public static NetInfoMonitor getInstance() {
+//        return SingleHolder.INSTANCE;
+//    }
+    @Override
     public void init(Context context) {
         if (!(context instanceof Application)) {
             throw new IllegalArgumentException("you must init with application context");
@@ -74,7 +74,7 @@ public class NetInfoMonitor {
             });
         }
     }
-
+    @Override
     public void stop() {
         if (mTimer != null) {
             mTimer.cancel();

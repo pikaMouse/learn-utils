@@ -16,20 +16,20 @@ import java.util.TimerTask;
 /**
  * create by jiangfeng 2018/12/30
  */
-public class MemoryMonitor {
+public class MemoryMonitor implements IMonitor{
 
     private final static String TAG = "MemoryMonitor";
 
-    private static class SingleHolder {
-        private final static MemoryMonitor MEMORY_MONITOR = new MemoryMonitor();
-    }
-
-    private MemoryMonitor() {
-    }
-
-    public static MemoryMonitor getInstance() {
-        return SingleHolder.MEMORY_MONITOR;
-    }
+//    private static class SingleHolder {
+//        private final static MemoryMonitor MEMORY_MONITOR = new MemoryMonitor();
+//    }
+//
+//    private MemoryMonitor() {
+//    }
+//
+//    public static MemoryMonitor getInstance() {
+//        return SingleHolder.MEMORY_MONITOR;
+//    }
 
     private Context mContext;
     private Timer mTimer;
@@ -38,6 +38,7 @@ public class MemoryMonitor {
 
     private static final long DURATION = 500;
 
+    @Override
     public void init(Context context) {
         if (!(context instanceof Application)) {
             throw new IllegalArgumentException("u must init with application context");
@@ -130,7 +131,7 @@ public class MemoryMonitor {
         }
     }
 
-
+    @Override
     public void stop() {
         if (mTimer != null) {
             mTimer.cancel();

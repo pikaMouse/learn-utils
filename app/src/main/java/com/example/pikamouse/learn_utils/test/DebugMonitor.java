@@ -12,7 +12,7 @@ import com.example.pikamouse.learn_utils.test.window.FloatWindow;
 /**
  * create by jiangfeng 2018/12/30
  */
-public class DebugMonitor {
+public class DebugMonitor implements IMonitor{
 
     private final static String TAG = "DebugMonitor";
 
@@ -20,25 +20,25 @@ public class DebugMonitor {
     private FloatBallView mBall;
     private FloatBallWindow mFloatBallWin;
 
-    private static class SingleHolder {
-      private final static DebugMonitor DEBUG_MONITOR = new DebugMonitor();
-    }
-
-    private DebugMonitor() {
-
-    }
-
-    public static DebugMonitor getInstance() {
-        return SingleHolder.DEBUG_MONITOR;
-    }
+//    private static class SingleHolder {
+//        private final static DebugMonitor DEBUG_MONITOR = new DebugMonitor();
+//    }
+//
+//    private DebugMonitor() {
+//
+//    }
+//
+//    public static DebugMonitor getInstance() {
+//        return SingleHolder.DEBUG_MONITOR;
+//    }
 
     public void init(Context context) {
         if (!(context instanceof Application)) {
             throw new IllegalArgumentException("you must init with application context");
         }
-        MemoryMonitor.getInstance().init(context);
-        AllInfoMonitor.getInstance().init(context);
-        NetInfoMonitor.getInstance().init(context);
+//        MemoryMonitor.getInstance().init(context);
+//        AllInfoMonitor.getInstance().init(context);
+//        NetInfoMonitor.getInstance().init(context);
         mContext = context;
     }
 
@@ -61,9 +61,9 @@ public class DebugMonitor {
         if (mFloatBallWin != null) {
             mFloatBallWin.release();
         }
-        MemoryMonitor.getInstance().stop();
-        AllInfoMonitor.getInstance().stop();
-        NetInfoMonitor.getInstance().stop();
+//        MemoryMonitor.getInstance().stop();
+//        AllInfoMonitor.getInstance().stop();
+//        NetInfoMonitor.getInstance().stop();
     }
 
 

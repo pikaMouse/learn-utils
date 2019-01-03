@@ -18,7 +18,7 @@ import java.util.TimerTask;
  * @author: jiangfeng
  * @date: 2019/1/2
  */
-public class AllInfoMonitor {
+public class AllInfoMonitor implements IMonitor{
 
     private Context mContext;
     private FloatAllInfoView mFloatAllInfoView;
@@ -29,15 +29,15 @@ public class AllInfoMonitor {
     private AllInfoTimerTask mTask;
     private Timer mTimer;
 
-    private AllInfoMonitor() {
-
-    }
-    private static class SingleHolder {
-        private final static AllInfoMonitor ALL_INFO_MONITOR = new AllInfoMonitor();
-    }
-    public static AllInfoMonitor getInstance() {
-        return SingleHolder.ALL_INFO_MONITOR;
-    }
+//    private AllInfoMonitor() {
+//
+//    }
+//    private static class SingleHolder {
+//        private final static AllInfoMonitor ALL_INFO_MONITOR = new AllInfoMonitor();
+//    }
+//    public static AllInfoMonitor getInstance() {
+//        return SingleHolder.ALL_INFO_MONITOR;
+//    }
 
     public void init(Context context) {
         if (!(context instanceof Application)) {

@@ -12,6 +12,7 @@ import com.example.pikamouse.learn_utils.R;
 import com.example.pikamouse.learn_utils.test.AllInfoMonitor;
 import com.example.pikamouse.learn_utils.test.DebugMonitor;
 import com.example.pikamouse.learn_utils.test.MemoryMonitor;
+import com.example.pikamouse.learn_utils.test.MonitorManager;
 import com.example.pikamouse.learn_utils.test.NetInfoMonitor;
 import com.example.pikamouse.learn_utils.test.view.FloatAllInfoView;
 import com.example.pikamouse.learn_utils.test.view.FloatMemoryView;
@@ -65,35 +66,35 @@ public class DebugDialog extends DialogFragment implements View.OnClickListener{
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_start_heap_float:
-                MemoryMonitor.getInstance().start(FloatMemoryView.MEMORY_TYPE_HEAP);
+                //MemoryMonitor.getInstance().start(FloatMemoryView.MEMORY_TYPE_HEAP);
                 if (mCallback != null) {
                     mCallback.onStartFloat();
                 }
                 dismiss();
                 break;
             case R.id.btn_start_pss_float:
-                MemoryMonitor.getInstance().start(FloatMemoryView.MEMORY_TYPE_PSS);
+                //MemoryMonitor.getInstance().start(FloatMemoryView.MEMORY_TYPE_PSS);
                 if (mCallback != null) {
                     mCallback.onStartFloat();
                 }
                 dismiss();
                 break;
             case R.id.btn_start_total_float:
-                AllInfoMonitor.getInstance().start();
+                //AllInfoMonitor.getInstance().start();
                 if (mCallback != null) {
                     mCallback.onStartFloat();
                 }
                 dismiss();
                 break;
             case R.id.btn_start_net:
-                NetInfoMonitor.getInstance().start();
+                ((NetInfoMonitor)(MonitorManager.getInstance().get(MonitorManager.MONITOR_NET_INFO))).start();
                 if (mCallback != null) {
                     mCallback.onStartFloat();
                 }
                 dismiss();
                 break;
             case R.id.btn_close:
-                DebugMonitor.getInstance().stop();
+                MonitorManager.getInstance().stop();
                 dismiss();
                 break;
             default:
