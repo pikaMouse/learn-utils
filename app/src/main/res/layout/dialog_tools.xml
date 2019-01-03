@@ -40,6 +40,18 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"/>
 
+    <Button
+        android:text="Close"
+        android:textAllCaps="false"
+        android:id="@+id/btn_close"
+        android:layout_width="100dp"
+        android:layout_height="48dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/btn_start_heap_float"
+        app:layout_constraintTop_toBottomOf="@id/btn_start_heap_float"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
+
 
 
 </android.support.constraint.ConstraintLayout>

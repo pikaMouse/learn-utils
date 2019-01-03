@@ -3,6 +3,8 @@ package com.example.pikamouse.learn_utils.test.view;
 import android.content.Context;
 import android.support.constraint.ConstraintLayout;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.widget.TextView;
 import com.example.pikamouse.learn_utils.R;
 import com.example.pikamouse.learn_utils.test.util.MemoryUtil;
@@ -93,5 +95,13 @@ public class FloatAllInfoView extends ConstraintLayout {
                 mIsLowMem.setVisibility(GONE);
             }
         }
+    }
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
+            Log.d(TAG, "back");
+        }
+        return false;
     }
 }

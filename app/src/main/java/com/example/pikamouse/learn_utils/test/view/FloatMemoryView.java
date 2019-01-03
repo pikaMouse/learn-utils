@@ -85,7 +85,7 @@ public class FloatMemoryView extends RelativeLayout {
         mCurveChartView.setUp(builder.create());
         mCurveChartView.setPadding(config.padding, config.padding, config.padding, config.padding);
         WindowManager.LayoutParams layoutParams = new FloatWindow.WMLayoutParamsBuilder()
-                .setFlag(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                .setFlag(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 .setWidth(config.width)
                 .setHeight(config.height)
                 .build();

@@ -54,6 +54,7 @@ public class AllInfoMonitor {
         mFloatAllInfoView = new FloatAllInfoView(mContext);
         mFloatAllInfoWindow = new FloatAllInfoWindow(mContext);
         WindowManager.LayoutParams layoutParams = new FloatWindow.WMLayoutParamsBuilder()
+                .setFlag(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 .setX(DisplayUtil.getScreenWidth(mContext) - mFloatAllInfoView.getMeasuredWidth())
                 .setY(0)
                 .build();
