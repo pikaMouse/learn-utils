@@ -38,6 +38,7 @@ public class DebugMonitor {
         }
         MemoryMonitor.getInstance().init(context);
         AllInfoMonitor.getInstance().init(context);
+        NetInfoMonitor.getInstance().init(context);
         mContext = context;
     }
 
@@ -62,6 +63,7 @@ public class DebugMonitor {
         }
         MemoryMonitor.getInstance().stop();
         AllInfoMonitor.getInstance().stop();
+        NetInfoMonitor.getInstance().stop();
     }
 
 

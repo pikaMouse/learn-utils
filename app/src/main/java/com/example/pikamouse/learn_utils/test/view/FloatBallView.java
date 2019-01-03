@@ -14,6 +14,7 @@ import com.example.pikamouse.learn_utils.MainActivity;
 import com.example.pikamouse.learn_utils.R;
 import com.example.pikamouse.learn_utils.test.AllInfoMonitor;
 import com.example.pikamouse.learn_utils.test.DebugMonitor;
+import com.example.pikamouse.learn_utils.test.NetInfoMonitor;
 import com.example.pikamouse.learn_utils.test.dialog.DebugDialog;
 import com.example.pikamouse.learn_utils.test.MemoryMonitor;
 import com.example.pikamouse.learn_utils.test.util.DisplayUtil;
@@ -74,6 +75,7 @@ public class FloatBallView extends AppCompatTextView implements View.OnClickList
                 } else {
                     MemoryMonitor.getInstance().stop();
                     AllInfoMonitor.getInstance().stop();
+                    NetInfoMonitor.getInstance().stop();
                     setBackgroundDrawable(ContextCompat.getDrawable(mContext, R.drawable.bg_float_tools_open));
                     isShowClose = false;
                 }

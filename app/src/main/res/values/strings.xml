@@ -15,4 +15,10 @@
     <string name="mem_monitor_total_mem">Total Mem:&#160;&#160;</string>
     <string name="mem_monitor_is_low_mem">Low memory !</string>
 
+    <string name="net_monitor_total">Net</string>
+    <string name="net_monitor_receive_flow">RX:&#160;</string>
+    <string name="net_monitor_send_flow">TX:&#160;</string>
+    <string name="net_monitor_unit">&lt;unit:&#160;M&gt;</string>
+
+
 </resources>

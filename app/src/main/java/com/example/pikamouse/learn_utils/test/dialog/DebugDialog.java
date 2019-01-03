@@ -12,6 +12,7 @@ import com.example.pikamouse.learn_utils.R;
 import com.example.pikamouse.learn_utils.test.AllInfoMonitor;
 import com.example.pikamouse.learn_utils.test.DebugMonitor;
 import com.example.pikamouse.learn_utils.test.MemoryMonitor;
+import com.example.pikamouse.learn_utils.test.NetInfoMonitor;
 import com.example.pikamouse.learn_utils.test.view.FloatAllInfoView;
 import com.example.pikamouse.learn_utils.test.view.FloatMemoryView;
 import com.example.pikamouse.learn_utils.test.window.FloatAllInfoWindow;
@@ -25,6 +26,7 @@ public class DebugDialog extends DialogFragment implements View.OnClickListener{
     private Button mStartPSS;
     private Button mStartHeap;
     private Button mStartAll;
+    private Button mStartNet;
     private Button mClose;
     private static DebugDialogCallBack mCallback;
 
@@ -48,10 +50,12 @@ public class DebugDialog extends DialogFragment implements View.OnClickListener{
         mStartHeap = view.findViewById(R.id.btn_start_heap_float);
         mStartPSS = view.findViewById(R.id.btn_start_pss_float);
         mStartAll = view.findViewById(R.id.btn_start_total_float);
+        mStartNet = view.findViewById(R.id.btn_start_net);
         mClose = view.findViewById(R.id.btn_close);
         mStartPSS.setOnClickListener(this);
         mStartHeap.setOnClickListener(this);
         mStartAll.setOnClickListener(this);
+        mStartNet.setOnClickListener(this);
         mClose.setOnClickListener(this);
         builder.setView(view);
         return builder.create();
@@ -76,6 +80,13 @@ public class DebugDialog extends DialogFragment implements View.OnClickListener{
                 break;
             case R.id.btn_start_total_float:
                 AllInfoMonitor.getInstance().start();
+                if (mCallback != null) {
+                    mCallback.onStartFloat();
+                }
+                dismiss();
+                break;
+            case R.id.btn_start_net:
+                NetInfoMonitor.getInstance().start();
                 if (mCallback != null) {
                     mCallback.onStartFloat();
                 }
