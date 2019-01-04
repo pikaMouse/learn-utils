@@ -14,12 +14,13 @@ import com.example.pikamouse.learn_utils.MainActivity;
 import com.example.pikamouse.learn_utils.R;
 import com.example.pikamouse.learn_utils.MonitorManager;
 import com.example.pikamouse.learn_utils.tools.dialog.DebugDialog;
+import com.example.pikamouse.learn_utils.tools.dialog.DebugDialog1;
 import com.example.pikamouse.learn_utils.tools.util.DisplayUtil;
 
 /**
  * create by jiangfeng 2018/12/30
  */
-public class FloatBallView extends AppCompatTextView implements View.OnClickListener, DebugDialog.DebugDialogCallBack{
+public class FloatBallView extends AppCompatTextView implements View.OnClickListener, DebugDialog1.DebugDialogCallBack{
 
     private Context mContext;
     private String mType;
@@ -61,7 +62,7 @@ public class FloatBallView extends AppCompatTextView implements View.OnClickList
                 if (!isShowClose) {
                     AppCompatActivity appCompatActivity = MainActivity.mActivityRef.get();
                     if (appCompatActivity != null) {
-                        DebugDialog debugDialog = new DebugDialog();
+                        DebugDialog1 debugDialog = new DebugDialog1();
                         if (appCompatActivity.getFragmentManager().findFragmentByTag(DEBUG_TOOLS_DIALOG) == null) {
                             FragmentTransaction transaction = appCompatActivity.getFragmentManager().beginTransaction();
                             transaction.add(debugDialog, DEBUG_TOOLS_DIALOG);

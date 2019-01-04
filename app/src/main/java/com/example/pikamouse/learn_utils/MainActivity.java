@@ -61,13 +61,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .add(getResources().getString(R.string.monitor_config_mem_system))
                 .build();
         Config item2 = new Config.Builder()
-                .title(getResources().getString(R.string.monitor_config_chart_title))
-                .tag(getResources().getString(R.string.monitor_config_chart_default))
-                .add(getResources().getString(R.string.monitor_config_chart_default))
-                .add(getResources().getString(R.string.monitor_config_chart_heap))
-                .add(getResources().getString(R.string.monitor_config_chart_pss))
-                .build();
-        Config item3 = new Config.Builder()
                 .title(getResources().getString(R.string.monitor_config_net_title))
                 .tag(getResources().getString(R.string.monitor_config_net_default))
                 .add(getResources().getString(R.string.monitor_config_net_default))
@@ -75,6 +68,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .add(getResources().getString(R.string.monitor_config_net_tx))
                 .add(getResources().getString(R.string.monitor_config_net_rate))
                 .build();
+        Config item3 = new Config.Builder()
+                .title(getResources().getString(R.string.monitor_config_chart_title))
+                .tag(getResources().getString(R.string.monitor_config_chart_default))
+                .add(getResources().getString(R.string.monitor_config_chart_default))
+                .build();
+
         mData.add(item1);
         mData.add(item2);
         mData.add(item3);

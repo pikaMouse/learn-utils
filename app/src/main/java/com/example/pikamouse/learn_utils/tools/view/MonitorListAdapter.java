@@ -2,7 +2,6 @@ package com.example.pikamouse.learn_utils.tools.view;
 
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,17 +27,17 @@ public class MonitorListAdapter extends RecyclerView.Adapter<MonitorListAdapter.
 
     private final static String TAG = "MonitorListAdapter";
 
-    private static final String CONFIG_MEM_DEFAULT_TAG = MyApplication.getAppContext().getResources().getString(R.string.monitor_config_mem_default);
-    private static final String CONFIG_NET_DEFAULT_TAG = MyApplication.getAppContext().getResources().getString(R.string.monitor_config_net_default);
-    private static final String CONFIG_CHART_DEFAULT_TAG = MyApplication.getAppContext().getResources().getString(R.string.monitor_config_chart_default);
-    private static final String CONFIG_MEM_HEAP_TAG = MyApplication.getAppContext().getResources().getString(R.string.monitor_config_mem_heap);
-    private static final String CONFIG_MEM_PSS_TAG = MyApplication.getAppContext().getResources().getString(R.string.monitor_config_mem_pss);
-    private static final String CONFIG_MEM_SYSTEM_TAG = MyApplication.getAppContext().getResources().getString(R.string.monitor_config_mem_system);
-    private static final String CONFIG_CHART_HEAP_TAG = MyApplication.getAppContext().getResources().getString(R.string.monitor_config_chart_heap);
-    private static final String CONFIG_CHART_PSS_TAG = MyApplication.getAppContext().getResources().getString(R.string.monitor_config_chart_pss);
-    private static final String CONFIG_NET_RX_TAG = MyApplication.getAppContext().getResources().getString(R.string.monitor_config_net_rx);
-    private static final String CONFIG_NET_TX_TAG = MyApplication.getAppContext().getResources().getString(R.string.monitor_config_net_tx);
-    private static final String CONFIG_NET_RATE_TAG = MyApplication.getAppContext().getResources().getString(R.string.monitor_config_net_rate);
+    public static final String CONFIG_MEM_DEFAULT_TAG = MyApplication.getAppContext().getResources().getString(R.string.monitor_config_mem_title);
+    public static final String CONFIG_NET_DEFAULT_TAG = MyApplication.getAppContext().getResources().getString(R.string.monitor_config_net_title);
+    public static final String CONFIG_CHART_DEFAULT_TAG = MyApplication.getAppContext().getResources().getString(R.string.monitor_config_chart_title);
+    public static final String CONFIG_MEM_HEAP_TAG = MyApplication.getAppContext().getResources().getString(R.string.monitor_config_mem_heap);
+    public static final String CONFIG_MEM_PSS_TAG = MyApplication.getAppContext().getResources().getString(R.string.monitor_config_mem_pss);
+    public static final String CONFIG_MEM_SYSTEM_TAG = MyApplication.getAppContext().getResources().getString(R.string.monitor_config_mem_system);
+    public static final String CONFIG_CHART_HEAP_TAG = MyApplication.getAppContext().getResources().getString(R.string.monitor_config_chart_heap);
+    public static final String CONFIG_CHART_PSS_TAG = MyApplication.getAppContext().getResources().getString(R.string.monitor_config_chart_pss);
+    public static final String CONFIG_NET_RX_TAG = MyApplication.getAppContext().getResources().getString(R.string.monitor_config_net_rx);
+    public static final String CONFIG_NET_TX_TAG = MyApplication.getAppContext().getResources().getString(R.string.monitor_config_net_tx);
+    public static final String CONFIG_NET_RATE_TAG = MyApplication.getAppContext().getResources().getString(R.string.monitor_config_net_rate);
 
     private List<Config> mData = new ArrayList<>();
 
@@ -82,7 +81,7 @@ public class MonitorListAdapter extends RecyclerView.Adapter<MonitorListAdapter.
             mTitle.setText(config.mTitle);
             mLength = config.mList.size();
             mSwitch.setOnCheckedChangeListener(this);
-            mSwitch.setTag(config.mTag);
+            mSwitch.setTag(config.mTitle);
             for (int i = 0; i < mLength; i++) {
                 View view = LayoutInflater.from(itemView.getContext()).inflate(R.layout.layout_monitor_config_item_check, null);
                 TextView mInfo = view.findViewById(R.id.monitor_item_check_box_text);
@@ -108,14 +107,13 @@ public class MonitorListAdapter extends RecyclerView.Adapter<MonitorListAdapter.
                     if (i == 0) checkBox.setChecked(isChecked);
                     if (!isChecked) checkBox.setChecked(false);
                 }
-                if (isChecked) {
-                    if (tag.equals(CONFIG_MEM_DEFAULT_TAG)) {
-                        MonitorManager.Configure.isDefMem = true;
-                    } else if (tag.equals(CONFIG_CHART_DEFAULT_TAG)) {
-                        MonitorManager.Configure.isDefChart = true;
-                    } else if (tag.equals(CONFIG_NET_DEFAULT_TAG)) {
-                        MonitorManager.Configure.isDefNet = true;
-                    }
+                if (tag.equals(CONFIG_MEM_DEFAULT_TAG)) {
+                    addDialogItem(isChecked, tag);
+                } else if (tag.equals(CONFIG_CHART_DEFAULT_TAG)) {
+                    addDialogItem(isChecked, "Heap" + tag);
+                    addDialogItem(isChecked, "PSS" + tag);
+                } else if (tag.equals(CONFIG_NET_DEFAULT_TAG)) {
+                    addDialogItem(isChecked, tag);
                 }
             } else {
                 boolean reset = false;
@@ -133,21 +131,32 @@ public class MonitorListAdapter extends RecyclerView.Adapter<MonitorListAdapter.
                     return;
                 }
                 if (tag.equals(CONFIG_MEM_HEAP_TAG)) {
-                    MonitorManager.Configure.isHeap = isChecked;
+                    addMemoryItem(isChecked, CONFIG_MEM_HEAP_TAG);
                 }
                 if (tag.equals(CONFIG_MEM_PSS_TAG)) {
-                    MonitorManager.Configure.isPSS = isChecked;
+                    addMemoryItem(isChecked, CONFIG_MEM_PSS_TAG);
                 }
                 if (tag.equals(CONFIG_MEM_SYSTEM_TAG)) {
-                    MonitorManager.Configure.isSystemMem = isChecked;
-                }
-                if (tag.equals(CONFIG_CHART_HEAP_TAG)) {
-                    MonitorManager.Configure.isHeapChart = isChecked;
-                }
-                if (tag.equals(CONFIG_CHART_PSS_TAG)) {
-                    MonitorManager.Configure.isPSSChart = isChecked;
+                    addMemoryItem(isChecked, CONFIG_MEM_SYSTEM_TAG);
                 }
             }
+        }
+    }
+
+    private void addDialogItem(boolean isAdd, String tag) {
+        if (isAdd) {
+            MonitorManager.Configure.sDialogItemList.add(tag);
+        } else {
+            MonitorManager.Configure.sDialogItemList.remove(tag);
+        }
+    }
+
+
+    private void addMemoryItem(boolean isAdd, String tag) {
+        if (isAdd) {
+            MonitorManager.Configure.sMemoryItemList.add(tag);
+        } else {
+            MonitorManager.Configure.sMemoryItemList.remove(tag);
         }
     }
 

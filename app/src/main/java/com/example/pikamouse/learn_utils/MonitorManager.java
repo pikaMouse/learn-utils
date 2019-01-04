@@ -10,6 +10,10 @@ import com.example.pikamouse.learn_utils.tools.monitor.IMonitor;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author: jiangfeng
@@ -33,7 +37,7 @@ public class MonitorManager {
     public final static int MONITOR_MEMORY_CHART_CLASS = 1;
     public final static int MONITOR_MEMORY_INFO_CLASS = 2;
     public final static int MONITOR_NET_INFO_CLASS = 3;
-
+    //TAG 和 TYPE可以考虑合并
     public static final String MONITOR_INSTRUMENT_TYPE = "instrument";
     public static final String MONITOR_MEMORY_INFO_TYPE = "memory_info";
     public static final String MONITOR_MEMORY_PSS_TYPE = "pss_chart";
@@ -85,14 +89,9 @@ public class MonitorManager {
 
     public static class Configure {
 
-//        private static final String CONFIG_MEM_HEAP_TAG = "monitor_config_mem_heap";
-//        private static final String CONFIG_MEM_PSS_TAG = "monitor_config_mem_pss";
-//        private static final String CONFIG_MEM_SYSTEM_TAG = "monitor_config_mem_system";
-//        private static final String CONFIG_CHART_HEAP_TAG = "monitor_config_chart_heap";
-//        private static final String CONFIG_CHART_PSS_TAG = "monitor_config_chart_pss";
-//        private static final String CONFIG_NET_RX_TAG = "monitor_config_net_rx";
-//        private static final String CONFIG_NET_TX_TAG = "monitor_config_net_tx";
-//        private static final String CONFIG_NET_RATE_TAG = "monitor_config_net_rate";
+        public static List<String> sDialogItemList = new ArrayList<>();
+        public static List<String> sMemoryItemList = new ArrayList<>();
+        public static List<String> sNetItemList = new ArrayList<>();
 
         public static boolean isDefMem;
         public static boolean isHeap;
