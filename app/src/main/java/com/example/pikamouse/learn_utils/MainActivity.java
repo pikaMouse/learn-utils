@@ -35,7 +35,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mActivityRef = new SoftReference<AppCompatActivity>(this);
-        requestAlertWindowPermission();
         initView();
     }
 
@@ -96,6 +95,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
                 intent.setData(Uri.parse("package:" + getPackageName()));
                 startActivityForResult(intent, REQUEST_CODE);
+                Toast.makeText(MainActivity.this, "请打开悬浮窗权限", Toast.LENGTH_SHORT).show();
             } else {
                 MonitorManager.getInstance().start();
             }
@@ -119,10 +119,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_config_confirm:
-                if (!MonitorManager.Configure.isDefNet && !MonitorManager.Configure.isDefMem && !MonitorManager.Configure.isDefChart) {
+                if (MonitorManager.Configure.sDialogItemList.size() <= 0) {
                     Toast.makeText(MainActivity.this, "至少选中一个配置", Toast.LENGTH_SHORT).show();
+                    MonitorManager.getInstance().stopAll();
                 } else {
-                    finish();
+                    requestAlertWindowPermission();
                 }
                 break;
             default:
