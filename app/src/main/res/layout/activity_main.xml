@@ -3,5 +3,19 @@
     android:layout_height="match_parent"
     android:layout_width="match_parent">
 
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/monitor_config_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <Button
+        android:text="@string/monitor_config_confirm"
+        android:id="@+id/btn_config_confirm"
+        android:textSize="18sp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content" />
+
 </RelativeLayout>
 

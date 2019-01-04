@@ -3,11 +3,10 @@ package com.example.pikamouse.learn_utils;
 import android.app.Application;
 import android.content.Context;
 
-import com.example.pikamouse.learn_utils.test.AllInfoMonitor;
-import com.example.pikamouse.learn_utils.test.DebugMonitor;
-import com.example.pikamouse.learn_utils.test.MemoryMonitor;
-import com.example.pikamouse.learn_utils.test.MonitorManager;
-import com.example.pikamouse.learn_utils.test.NetInfoMonitor;
+import com.example.pikamouse.learn_utils.tools.monitor.AllInfoMonitor;
+import com.example.pikamouse.learn_utils.tools.monitor.DebugMonitor;
+import com.example.pikamouse.learn_utils.tools.monitor.MemoryMonitor;
+import com.example.pikamouse.learn_utils.tools.monitor.NetInfoMonitor;
 
 /**
  * @author: jiangfeng
@@ -22,9 +21,9 @@ public class MyApplication extends Application {
         super.onCreate();
         sContext = getApplicationContext();
         MonitorManager.getInstance()
-                .add(MonitorManager.MONITOR_DEBUG_CLASS, new DebugMonitor())
-                .add(MonitorManager.MONITOR_MEMORY_CLASS, new MemoryMonitor())
-                .add(MonitorManager.MONITOR_MEMORY_ALL_CLASS, new AllInfoMonitor())
+                .add(MonitorManager.MONITOR_INSTRUMENT_CLASS, new DebugMonitor())
+                .add(MonitorManager.MONITOR_MEMORY_CHART_CLASS, new MemoryMonitor())
+                .add(MonitorManager.MONITOR_MEMORY_INFO_CLASS, new AllInfoMonitor())
                 .add(MonitorManager.MONITOR_NET_INFO_CLASS, new NetInfoMonitor())
                 .init(this);
     }

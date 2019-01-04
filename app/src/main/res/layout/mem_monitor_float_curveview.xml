@@ -7,7 +7,7 @@
     android:gravity="center_horizontal"
     android:orientation="vertical">
 
-    <com.example.pikamouse.learn_utils.test.view.CurveChartView
+    <com.example.pikamouse.learn_utils.tools.view.CurveChartView
         android:id="@+id/mem_monitor_view_floatcurveview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>

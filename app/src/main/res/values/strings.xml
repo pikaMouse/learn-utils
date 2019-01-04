@@ -20,5 +20,29 @@
     <string name="net_monitor_send_flow">TX:&#160;</string>
     <string name="net_monitor_unit">&lt;unit:&#160;M&gt;</string>
 
+    <string name="monitor_config_default">default</string>
+
+    <string name="monitor_config_mem_title">内存</string>
+    <string name="monitor_config_mem_default">default</string>
+    <string name="monitor_config_mem_heap">Heap</string>
+    <string name="monitor_config_mem_pss">PSS</string>
+    <string name="monitor_config_mem_system">System</string>
+
+    <string name="monitor_config_chart_title">曲线</string>
+    <string name="monitor_config_chart_default">default</string>
+    <string name="monitor_config_chart_heap">Heap</string>
+    <string name="monitor_config_chart_pss">PSS</string>
+
+    <string name="monitor_config_net_title">网络</string>
+    <string name="monitor_config_net_default">default</string>
+    <string name="monitor_config_net_rx">RX</string>
+    <string name="monitor_config_net_tx">TX</string>
+    <string name="monitor_config_net_rate">Rate</string>
+
+
+
+
+    <string name="monitor_config_confirm">确定</string>
+
 
 </resources>
