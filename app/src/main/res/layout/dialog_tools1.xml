@@ -10,8 +10,7 @@
     android:paddingRight="20dp"
     android:paddingEnd="20dp"
     android:paddingStart="20dp"
-    android:id="@+id/monitor_dialog_container"
-    >
+    android:id="@+id/monitor_dialog_container">
 
 
 

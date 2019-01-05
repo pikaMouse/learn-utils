@@ -43,6 +43,7 @@
 
 
     <string name="monitor_config_confirm">确定</string>
+    <string name="monitor_config_close">关闭</string>
 
 
 </resources>

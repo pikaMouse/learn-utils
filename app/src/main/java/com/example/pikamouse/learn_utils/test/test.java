@@ -1,7 +1,10 @@
 package com.example.pikamouse.learn_utils.test;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * create by jiangfeng 2019/1/4
@@ -13,6 +16,6 @@ public class test {
         map.put("1", true);
         map.put("1", true);
         map.put("1", false);
-        System.out.print(map.get("1") + "");
+        String[] strings = map.keySet().toArray(new String[0]);
     }
 }

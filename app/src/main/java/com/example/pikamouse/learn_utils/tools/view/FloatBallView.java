@@ -12,8 +12,7 @@ import android.view.View;
 
 import com.example.pikamouse.learn_utils.MainActivity;
 import com.example.pikamouse.learn_utils.R;
-import com.example.pikamouse.learn_utils.MonitorManager;
-import com.example.pikamouse.learn_utils.tools.dialog.DebugDialog;
+import com.example.pikamouse.learn_utils.tools.monitor.MonitorManager;
 import com.example.pikamouse.learn_utils.tools.dialog.DebugDialog1;
 import com.example.pikamouse.learn_utils.tools.util.DisplayUtil;
 
@@ -23,7 +22,7 @@ import com.example.pikamouse.learn_utils.tools.util.DisplayUtil;
 public class FloatBallView extends AppCompatTextView implements View.OnClickListener, DebugDialog1.DebugDialogCallBack{
 
     private Context mContext;
-    private String mType;
+    private String mTag;
 
     private boolean isShowClose;
 
@@ -56,7 +55,6 @@ public class FloatBallView extends AppCompatTextView implements View.OnClickList
 
     @Override
     public void onClick(View v) {
-        label:
         switch (v.getId()) {
             case R.id.float_tools:
                 if (!isShowClose) {
@@ -75,18 +73,24 @@ public class FloatBallView extends AppCompatTextView implements View.OnClickList
                 } else {
                     setBackgroundDrawable(ContextCompat.getDrawable(mContext, R.drawable.bg_float_tools_open));
                     isShowClose = false;
-                    switch (mType) {
-                        case MonitorManager.MONITOR_INSTRUMENT_TYPE:
+                    switch (mTag) {
+                        case MonitorManager.MONITOR_INSTRUMENT_TAG:
                             MonitorManager.getInstance().stopAll();
                             break;
-                        case MonitorManager.MONITOR_MEMORY_INFO_TYPE:
+                        case MonitorManager.MONITOR_MEM_TAG:
+                        case MonitorManager.MONITOR_MEM_TAG_HEAP:
+                        case MonitorManager.MONITOR_MEM_TAG_PSS:
+                        case MonitorManager.MONITOR_MEM_TAG_SYSTEM:
                             MonitorManager.getInstance().get(MonitorManager.MONITOR_MEMORY_INFO_CLASS).stop();
                             break ;
-                        case MonitorManager.MONITOR_MEMORY_HEAP_TYPE:
-                        case MonitorManager.MONITOR_MEMORY_PSS_TYPE:
+                        case MonitorManager.MONITOR_CHART_TAG_HEAP:
+                        case MonitorManager.MONITOR_CHART_TAG_PSS:
                             MonitorManager.getInstance().get(MonitorManager.MONITOR_MEMORY_CHART_CLASS).stop();
                             break;
-                        case MonitorManager.MONITOR_NET_INFO_TYPE:
+                        case MonitorManager.MONITOR_NET_TAG:
+                        case MonitorManager.MONITOR_NET_TAG_RX:
+                        case MonitorManager.MONITOR_NET_TAG_TX:
+                        case MonitorManager.MONITOR_NET_TAG_RATE:
                             MonitorManager.getInstance().get(MonitorManager.MONITOR_NET_INFO_CLASS).stop();
                             break;
                         default:
@@ -100,10 +104,10 @@ public class FloatBallView extends AppCompatTextView implements View.OnClickList
     }
 
     @Override
-    public void onStartFloat(String type) {
+    public void onStartFloat(String tag) {
         setBackgroundDrawable(ContextCompat.getDrawable(mContext, R.drawable.bg_float_tools_close));
         isShowClose = true;
-        mType = type == null ? "" : type;
+        mTag = tag == null ? "" : tag;
     }
 
     @Override

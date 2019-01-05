@@ -13,8 +13,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.example.pikamouse.learn_utils.tools.monitor.MonitorManager;
 import com.example.pikamouse.learn_utils.tools.view.MonitorListAdapter;
-import com.example.pikamouse.learn_utils.tools.view.model.Config;
+import com.example.pikamouse.learn_utils.tools.view.model.Bean;
 
 import java.lang.ref.SoftReference;
 import java.util.ArrayList;
@@ -27,7 +28,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
     private MonitorListAdapter mAdapter;
-    private List<Config> mData;
+    private List<Bean> mData;
     private Button mButton;
 
     @Override
@@ -51,26 +52,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void initData() {
         mData = new ArrayList<>();
-        Config item1 = new Config.Builder()
-                .title(getResources().getString(R.string.monitor_config_mem_title))
-                .tag(getResources().getString(R.string.monitor_config_mem_default))
-                .add(getResources().getString(R.string.monitor_config_mem_default))
-                .add(getResources().getString(R.string.monitor_config_mem_heap))
-                .add(getResources().getString(R.string.monitor_config_mem_pss))
-                .add(getResources().getString(R.string.monitor_config_mem_system))
+        Bean item1 = new Bean.Builder()
+                .title(MonitorManager.MONITOR_MEM_TAG)
+                .addItem(MonitorManager.MONITOR_TAG_DEFAULT)
+                .addItem(MonitorManager.MONITOR_MEM_TAG_HEAP)
+                .addItem(MonitorManager.MONITOR_MEM_TAG_PSS)
+                .addItem(MonitorManager.MONITOR_MEM_TAG_SYSTEM)
                 .build();
-        Config item2 = new Config.Builder()
-                .title(getResources().getString(R.string.monitor_config_net_title))
-                .tag(getResources().getString(R.string.monitor_config_net_default))
-                .add(getResources().getString(R.string.monitor_config_net_default))
-                .add(getResources().getString(R.string.monitor_config_net_rx))
-                .add(getResources().getString(R.string.monitor_config_net_tx))
-                .add(getResources().getString(R.string.monitor_config_net_rate))
+        Bean item2 = new Bean.Builder()
+                .title(MonitorManager.MONITOR_NET_TAG)
+                .addItem(MonitorManager.MONITOR_TAG_DEFAULT)
+                .addItem(MonitorManager.MONITOR_NET_TAG_RX)
+                .addItem(MonitorManager.MONITOR_NET_TAG_TX)
+                .addItem(MonitorManager.MONITOR_NET_TAG_RATE)
                 .build();
-        Config item3 = new Config.Builder()
-                .title(getResources().getString(R.string.monitor_config_chart_title))
-                .tag(getResources().getString(R.string.monitor_config_chart_default))
-                .add(getResources().getString(R.string.monitor_config_chart_default))
+        Bean item3 = new Bean.Builder()
+                .title(MonitorManager.MONITOR_CHART_TAG)
+                .addItem(MonitorManager.MONITOR_TAG_DEFAULT)
+                .addItem(MonitorManager.MONITOR_CHART_TAG_HEAP)
+                .addItem(MonitorManager.MONITOR_CHART_TAG_PSS)
                 .build();
 
         mData.add(item1);
@@ -119,7 +119,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_config_confirm:
-                if (MonitorManager.Configure.sDialogItemList.size() <= 0) {
+                if (MonitorManager.ItemBuilder.getTitles().size() <= 0) {
                     Toast.makeText(MainActivity.this, "至少选中一个配置", Toast.LENGTH_SHORT).show();
                     MonitorManager.getInstance().stopAll();
                 } else {

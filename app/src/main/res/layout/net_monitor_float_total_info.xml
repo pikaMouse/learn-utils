@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="150dp"
     android:layout_height="wrap_content"
-    android:background="#56bfbfbf"
+    android:background="@color/bg_chart"
     android:paddingStart="10dp"
     android:paddingLeft="10dp"
     android:paddingRight="5dp"
@@ -13,6 +13,7 @@
 
     <TextView
         android:text="@string/net_monitor_send_flow"
+        android:textColor="#ffffff"
         android:textSize="12sp"
         android:id="@+id/net_monitor_send_flow_title"
         android:layout_width="wrap_content"
@@ -21,6 +22,7 @@
 
     <TextView
         tools:text="0"
+        android:textColor="#ffffff"
         android:textSize="12sp"
         android:ellipsize="end"
         android:maxLines="1"
@@ -33,6 +35,7 @@
 
     <TextView
         android:text="@string/net_monitor_receive_flow"
+        android:textColor="#ffffff"
         android:textSize="12sp"
         android:id="@+id/net_monitor_receive_flow_title"
         app:layout_constraintTop_toBottomOf="@+id/net_monitor_send_flow_title"
@@ -42,6 +45,7 @@
 
     <TextView
         tools:text="0"
+        android:textColor="#ffffff"
         android:textSize="12sp"
         android:ellipsize="end"
         android:maxLines="1"
@@ -55,6 +59,7 @@
 
     <TextView
         android:text="@string/mem_monitor_unit"
+        android:textColor="#ffffff"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingLeft="10dp"

@@ -2,5 +2,6 @@
 <resources>
     <dimen name="mem_monitor_padding">8dp</dimen>
     <dimen name="mem_monitor_text_padding">8dp</dimen>
-    <dimen name="mem_monitor_height">250dp</dimen>
+    <dimen name="mem_monitor_height">150dp</dimen>
+    <dimen name="mem_monitor_width">250dp</dimen>
 </resources>

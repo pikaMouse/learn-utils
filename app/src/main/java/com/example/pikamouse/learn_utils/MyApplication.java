@@ -6,6 +6,7 @@ import android.content.Context;
 import com.example.pikamouse.learn_utils.tools.monitor.AllInfoMonitor;
 import com.example.pikamouse.learn_utils.tools.monitor.DebugMonitor;
 import com.example.pikamouse.learn_utils.tools.monitor.MemoryMonitor;
+import com.example.pikamouse.learn_utils.tools.monitor.MonitorManager;
 import com.example.pikamouse.learn_utils.tools.monitor.NetInfoMonitor;
 
 /**

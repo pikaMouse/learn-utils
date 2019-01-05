@@ -7,13 +7,13 @@ import java.util.List;
  * @author: jiangfeng
  * @date: 2019/1/4
  */
-public class Config {
+public class Bean {
 
     public String mTitle;
     public List<String> mList;
     public String mTag;
 
-    private Config() {
+    private Bean() {
 
     }
 
@@ -39,13 +39,13 @@ public class Config {
             return this;
         }
 
-        public Builder add(String text) {
+        public Builder addItem(String text) {
             mList.add(text);
             return this;
         }
 
-        public Config build() {
-            Config config = new Config();
+        public Bean build() {
+            Bean config = new Bean();
             config.mList = this.mList;
             config.mTitle = this.mTitle;
             config.mTag = this.mTag;

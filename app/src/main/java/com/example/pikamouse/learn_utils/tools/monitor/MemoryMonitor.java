@@ -5,7 +5,6 @@ import android.content.Context;
 import android.util.Log;
 
 
-import com.example.pikamouse.learn_utils.MonitorManager;
 import com.example.pikamouse.learn_utils.R;
 import com.example.pikamouse.learn_utils.tools.util.MemoryUtil;
 import com.example.pikamouse.learn_utils.tools.util.ProcessUtil;
@@ -36,7 +35,7 @@ public class MemoryMonitor implements IMonitor{
     }
 
     @Override
-    public void start(final @MonitorManager.MonitorType String type) {
+    public void start(final @MonitorManager.MonitorTag String type) {
         if (mContext == null) {
             throw new IllegalStateException("init must be called");
         }
@@ -46,6 +45,7 @@ public class MemoryMonitor implements IMonitor{
         }
         FloatMemoryView.Config config = new FloatMemoryView.Config();
         config.height = mContext.getResources().getDimensionPixelSize(R.dimen.mem_monitor_height);
+        config.width = mContext.getResources().getDimensionPixelSize(R.dimen.mem_monitor_width);
         config.padding = mContext.getResources().getDimensionPixelSize(R.dimen.mem_monitor_padding);
         config.dataSize = 40;
         config.yPartCount = 8;
@@ -56,10 +56,10 @@ public class MemoryMonitor implements IMonitor{
         }
         TimerTask timerTask = null;
         switch (type) {
-            case MonitorManager.MONITOR_MEMORY_PSS_TYPE:
+            case MonitorManager.MONITOR_CHART_TAG_PSS:
                 timerTask = new PssTimerTask(mContext, mFloatMemoryView);
                 break;
-            case MonitorManager.MONITOR_MEMORY_HEAP_TYPE:
+            case MonitorManager.MONITOR_CHART_TAG_HEAP:
                 timerTask = new HeapTimerTask(mFloatMemoryView);
                 break;
             default:

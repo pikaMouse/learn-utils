@@ -11,10 +11,9 @@ import android.widget.GridLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import com.example.pikamouse.learn_utils.MonitorManager;
-import com.example.pikamouse.learn_utils.MyApplication;
+import com.example.pikamouse.learn_utils.tools.monitor.MonitorManager;
 import com.example.pikamouse.learn_utils.R;
-import com.example.pikamouse.learn_utils.tools.view.model.Config;
+import com.example.pikamouse.learn_utils.tools.view.model.Bean;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,19 +26,7 @@ public class MonitorListAdapter extends RecyclerView.Adapter<MonitorListAdapter.
 
     private final static String TAG = "MonitorListAdapter";
 
-    public static final String CONFIG_MEM_DEFAULT_TAG = MyApplication.getAppContext().getResources().getString(R.string.monitor_config_mem_title);
-    public static final String CONFIG_NET_DEFAULT_TAG = MyApplication.getAppContext().getResources().getString(R.string.monitor_config_net_title);
-    public static final String CONFIG_CHART_DEFAULT_TAG = MyApplication.getAppContext().getResources().getString(R.string.monitor_config_chart_title);
-    public static final String CONFIG_MEM_HEAP_TAG = MyApplication.getAppContext().getResources().getString(R.string.monitor_config_mem_heap);
-    public static final String CONFIG_MEM_PSS_TAG = MyApplication.getAppContext().getResources().getString(R.string.monitor_config_mem_pss);
-    public static final String CONFIG_MEM_SYSTEM_TAG = MyApplication.getAppContext().getResources().getString(R.string.monitor_config_mem_system);
-    public static final String CONFIG_CHART_HEAP_TAG = MyApplication.getAppContext().getResources().getString(R.string.monitor_config_chart_heap);
-    public static final String CONFIG_CHART_PSS_TAG = MyApplication.getAppContext().getResources().getString(R.string.monitor_config_chart_pss);
-    public static final String CONFIG_NET_RX_TAG = MyApplication.getAppContext().getResources().getString(R.string.monitor_config_net_rx);
-    public static final String CONFIG_NET_TX_TAG = MyApplication.getAppContext().getResources().getString(R.string.monitor_config_net_tx);
-    public static final String CONFIG_NET_RATE_TAG = MyApplication.getAppContext().getResources().getString(R.string.monitor_config_net_rate);
-
-    private List<Config> mData = new ArrayList<>();
+    private List<Bean> mData = new ArrayList<>();
 
     @Override
     public MonitorListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -49,11 +36,11 @@ public class MonitorListAdapter extends RecyclerView.Adapter<MonitorListAdapter.
 
     @Override
     public void onBindViewHolder(MonitorListAdapter.ViewHolder holder, int position) {
-        Config config = mData.get(position);
+        Bean config = mData.get(position);
         holder.bind(config);
     }
 
-    public void setData(List<Config> data) {
+    public void setData(List<Bean> data) {
         mData = data;
         notifyDataSetChanged();
     }
@@ -77,17 +64,17 @@ public class MonitorListAdapter extends RecyclerView.Adapter<MonitorListAdapter.
             mGrid = itemView.findViewById(R.id.monitor_item_grid);
         }
 
-        public void bind(Config config) {
+        public void bind(Bean config) {
             mTitle.setText(config.mTitle);
             mLength = config.mList.size();
             mSwitch.setOnCheckedChangeListener(this);
-            mSwitch.setTag(config.mTitle);
+            mSwitch.setTag(config.mTitle);//tag为title
             for (int i = 0; i < mLength; i++) {
                 View view = LayoutInflater.from(itemView.getContext()).inflate(R.layout.layout_monitor_config_item_check, null);
                 TextView mInfo = view.findViewById(R.id.monitor_item_check_box_text);
                 CheckBox mCheckBox = view.findViewById(R.id.monitor_item_check_box);
                 String tag = config.mList.get(i);
-                mCheckBox.setTag(tag);
+                mCheckBox.setTag(tag);//tag为item
                 mCheckBox.setClickable(false);
                 mCheckBox.setOnCheckedChangeListener(this);
                 mInfo.setText(tag);
@@ -99,6 +86,7 @@ public class MonitorListAdapter extends RecyclerView.Adapter<MonitorListAdapter.
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
             String tag = (String) buttonView.getTag();
+            //switch按钮
             if (buttonView.getId() == R.id.monitor_item_switch) {
                 for (int i = 0; i < mLength; i++) {
                     View view = mGrid.getChildAt(i);
@@ -107,15 +95,8 @@ public class MonitorListAdapter extends RecyclerView.Adapter<MonitorListAdapter.
                     if (i == 0) checkBox.setChecked(isChecked);
                     if (!isChecked) checkBox.setChecked(false);
                 }
-                if (tag.equals(CONFIG_MEM_DEFAULT_TAG)) {
-                    addDialogItem(isChecked, tag);
-                } else if (tag.equals(CONFIG_CHART_DEFAULT_TAG)) {
-                    addDialogItem(isChecked, "Heap" + tag);
-                    addDialogItem(isChecked, "PSS" + tag);
-                } else if (tag.equals(CONFIG_NET_DEFAULT_TAG)) {
-                    addDialogItem(isChecked, tag);
-                }
-            } else {
+                setTitle(isChecked, tag);
+            } else {//CheckBox按钮
                 boolean reset = false;
                 for (int i = 0; i < mLength; i++) {
                     View view = mGrid.getChildAt(i);
@@ -125,40 +106,19 @@ public class MonitorListAdapter extends RecyclerView.Adapter<MonitorListAdapter.
                 }
                 if (!reset) {
                     mSwitch.setChecked(false);
-                    MonitorManager.Configure.isDefMem = false;
-                    MonitorManager.Configure.isDefChart = false;
-                    MonitorManager.Configure.isDefNet = false;
                     return;
                 }
-                if (tag.equals(CONFIG_MEM_HEAP_TAG)) {
-                    addMemoryItem(isChecked, CONFIG_MEM_HEAP_TAG);
-                }
-                if (tag.equals(CONFIG_MEM_PSS_TAG)) {
-                    addMemoryItem(isChecked, CONFIG_MEM_PSS_TAG);
-                }
-                if (tag.equals(CONFIG_MEM_SYSTEM_TAG)) {
-                    addMemoryItem(isChecked, CONFIG_MEM_SYSTEM_TAG);
-                }
+                addItem(isChecked, tag);
             }
         }
     }
 
-    private void addDialogItem(boolean isAdd, String tag) {
-        if (isAdd) {
-            MonitorManager.Configure.sDialogItemList.add(tag);
-        } else {
-            MonitorManager.Configure.sDialogItemList.remove(tag);
-        }
+    private void setTitle(boolean isChecked, String tag) {
+        MonitorManager.ItemBuilder.create(tag).setTitle(isChecked, tag);
     }
 
-
-    private void addMemoryItem(boolean isAdd, String tag) {
-        if (isAdd) {
-            MonitorManager.Configure.sMemoryItemList.add(tag);
-        } else {
-            MonitorManager.Configure.sMemoryItemList.remove(tag);
-        }
+    private void addItem(boolean isChecked, String tag) {
+        MonitorManager.ItemBuilder.create(tag).addItem(isChecked, tag);
     }
-
 
 }

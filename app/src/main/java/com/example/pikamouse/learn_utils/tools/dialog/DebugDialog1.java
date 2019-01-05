@@ -9,10 +9,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
-import com.example.pikamouse.learn_utils.MonitorManager;
+import com.example.pikamouse.learn_utils.tools.monitor.MonitorManager;
 import com.example.pikamouse.learn_utils.R;
 import com.example.pikamouse.learn_utils.tools.util.DisplayUtil;
-import com.example.pikamouse.learn_utils.tools.view.MonitorListAdapter;
 
 import java.util.List;
 
@@ -44,7 +43,7 @@ public class DebugDialog1 extends DialogFragment implements View.OnClickListener
         LayoutInflater layoutInflater = getActivity().getLayoutInflater();
         View view = layoutInflater.inflate(R.layout.dialog_tools1, null);
         mContainer = view.findViewById(R.id.monitor_dialog_container);
-        List<String> list = MonitorManager.Configure.sDialogItemList;
+        List<String> list = MonitorManager.ItemBuilder.getTitles();
         int len = list.size();
         for (int i = 0; i < len; i++) {
             Button button = new Button(getActivity().getApplicationContext());
@@ -57,6 +56,15 @@ public class DebugDialog1 extends DialogFragment implements View.OnClickListener
             button.setOnClickListener(this);
             mContainer.addView(button);
         }
+        Button close = new Button(getActivity().getApplicationContext());
+        close.setWidth(DisplayUtil.dp2px(100));
+        close.setHeight(DisplayUtil.dp2px(48));
+        close.setAllCaps(false);
+        String text = getActivity().getResources().getString(R.string.monitor_config_close);
+        close.setText(text);
+        close.setTag(MonitorManager.MONITOR_INSTRUMENT_TAG);
+        close.setOnClickListener(this);
+        mContainer.addView(close);
         builder.setView(view);
         return builder.create();
     }
@@ -64,13 +72,37 @@ public class DebugDialog1 extends DialogFragment implements View.OnClickListener
     @Override
     public void onClick(View v) {
         String tag = (String) v.getTag();
-        String type;
-        if (tag.equals(MonitorListAdapter.CONFIG_MEM_DEFAULT_TAG)) {
-            type = MonitorManager.MONITOR_MEMORY_HEAP_TYPE;
-            MonitorManager.getInstance().get(MonitorManager.MONITOR_MEMORY_CHART_CLASS).start(type);
-            if (mCallback != null) {
-                mCallback.onStartFloat(type);
+        List<String> list = MonitorManager.ItemBuilder.getItems(tag);
+        int len = list == null ? 0 : list.size();
+        if (tag.equals(MonitorManager.MONITOR_CHART_TAG)) {
+            if (len == 0) {
+                tag = MonitorManager.MONITOR_CHART_TAG_PSS;
+            } else {
+                tag = list.get(0);
             }
+            MonitorManager.getInstance().get(MonitorManager.MONITOR_MEMORY_CHART_CLASS).start(tag);
+            if (mCallback != null) {
+                mCallback.onStartFloat(tag);
+            }
+            dismiss();
+        } else if (tag.equals(MonitorManager.MONITOR_MEM_TAG)) {
+             if (len == 0) {
+                 MonitorManager.getInstance().get(MonitorManager.MONITOR_MEMORY_INFO_CLASS).start(tag);
+             } else {
+
+             }
+            if (mCallback != null) {
+                mCallback.onStartFloat(tag);
+            }
+            dismiss();
+        } else if (tag.equals(MonitorManager.MONITOR_NET_TAG)) {
+            MonitorManager.getInstance().get(MonitorManager.MONITOR_NET_INFO_CLASS).start(tag);
+            if (mCallback != null) {
+                mCallback.onStartFloat(tag);
+            }
+            dismiss();
+        } else {
+            MonitorManager.getInstance().stopAll();
             dismiss();
         }
     }
@@ -81,7 +113,7 @@ public class DebugDialog1 extends DialogFragment implements View.OnClickListener
     }
 
     public interface DebugDialogCallBack {
-        void onStartFloat(@MonitorManager.MonitorType String type);
+        void onStartFloat(@MonitorManager.MonitorTag String type);
         void onDisMiss();
     }
 }

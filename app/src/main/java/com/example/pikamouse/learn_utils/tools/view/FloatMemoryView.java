@@ -8,7 +8,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.pikamouse.learn_utils.R;
-import com.example.pikamouse.learn_utils.MonitorManager;
+import com.example.pikamouse.learn_utils.tools.monitor.MonitorManager;
 import com.example.pikamouse.learn_utils.tools.window.FloatMemWindow;
 import com.example.pikamouse.learn_utils.tools.window.FloatWindow;
 
@@ -32,7 +32,7 @@ public class FloatMemoryView extends RelativeLayout {
         public int dataSize = 10;                            //采样数量
         public int yPartCount = 5;                          //纵坐标刻度数
         public
-        @MonitorManager.MonitorType
+        @MonitorManager.MonitorTag
         String type;
     }
 
