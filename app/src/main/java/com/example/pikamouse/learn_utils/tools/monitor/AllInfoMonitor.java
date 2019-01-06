@@ -11,6 +11,7 @@ import com.example.pikamouse.learn_utils.tools.view.FloatAllInfoView;
 import com.example.pikamouse.learn_utils.tools.window.FloatAllInfoWindow;
 import com.example.pikamouse.learn_utils.tools.window.FloatWindow;
 
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -38,20 +39,22 @@ public class AllInfoMonitor implements IMonitor{
     }
 
     @Override
-    public void start(String type) {
+    public void start(String tag) {
         if (mContext == null) {
             throw new IllegalStateException("init must be called");
         }
         stop();
+        List<String> list = MonitorManager.ItemBuilder.getItems(tag);
         mFloatAllInfoView = new FloatAllInfoView(mContext);
+        mFloatAllInfoView.setViewVisibility(list);
         mFloatAllInfoWindow = new FloatAllInfoWindow(mContext);
         WindowManager.LayoutParams layoutParams = new FloatWindow.WMLayoutParamsBuilder()
+                //可以唤起输入法，不接受任何触摸事件全部由下层window接受
                 .setFlag(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 .setX(DisplayUtil.getScreenWidth(mContext) - mFloatAllInfoView.getMeasuredWidth())
                 .setY(0)
                 .build();
         mFloatAllInfoWindow.attachToWindow(mFloatAllInfoView, layoutParams);
-
         mTimer = new Timer();
         mTask = new AllInfoTimerTask();
         mTimer.scheduleAtFixedRate(mTask, 0, DURATION);

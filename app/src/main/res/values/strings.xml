@@ -18,6 +18,7 @@
     <string name="net_monitor_total">Net</string>
     <string name="net_monitor_receive_flow">RX:&#160;</string>
     <string name="net_monitor_send_flow">TX:&#160;</string>
+    <string name="net_monitor_rate">Rate:&#160;</string>
     <string name="net_monitor_unit">&lt;unit:&#160;M&gt;</string>
 
     <string name="monitor_config_default">default</string>

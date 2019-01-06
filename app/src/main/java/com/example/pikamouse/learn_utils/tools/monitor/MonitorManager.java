@@ -108,6 +108,7 @@ public class MonitorManager {
         for (int i = 0; i < len; i++) {
             sMonitors.get(i).stop();
         }
+        ItemBuilder.clear();
     }
 
     public IMonitor get(@MonitorClass int key) {
@@ -142,7 +143,7 @@ public class MonitorManager {
             }
         }
         public void addItem(boolean isAdd, @NonNull String item) {
-            String title = findTitle(item);
+            String title = Item2Title(item);
             if (title == null) return;
             List<String> list = sItems.get(title);
             if (list == null) return;
@@ -153,6 +154,12 @@ public class MonitorManager {
             }
         }
 
+        public static void clear() {
+            sBuilders.clear();
+            sItems.clear();
+            sTitles.clear();
+        }
+
         public static List<String> getItems(@NonNull String title) {
             return sItems.get(title);
         }
@@ -161,7 +168,7 @@ public class MonitorManager {
             return sTitles;
         }
 
-        private String findTitle(String item) {
+        public String Item2Title(String item) {
             if (item.equals(MONITOR_MEM_TAG_HEAP) || item.equals(MONITOR_MEM_TAG_PSS) || item.equals(MONITOR_MEM_TAG_SYSTEM)) {
                 return MONITOR_MEM_TAG;
             }

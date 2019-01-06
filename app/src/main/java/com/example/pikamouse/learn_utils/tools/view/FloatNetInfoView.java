@@ -6,8 +6,14 @@ import android.util.AttributeSet;
 import android.widget.TextView;
 
 import com.example.pikamouse.learn_utils.R;
+import com.example.pikamouse.learn_utils.tools.monitor.MonitorManager;
+import com.example.pikamouse.learn_utils.tools.util.DisplayUtil;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * @author: jiangfeng
@@ -17,6 +23,11 @@ public class FloatNetInfoView extends ConstraintLayout {
 
     private TextView mRX;
     private TextView mTX;
+    private TextView mRate;
+    private ConstraintLayout mTxContainer;
+    private ConstraintLayout mRxContainer;
+    private ConstraintLayout mRateContainer;
+    private Map<String, ConstraintLayout> mContainers = new HashMap<>();
     private static final String VALUE_FORMAT_TXT = "%.2f";
 
 
@@ -35,13 +46,42 @@ public class FloatNetInfoView extends ConstraintLayout {
 
     private void initView(Context context) {
         inflate(context, R.layout.net_monitor_float_total_info, this);
+        setBackgroundColor(getResources().getColor(R.color.bg_chart));
+        setPadding(DisplayUtil.dp2px(10), DisplayUtil.dp2px(10), DisplayUtil.dp2px(10), DisplayUtil.dp2px(10));
         mTX = findViewById(R.id.net_monitor_send_flow_info);
         mRX = findViewById(R.id.net_monitor_receive_flow_info);
+        mRate = findViewById(R.id.net_monitor_rate_info);
+        mTxContainer = findViewById(R.id.net_monitor_tx_container);
+        mRxContainer = findViewById(R.id.net_monitor_rx_container);
+        mRateContainer = findViewById(R.id.net_monitor_rate_container);
+        mRxContainer.setVisibility(GONE);
+        mTxContainer.setVisibility(GONE);
+        mRateContainer.setVisibility(GONE);
+        mContainers.put(MonitorManager.MONITOR_NET_TAG_TX, mTxContainer);
+        mContainers.put(MonitorManager.MONITOR_NET_TAG_RX, mRxContainer);
+        mContainers.put(MonitorManager.MONITOR_NET_TAG_RATE, mRateContainer);
     }
 
-    public void setData(long txByte, long rxByte) {
-        mTX.setText(String.format(Locale.getDefault(), VALUE_FORMAT_TXT,(float)txByte / 1024 / 1024));
-        mRX.setText(String.format(Locale.getDefault(), VALUE_FORMAT_TXT,(float)rxByte / 1024 / 1024));
+    public void setViewVisibility(List<String> item) {
+        if (item.isEmpty()) {
+            Collection<ConstraintLayout> list = mContainers.values();
+            for (ConstraintLayout c : list) {
+                c.setVisibility(VISIBLE);
+            }
+        } else {
+            for (String s : item) {
+                mContainers.get(s).setVisibility(VISIBLE);
+            }
+        }
+    }
+
+    public void setData(long txByte, long rxByte, long rate) {
+        String txStr = String.format(Locale.getDefault(), VALUE_FORMAT_TXT,(float)txByte / 1024 / 1024) + "M";
+        if (mTX != null) mTX.setText(txStr);
+        String rxStr = String.format(Locale.getDefault(), VALUE_FORMAT_TXT,(float)rxByte / 1024 / 1024) + "M";
+        if (mRX != null) mRX.setText(rxStr);
+        String rateStr = String.format(Locale.getDefault(), VALUE_FORMAT_TXT, (float)(rate / 1024)) + "k/s";
+        if (mRate != null) mRate.setText(rateStr);
     }
 
 

@@ -5,11 +5,18 @@ import android.support.constraint.ConstraintLayout;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.View;
 import android.widget.TextView;
 import com.example.pikamouse.learn_utils.R;
+import com.example.pikamouse.learn_utils.tools.monitor.MonitorManager;
+import com.example.pikamouse.learn_utils.tools.util.DisplayUtil;
 import com.example.pikamouse.learn_utils.tools.util.MemoryUtil;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * @author: jiangfeng
@@ -30,6 +37,11 @@ public class FloatAllInfoView extends ConstraintLayout {
     private TextView mMemAvail;
     private TextView mIsLowMem;
 
+    private ConstraintLayout mPSSContainer;
+    private ConstraintLayout mHeapContainer;
+    private ConstraintLayout mSystemContainer;
+    private Map<String,ConstraintLayout> mContainers = new HashMap<>();
+
     private static final String VALUE_FORMAT_TXT = "%.1f";
 
 
@@ -49,6 +61,17 @@ public class FloatAllInfoView extends ConstraintLayout {
 
     private void initView(Context context) {
         inflate(context, R.layout.mem_monitor_float_total_info, this);
+        setBackgroundColor(getResources().getColor(R.color.bg_chart));
+        setPadding(DisplayUtil.dp2px(10), DisplayUtil.dp2px(10), DisplayUtil.dp2px(10), DisplayUtil.dp2px(10));
+        mPSSContainer = findViewById(R.id.mem_monitor_container1);
+        mHeapContainer = findViewById(R.id.mem_monitor_container2);
+        mSystemContainer = findViewById(R.id.mem_monitor_container3);
+        mPSSContainer.setVisibility(View.GONE);
+        mHeapContainer.setVisibility(View.GONE);
+        mSystemContainer.setVisibility(View.GONE);
+        mContainers.put(MonitorManager.MONITOR_MEM_TAG_PSS, mPSSContainer);
+        mContainers.put(MonitorManager.MONITOR_MEM_TAG_HEAP, mHeapContainer);
+        mContainers.put(MonitorManager.MONITOR_MEM_TAG_SYSTEM,mSystemContainer);
         mTotalPSS = findViewById(R.id.mem_monitor_total_pss_info);
         mDalvikPSS = findViewById(R.id.mem_monitor_dalvik_pss_info);
         mNativePSS = findViewById(R.id.mem_monitor_native_pss_info);
@@ -59,6 +82,19 @@ public class FloatAllInfoView extends ConstraintLayout {
         mMemTotal = findViewById(R.id.mem_monitor_total_mem_info);
         mMemAvail = findViewById(R.id.mem_monitor_avail_mem_info);
         mIsLowMem = findViewById(R.id.mem_monitor_is_low_mem_info);
+    }
+
+    public void setViewVisibility(List<String> item) {
+        if (item.isEmpty()) {
+            Collection<ConstraintLayout> list = mContainers.values();
+            for (ConstraintLayout c : list) {
+                c.setVisibility(VISIBLE);
+            }
+        } else {
+            for (String s : item) {
+                mContainers.get(s).setVisibility(VISIBLE);
+            }
+        }
     }
 
     public void setData(MemoryUtil.AllInfo allInfo) {

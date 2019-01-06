@@ -72,25 +72,14 @@ public class DebugDialog1 extends DialogFragment implements View.OnClickListener
     @Override
     public void onClick(View v) {
         String tag = (String) v.getTag();
-        List<String> list = MonitorManager.ItemBuilder.getItems(tag);
-        int len = list == null ? 0 : list.size();
         if (tag.equals(MonitorManager.MONITOR_CHART_TAG)) {
-            if (len == 0) {
-                tag = MonitorManager.MONITOR_CHART_TAG_PSS;
-            } else {
-                tag = list.get(0);
-            }
             MonitorManager.getInstance().get(MonitorManager.MONITOR_MEMORY_CHART_CLASS).start(tag);
             if (mCallback != null) {
                 mCallback.onStartFloat(tag);
             }
             dismiss();
         } else if (tag.equals(MonitorManager.MONITOR_MEM_TAG)) {
-             if (len == 0) {
-                 MonitorManager.getInstance().get(MonitorManager.MONITOR_MEMORY_INFO_CLASS).start(tag);
-             } else {
-
-             }
+            MonitorManager.getInstance().get(MonitorManager.MONITOR_MEMORY_INFO_CLASS).start(tag);
             if (mCallback != null) {
                 mCallback.onStartFloat(tag);
             }

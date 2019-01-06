@@ -9,6 +9,6 @@ import android.support.annotation.Nullable;
  */
 public interface IMonitor {
     void init(Context context);
-    void start(@Nullable @MonitorManager.MonitorTag String type);
+    void start(@Nullable @MonitorManager.MonitorTag String tag);
     void stop();
 }

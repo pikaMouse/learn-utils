@@ -85,6 +85,7 @@ public class FloatBallView extends AppCompatTextView implements View.OnClickList
                             break ;
                         case MonitorManager.MONITOR_CHART_TAG_HEAP:
                         case MonitorManager.MONITOR_CHART_TAG_PSS:
+                        case MonitorManager.MONITOR_CHART_TAG:
                             MonitorManager.getInstance().get(MonitorManager.MONITOR_MEMORY_CHART_CLASS).stop();
                             break;
                         case MonitorManager.MONITOR_NET_TAG:

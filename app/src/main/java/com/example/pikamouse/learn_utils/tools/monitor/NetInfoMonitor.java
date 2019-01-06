@@ -2,9 +2,11 @@ package com.example.pikamouse.learn_utils.tools.monitor;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.TrafficStats;
 import android.view.WindowManager;
 
+import com.example.pikamouse.learn_utils.tools.util.DisplayUtil;
 import com.example.pikamouse.learn_utils.tools.util.ThreadUtil;
 import com.example.pikamouse.learn_utils.tools.view.FloatNetInfoView;
 import com.example.pikamouse.learn_utils.tools.window.FloatNetInfoWindow;
@@ -24,8 +26,10 @@ public class NetInfoMonitor implements IMonitor{
     private FloatNetInfoView mView;
     private FloatNetInfoWindow mWindow;
     private NetInfoTask mTask;
-    private final static long DURATION = 500;
+    private final static long DURATION = 2000;
     private int mProcessUid;
+
+
 
     @Override
     public void init(Context context) {
@@ -42,23 +46,40 @@ public class NetInfoMonitor implements IMonitor{
         }
         stop();
         mView = new FloatNetInfoView(mContext);
+        mView.setViewVisibility(MonitorManager.ItemBuilder.getItems(type));
         mWindow = new FloatNetInfoWindow(mContext);
-        WindowManager.LayoutParams layoutParams = new FloatWindow.WMLayoutParamsBuilder().build();
+        WindowManager.LayoutParams layoutParams = new FloatWindow.WMLayoutParamsBuilder()
+                //可以唤起输入法，不接受任何触摸事件全部由下层window接受
+                .setFlag(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                .setX(DisplayUtil.getScreenWidth(mContext) - mView.getMeasuredWidth())
+                .setY(0)
+                .build();
         mWindow.attachToWindow(mView, layoutParams);
         mProcessUid = android.os.Process.myUid();
         mTimer = new Timer();
         mTask = new NetInfoTask();
-        mTimer.scheduleAtFixedRate(mTask, 0 , DURATION);
+        mTimer.scheduleAtFixedRate(mTask, 1000 , 1000);
     }
 
     private class NetInfoTask extends TimerTask {
 
+        private long mLastTotalRxBytes = TrafficStats.getTotalRxBytes();
+        private long mLastTimeStamp = System.currentTimeMillis();
+
+
         @Override
         public void run() {
+            long nowTotalRxBytes = TrafficStats.getTotalRxBytes();
+            long nowTimeStamp = System.currentTimeMillis();
+            final long tx = TrafficStats.getUidTxBytes(mProcessUid);
+            final long rx = TrafficStats.getUidRxBytes(mProcessUid);
+            final long rate = ((nowTotalRxBytes - mLastTotalRxBytes) * 1000 / (nowTimeStamp - mLastTimeStamp));
+            mLastTotalRxBytes = nowTotalRxBytes;
+            mLastTimeStamp = nowTimeStamp;
             ThreadUtil.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    mView.setData(TrafficStats.getUidTxBytes(mProcessUid), TrafficStats.getUidRxBytes(mProcessUid));
+                    mView.setData(tx, rx, rate);
                 }
             });
         }

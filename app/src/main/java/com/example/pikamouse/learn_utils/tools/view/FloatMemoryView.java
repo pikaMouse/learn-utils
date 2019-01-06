@@ -77,6 +77,7 @@ public class FloatMemoryView extends RelativeLayout {
                 .setFlag(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 .setWidth(config.width)
                 .setHeight(config.height)
+                .setY(config.y)
                 .build();
         mFloatWindow.attachToWindow(this, layoutParams);
     }
