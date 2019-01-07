@@ -4,11 +4,12 @@ import android.content.Context;
 
 /**
  * @author: jiangfeng
- * @date: 2019/1/2
+ * @date: 2019/1/3
  */
-public class FloatAllInfoWindow extends FloatWindow {
+public class FloatNetWindow extends FloatWindow {
 
-    public FloatAllInfoWindow(Context context) {
+    public FloatNetWindow(Context context) {
         super(context);
     }
+
 }

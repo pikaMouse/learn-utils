@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import com.example.pikamouse.learn_utils.tools.monitor.MonitorManager;
 import com.example.pikamouse.learn_utils.R;
-import com.example.pikamouse.learn_utils.tools.view.model.Bean;
+import com.example.pikamouse.learn_utils.tools.view.model.MonitorListItemBean;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,21 +26,21 @@ public class MonitorListAdapter extends RecyclerView.Adapter<MonitorListAdapter.
 
     private final static String TAG = "MonitorListAdapter";
 
-    private List<Bean> mData = new ArrayList<>();
+    private List<MonitorListItemBean> mData = new ArrayList<>();
 
     @Override
     public MonitorListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_monitor_config_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.monitor_layout_config_item, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(MonitorListAdapter.ViewHolder holder, int position) {
-        Bean config = mData.get(position);
+        MonitorListItemBean config = mData.get(position);
         holder.bind(config);
     }
 
-    public void setData(List<Bean> data) {
+    public void setData(List<MonitorListItemBean> data) {
         mData = data;
         notifyDataSetChanged();
     }
@@ -64,13 +64,13 @@ public class MonitorListAdapter extends RecyclerView.Adapter<MonitorListAdapter.
             mGrid = itemView.findViewById(R.id.monitor_item_grid);
         }
 
-        public void bind(Bean config) {
+        public void bind(MonitorListItemBean config) {
             mTitle.setText(config.mTitle);
             mLength = config.mList.size();
             mSwitch.setOnCheckedChangeListener(this);
             mSwitch.setTag(config.mTitle);//tag为title
             for (int i = 0; i < mLength; i++) {
-                View view = LayoutInflater.from(itemView.getContext()).inflate(R.layout.layout_monitor_config_item_check, null);
+                View view = LayoutInflater.from(itemView.getContext()).inflate(R.layout.monitor_layout_config_item_check, null);
                 TextView mInfo = view.findViewById(R.id.monitor_item_check_box_text);
                 CheckBox mCheckBox = view.findViewById(R.id.monitor_item_check_box);
                 String tag = config.mList.get(i);

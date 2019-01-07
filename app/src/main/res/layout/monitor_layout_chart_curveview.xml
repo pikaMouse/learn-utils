@@ -18,7 +18,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:padding="@dimen/mem_monitor_text_padding"
+        android:padding="8dp"
         android:textColor="#00f0af"
         android:textSize="13sp"
         android:layout_alignParentEnd="true" />

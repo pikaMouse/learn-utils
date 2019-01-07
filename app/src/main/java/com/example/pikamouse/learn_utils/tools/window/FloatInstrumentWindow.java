@@ -9,12 +9,12 @@ import android.view.WindowManager;
  * create by liting 2018/12/30
  *
  */
-public class FloatBallWindow extends FloatWindow implements View.OnTouchListener {
+public class FloatInstrumentWindow extends FloatWindow implements View.OnTouchListener {
 
     private int mLastX;
     private int mLastY;
 
-    public FloatBallWindow(Context context) {
+    public FloatInstrumentWindow(Context context) {
         super(context);
     }
 

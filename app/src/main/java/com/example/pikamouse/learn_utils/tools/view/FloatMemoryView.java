@@ -1,97 +1,137 @@
 package com.example.pikamouse.learn_utils.tools.view;
 
 import android.content.Context;
-import android.support.v4.content.ContextCompat;
+import android.support.constraint.ConstraintLayout;
 import android.util.AttributeSet;
-import android.view.WindowManager;
-import android.widget.RelativeLayout;
+import android.view.View;
 import android.widget.TextView;
-
 import com.example.pikamouse.learn_utils.R;
 import com.example.pikamouse.learn_utils.tools.monitor.MonitorManager;
-import com.example.pikamouse.learn_utils.tools.window.FloatMemWindow;
-import com.example.pikamouse.learn_utils.tools.window.FloatWindow;
+import com.example.pikamouse.learn_utils.tools.util.DisplayUtil;
+import com.example.pikamouse.learn_utils.tools.util.MemoryUtil;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 /**
- * create by jiangfeng 2018/12/30
- *
- * Description: <悬浮内存显示曲线图，M为内存单位>
+ * @author: jiangfeng
+ * @date: 2019/1/2
  */
+public class FloatMemoryView extends ConstraintLayout {
 
-public class FloatMemoryView extends RelativeLayout {
+    private final static String TAG = "FloatAllInfoView";
 
-    private static final String VALUE_FORMAT = "%.1fM";
-    private static final String VALUE_FORMAT_TXT = "%1$s:%2$.1fM";
+    private TextView mTotalPSS;
+    private TextView mDalvikPSS;
+    private TextView mNativePSS;
+    private TextView mOtherPSS;
+    private TextView mHeapSize;
+    private TextView mHeapAlloc;
+    private TextView mHeapFree;
+    private TextView mMemTotal;
+    private TextView mMemAvail;
+    private TextView mIsLowMem;
 
-    public static class Config {
-        public int height = WindowManager.LayoutParams.MATCH_PARENT;
-        public int width = WindowManager.LayoutParams.MATCH_PARENT;
-        public int padding = 0;
-        public int x = 0;
-        public int y = 0;
-        public int dataSize = 10;                            //采样数量
-        public int yPartCount = 5;                          //纵坐标刻度数
-        public
-        @MonitorManager.MonitorTag
-        String type;
-    }
+    private ConstraintLayout mPSSContainer;
+    private ConstraintLayout mHeapContainer;
+    private ConstraintLayout mSystemContainer;
+    private Map<String,ConstraintLayout> mContainers = new HashMap<>();
 
-    private FloatMemWindow mFloatWindow;
+    private static final String VALUE_FORMAT_TXT = "%.1f";
 
-    private CurveChartView mCurveChartView;
 
-    private TextView mNameAndValueTv;
 
     public FloatMemoryView(Context context) {
         this(context, null);
     }
 
     public FloatMemoryView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        initView();
+        this(context, attrs, 0);
     }
 
-    private void initView() {
-        mFloatWindow = new FloatMemWindow(getContext());
-        setBackgroundColor(ContextCompat.getColor(getContext(), R.color.bg_chart));
-        inflate(getContext(), R.layout.mem_monitor_float_curveview, this);
-        mCurveChartView = findViewById(R.id.mem_monitor_view_floatcurveview);
-        mNameAndValueTv = findViewById(R.id.mem_monitor_view_namevalue);
+    public FloatMemoryView(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        initView(context);
     }
 
-    private String mPrefix;
-
-    public void attachToWindow(Config config) {
-        mPrefix = config.type;
-        CurveChartConfig.Builder builder = new CurveChartConfig.Builder();
-        builder.setYFormat(VALUE_FORMAT)
-                .setDataSize(config.dataSize)
-                .setMaxValueMulti(1.2f)
-                .setMinValueMulti(0.8f)
-                .setXTextPadding(70)
-                .setYPartCount(config.yPartCount)
-                .setYLabelSize(20f);
-        mCurveChartView.setUp(builder.create());
-        mCurveChartView.setPadding(config.padding, config.padding, config.padding, config.padding);
-        WindowManager.LayoutParams layoutParams = new FloatWindow.WMLayoutParamsBuilder()
-                .setFlag(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-                .setWidth(config.width)
-                .setHeight(config.height)
-                .setY(config.y)
-                .build();
-        mFloatWindow.attachToWindow(this, layoutParams);
+    private void initView(Context context) {
+        inflate(context, R.layout.monitor_layout_memory_info, this);
+        setBackgroundColor(getResources().getColor(R.color.monitor_bg_chart));
+        setPadding(DisplayUtil.dp2px(10), DisplayUtil.dp2px(10), DisplayUtil.dp2px(10), DisplayUtil.dp2px(10));
+        mPSSContainer = findViewById(R.id.mem_monitor_container1);
+        mHeapContainer = findViewById(R.id.mem_monitor_container2);
+        mSystemContainer = findViewById(R.id.mem_monitor_container3);
+        mPSSContainer.setVisibility(View.GONE);
+        mHeapContainer.setVisibility(View.GONE);
+        mSystemContainer.setVisibility(View.GONE);
+        mContainers.put(MonitorManager.MONITOR_MEM_TAG_PSS, mPSSContainer);
+        mContainers.put(MonitorManager.MONITOR_MEM_TAG_HEAP, mHeapContainer);
+        mContainers.put(MonitorManager.MONITOR_MEM_TAG_SYSTEM,mSystemContainer);
+        mTotalPSS = findViewById(R.id.mem_monitor_total_pss_info);
+        mDalvikPSS = findViewById(R.id.mem_monitor_dalvik_pss_info);
+        mNativePSS = findViewById(R.id.mem_monitor_native_pss_info);
+        mOtherPSS = findViewById(R.id.mem_monitor_other_pss_info);
+        mHeapSize = findViewById(R.id.mem_monitor_total_heap_info);
+        mHeapAlloc = findViewById(R.id.mem_monitor_allocated_heap_info);
+        mHeapFree = findViewById(R.id.mem_monitor_free_heap_info);
+        mMemTotal = findViewById(R.id.mem_monitor_total_mem_info);
+        mMemAvail = findViewById(R.id.mem_monitor_avail_mem_info);
+        mIsLowMem = findViewById(R.id.mem_monitor_is_low_mem_info);
     }
 
-    public void release() {
-        mFloatWindow.release();
+    public void setViewVisibility(List<String> item) {
+        if (item.isEmpty()) {
+            Collection<ConstraintLayout> list = mContainers.values();
+            for (ConstraintLayout c : list) {
+                c.setVisibility(VISIBLE);
+            }
+        } else {
+            for (String s : item) {
+                mContainers.get(s).setVisibility(VISIBLE);
+            }
+        }
     }
 
-    public void setText(float value) {
-        mNameAndValueTv.setText(String.format(VALUE_FORMAT_TXT, mPrefix, value));
+    public void setData(MemoryUtil.AllInfo allInfo) {
+        final MemoryUtil.PssInfo pssInfo = allInfo.mPssInfo;
+        final MemoryUtil.DalvikHeapMem dalvikHeapMem = allInfo.mDalvikHeapMem;
+        final MemoryUtil.RamMemoryInfo ramMemoryInfo = allInfo.mRamMemoryInfo;
+        if (mTotalPSS != null && pssInfo != null) {
+            mTotalPSS.setText(String.format(Locale.getDefault(), VALUE_FORMAT_TXT, (float)pssInfo.mTotalPss / 1024));
+        }
+        if (mDalvikPSS != null && pssInfo != null) {
+            mDalvikPSS.setText(String.format(Locale.getDefault(), VALUE_FORMAT_TXT, (float)pssInfo.mDalvikPss / 1024));
+        }
+        if (mNativePSS != null && pssInfo != null) {
+            mNativePSS.setText(String.format(Locale.getDefault(), VALUE_FORMAT_TXT, (float)pssInfo.mNativePss / 1024));
+        }
+        if (mOtherPSS != null && pssInfo != null) {
+            mOtherPSS.setText(String.format(Locale.getDefault(), VALUE_FORMAT_TXT, (float)pssInfo.mOtherPss / 1024));
+        }
+        if (mHeapAlloc != null) {
+            mHeapAlloc.setText(String.format(Locale.getDefault(), VALUE_FORMAT_TXT, (float)dalvikHeapMem.mAllocatedMem / 1024));
+        }
+        if (mHeapSize != null) {
+            mHeapSize.setText(String.format(Locale.getDefault(), VALUE_FORMAT_TXT, (float)dalvikHeapMem.mTotalMem / 1024));
+        }
+        if (mHeapFree != null) {
+            mHeapFree.setText(String.format(Locale.getDefault(), VALUE_FORMAT_TXT, (float)dalvikHeapMem.mFreeMem / 1024));
+        }
+        if (mMemTotal != null && ramMemoryInfo != null) {
+            mMemTotal.setText(String.format(Locale.getDefault(), VALUE_FORMAT_TXT, (float)ramMemoryInfo.mTotalRAM / 1024));
+        }
+        if (mMemAvail != null && ramMemoryInfo != null) {
+            mMemAvail.setText(String.format(Locale.getDefault(), VALUE_FORMAT_TXT, (float)ramMemoryInfo.mAvailRAM / 1024));
+        }
+        if (mIsLowMem != null && ramMemoryInfo != null) {
+            if (ramMemoryInfo.mIsLowRAM) {
+                mIsLowMem.setVisibility(VISIBLE);
+            } else {
+                mIsLowMem.setVisibility(GONE);
+            }
+        }
     }
-
-    public void addData(float data) {
-        mCurveChartView.addData(data);
-    }
-
 }

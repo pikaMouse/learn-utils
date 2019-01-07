@@ -19,20 +19,17 @@ import java.util.List;
 /**
  * create by jiangfeng 2018/12/30
  */
-public class DebugDialog1 extends DialogFragment implements View.OnClickListener{
+public class InstrumentDialog extends DialogFragment implements View.OnClickListener{
 
 
-    private static DebugDialogCallBack mCallback;
+    private static InstrumentDialogCallBack mCallback;
     private LinearLayout mContainer;
 
-
-
-
-    public DebugDialog1() {
+    public InstrumentDialog() {
 
     }
 
-    public void setCallback(DebugDialogCallBack callback) {
+    public void setCallback(InstrumentDialogCallBack callback) {
         mCallback = callback;
     }
 
@@ -41,7 +38,7 @@ public class DebugDialog1 extends DialogFragment implements View.OnClickListener
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater layoutInflater = getActivity().getLayoutInflater();
-        View view = layoutInflater.inflate(R.layout.dialog_tools1, null);
+        View view = layoutInflater.inflate(R.layout.monitor_dialog_instrument, null);
         mContainer = view.findViewById(R.id.monitor_dialog_container);
         List<String> list = MonitorManager.ItemBuilder.getTitles();
         int len = list.size();
@@ -60,7 +57,7 @@ public class DebugDialog1 extends DialogFragment implements View.OnClickListener
         close.setWidth(DisplayUtil.dp2px(100));
         close.setHeight(DisplayUtil.dp2px(48));
         close.setAllCaps(false);
-        String text = getActivity().getResources().getString(R.string.monitor_config_close);
+        String text = getActivity().getResources().getString(R.string.monitor_instrument_close);
         close.setText(text);
         close.setTag(MonitorManager.MONITOR_INSTRUMENT_TAG);
         close.setOnClickListener(this);
@@ -73,7 +70,7 @@ public class DebugDialog1 extends DialogFragment implements View.OnClickListener
     public void onClick(View v) {
         String tag = (String) v.getTag();
         if (tag.equals(MonitorManager.MONITOR_CHART_TAG)) {
-            MonitorManager.getInstance().get(MonitorManager.MONITOR_MEMORY_CHART_CLASS).start(tag);
+            MonitorManager.getInstance().get(MonitorManager.MONITOR_CHART_CLASS).start(tag);
             if (mCallback != null) {
                 mCallback.onStartFloat(tag);
             }
@@ -90,6 +87,12 @@ public class DebugDialog1 extends DialogFragment implements View.OnClickListener
                 mCallback.onStartFloat(tag);
             }
             dismiss();
+        } else if (tag.equals(MonitorManager.MONITOR_CPU_TAG)) {
+            MonitorManager.getInstance().get(MonitorManager.MONITOR_CPU_INFO_CLASS).start(tag);
+            if (mCallback != null) {
+                mCallback.onStartFloat(tag);
+            }
+            dismiss();
         } else {
             MonitorManager.getInstance().stopAll();
             dismiss();
@@ -101,7 +104,7 @@ public class DebugDialog1 extends DialogFragment implements View.OnClickListener
         super.dismiss();
     }
 
-    public interface DebugDialogCallBack {
+    public interface InstrumentDialogCallBack {
         void onStartFloat(@MonitorManager.MonitorTag String type);
         void onDisMiss();
     }

@@ -1,5 +1,6 @@
 package com.example.pikamouse.learn_utils.tools.monitor;
 
+import android.app.Application;
 import android.content.Context;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
@@ -23,7 +24,7 @@ public class MonitorManager {
 
     //提示信息只需要在源文件保留
     @Retention(RetentionPolicy.SOURCE)
-    @IntDef({MONITOR_INSTRUMENT_CLASS, MONITOR_MEMORY_CHART_CLASS, MONITOR_MEMORY_INFO_CLASS, MONITOR_NET_INFO_CLASS})
+    @IntDef({MONITOR_INSTRUMENT_CLASS, MONITOR_CHART_CLASS, MONITOR_MEMORY_INFO_CLASS, MONITOR_NET_INFO_CLASS, MONITOR_CPU_INFO_CLASS})
     public @interface MonitorClass {
     }
 
@@ -48,9 +49,10 @@ public class MonitorManager {
     }
 
     public final static int MONITOR_INSTRUMENT_CLASS = 0;
-    public final static int MONITOR_MEMORY_CHART_CLASS = 1;
+    public final static int MONITOR_CHART_CLASS = 1;
     public final static int MONITOR_MEMORY_INFO_CLASS = 2;
     public final static int MONITOR_NET_INFO_CLASS = 3;
+    public final static int MONITOR_CPU_INFO_CLASS = 4;
 
     public static final String MONITOR_INSTRUMENT_TAG = "instrument";
 
@@ -69,6 +71,9 @@ public class MonitorManager {
     public static final String MONITOR_CHART_TAG = "图表";
     public static final String MONITOR_CHART_TAG_PSS = "pss";
     public static final String MONITOR_CHART_TAG_HEAP = "heap";
+
+    public static final String MONITOR_CPU_TAG = "CPU";
+    public static final String MONITOR_CPU_TAG_PERCENTAGE = "percentage";
 
 
     private static class SingleHolder {
@@ -90,6 +95,9 @@ public class MonitorManager {
     }
 
     public void init(Context context) {
+        if (!(context instanceof Application)) {
+            throw new IllegalArgumentException("u must init with application context");
+        }
         int len = sMonitors.size();
         for (int i = 0; i < len; i++) {
             sMonitors.get(i).init(context);

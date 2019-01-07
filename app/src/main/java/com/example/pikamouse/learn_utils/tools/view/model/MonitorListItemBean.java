@@ -7,13 +7,13 @@ import java.util.List;
  * @author: jiangfeng
  * @date: 2019/1/4
  */
-public class Bean {
+public class MonitorListItemBean {
 
     public String mTitle;
     public List<String> mList;
     public String mTag;
 
-    private Bean() {
+    private MonitorListItemBean() {
 
     }
 
@@ -44,8 +44,8 @@ public class Bean {
             return this;
         }
 
-        public Bean build() {
-            Bean config = new Bean();
+        public MonitorListItemBean build() {
+            MonitorListItemBean config = new MonitorListItemBean();
             config.mList = this.mList;
             config.mTitle = this.mTitle;
             config.mTag = this.mTag;

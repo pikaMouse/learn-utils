@@ -19,7 +19,7 @@ import java.util.Map;
  * @author: jiangfeng
  * @date: 2019/1/3
  */
-public class FloatNetInfoView extends ConstraintLayout {
+public class FloatNetView extends ConstraintLayout {
 
     private TextView mRX;
     private TextView mTX;
@@ -31,22 +31,22 @@ public class FloatNetInfoView extends ConstraintLayout {
     private static final String VALUE_FORMAT_TXT = "%.2f";
 
 
-    public FloatNetInfoView(Context context) {
+    public FloatNetView(Context context) {
         this(context, null);
     }
 
-    public FloatNetInfoView(Context context, AttributeSet attrs) {
+    public FloatNetView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public FloatNetInfoView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public FloatNetView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initView(context);
     }
 
     private void initView(Context context) {
-        inflate(context, R.layout.net_monitor_float_total_info, this);
-        setBackgroundColor(getResources().getColor(R.color.bg_chart));
+        inflate(context, R.layout.monitor_layout_net_info, this);
+        setBackgroundColor(getResources().getColor(R.color.monitor_bg_chart));
         setPadding(DisplayUtil.dp2px(10), DisplayUtil.dp2px(10), DisplayUtil.dp2px(10), DisplayUtil.dp2px(10));
         mTX = findViewById(R.id.net_monitor_send_flow_info);
         mRX = findViewById(R.id.net_monitor_receive_flow_info);
@@ -83,6 +83,4 @@ public class FloatNetInfoView extends ConstraintLayout {
         String rateStr = String.format(Locale.getDefault(), VALUE_FORMAT_TXT, (float)(rate / 1024)) + "k/s";
         if (mRate != null) mRate.setText(rateStr);
     }
-
-
 }

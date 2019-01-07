@@ -5,11 +5,11 @@ import android.content.Context;
 /**
  * create by liting 2018/12/29
  */
-public class FloatMemWindow extends FloatWindow {
+public class FloatChartWindow extends FloatWindow {
 
-    private static final String TAG = "FloatMemWindow";
+    private static final String TAG = "FloatChartWindow";
 
-    public FloatMemWindow(Context context) {
+    public FloatChartWindow(Context context) {
         super(context);
     }
 

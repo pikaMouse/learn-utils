@@ -21,30 +21,10 @@
     <string name="net_monitor_rate">Rate:&#160;</string>
     <string name="net_monitor_unit">&lt;unit:&#160;M&gt;</string>
 
-    <string name="monitor_config_default">default</string>
-
-    <string name="monitor_config_mem_title">内存</string>
-    <string name="monitor_config_mem_default">default</string>
-    <string name="monitor_config_mem_heap">Heap</string>
-    <string name="monitor_config_mem_pss">PSS</string>
-    <string name="monitor_config_mem_system">System</string>
-
-    <string name="monitor_config_chart_title">图表</string>
-    <string name="monitor_config_chart_default">default</string>
-    <string name="monitor_config_chart_heap">Heap</string>
-    <string name="monitor_config_chart_pss">PSS</string>
-
-    <string name="monitor_config_net_title">网络</string>
-    <string name="monitor_config_net_default">default</string>
-    <string name="monitor_config_net_rx">RX</string>
-    <string name="monitor_config_net_tx">TX</string>
-    <string name="monitor_config_net_rate">Rate</string>
-
-
-
+    <string name="cpu_monitor_percentage">CPU:&#160;</string>
 
     <string name="monitor_config_confirm">确定</string>
-    <string name="monitor_config_close">关闭</string>
+    <string name="monitor_instrument_close">关闭</string>
 
 
 </resources>

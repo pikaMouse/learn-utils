@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <item name="float_tools" type="id"/>
-    <item name="float_tools_close" type="id"/>
+    <item name="monitor_instrument_dialog" type="id"/>
 </resources>

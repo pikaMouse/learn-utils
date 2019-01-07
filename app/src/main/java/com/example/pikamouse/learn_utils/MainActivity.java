@@ -15,27 +15,24 @@ import android.widget.Toast;
 
 import com.example.pikamouse.learn_utils.tools.monitor.MonitorManager;
 import com.example.pikamouse.learn_utils.tools.view.MonitorListAdapter;
-import com.example.pikamouse.learn_utils.tools.view.model.Bean;
+import com.example.pikamouse.learn_utils.tools.view.model.MonitorListItemBean;
 
-import java.lang.ref.SoftReference;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
     private final static String TAG = "MainActivity";
-    public static SoftReference<AppCompatActivity> mActivityRef;
     private RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
     private MonitorListAdapter mAdapter;
-    private List<Bean> mData;
+    private List<MonitorListItemBean> mData;
     private Button mButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mActivityRef = new SoftReference<AppCompatActivity>(this);
         initView();
     }
 
@@ -52,41 +49,45 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void initData() {
         mData = new ArrayList<>();
-        Bean item1 = new Bean.Builder()
+        MonitorListItemBean item1 = new MonitorListItemBean.Builder()
                 .title(MonitorManager.MONITOR_MEM_TAG)
                 .addItem(MonitorManager.MONITOR_TAG_DEFAULT)
                 .addItem(MonitorManager.MONITOR_MEM_TAG_HEAP)
                 .addItem(MonitorManager.MONITOR_MEM_TAG_PSS)
                 .addItem(MonitorManager.MONITOR_MEM_TAG_SYSTEM)
                 .build();
-        Bean item2 = new Bean.Builder()
+        MonitorListItemBean item2 = new MonitorListItemBean.Builder()
                 .title(MonitorManager.MONITOR_NET_TAG)
                 .addItem(MonitorManager.MONITOR_TAG_DEFAULT)
                 .addItem(MonitorManager.MONITOR_NET_TAG_RX)
                 .addItem(MonitorManager.MONITOR_NET_TAG_TX)
                 .addItem(MonitorManager.MONITOR_NET_TAG_RATE)
                 .build();
-        Bean item3 = new Bean.Builder()
+        MonitorListItemBean item3 = new MonitorListItemBean.Builder()
                 .title(MonitorManager.MONITOR_CHART_TAG)
                 .addItem(MonitorManager.MONITOR_TAG_DEFAULT)
                 .addItem(MonitorManager.MONITOR_CHART_TAG_HEAP)
                 .addItem(MonitorManager.MONITOR_CHART_TAG_PSS)
                 .build();
-
+        MonitorListItemBean item4 = new MonitorListItemBean.Builder()
+                .title(MonitorManager.MONITOR_CPU_TAG)
+                .addItem(MonitorManager.MONITOR_TAG_DEFAULT)
+                .addItem(MonitorManager.MONITOR_CPU_TAG_PERCENTAGE)
+                .build();
         mData.add(item1);
         mData.add(item2);
         mData.add(item3);
+        mData.add(item4);
         mAdapter.setData(mData);
     }
 
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mActivityRef.clear();
+    protected void onResume() {
+        super.onResume();
         MonitorManager.getInstance().stopAll();
+        MonitorManager.ItemBuilder.clear();
     }
-
     private static final int REQUEST_CODE = 1;
 
     private void requestAlertWindowPermission() {
@@ -98,6 +99,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Toast.makeText(MainActivity.this, "请打开悬浮窗权限", Toast.LENGTH_SHORT).show();
             } else {
                 MonitorManager.getInstance().start();
+                finish();
             }
         }
     }
@@ -110,9 +112,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if (Settings.canDrawOverlays(this)) {
                     Log.i(TAG, "onActivityResult granted");
                     MonitorManager.getInstance().start();
+                } else {
+                    Toast.makeText(MainActivity.this, "获取悬浮窗权限失败", Toast.LENGTH_SHORT).show();
                 }
             }
         }
+        finish();
     }
 
     @Override

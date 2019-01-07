@@ -5,20 +5,20 @@ import android.content.Context;
 import android.view.WindowManager;
 
 import com.example.pikamouse.learn_utils.tools.util.DisplayUtil;
-import com.example.pikamouse.learn_utils.tools.view.FloatBallView;
-import com.example.pikamouse.learn_utils.tools.window.FloatBallWindow;
+import com.example.pikamouse.learn_utils.tools.view.FloatInstrumentView;
+import com.example.pikamouse.learn_utils.tools.window.FloatInstrumentWindow;
 import com.example.pikamouse.learn_utils.tools.window.FloatWindow;
 
 /**
  * create by jiangfeng 2018/12/30
  */
-public class DebugMonitor implements IMonitor{
+public class InstrumentMonitor implements IMonitor{
 
-    private final static String TAG = "DebugMonitor";
+    private final static String TAG = "InstrumentMonitor";
 
     private Context mContext;
-    private FloatBallView mBall;
-    private FloatBallWindow mFloatBallWin;
+    private FloatInstrumentView mBall;
+    private FloatInstrumentWindow mFloatBallWin;
 
 
     public void init(Context context) {
@@ -29,13 +29,13 @@ public class DebugMonitor implements IMonitor{
     }
 
     @Override
-    public void start(String type) {
+    public void start(String tag) {
         if (mContext == null) {
             throw new IllegalStateException("init must be called");
         }
         stop();
-        mBall = new FloatBallView(mContext);
-        mFloatBallWin = new FloatBallWindow(mBall.getContext());
+        mBall = new FloatInstrumentView(mContext);
+        mFloatBallWin = new FloatInstrumentWindow(mBall.getContext());
         WindowManager.LayoutParams layoutParams = new FloatWindow.WMLayoutParamsBuilder()
                 .setFlag(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE)
                 .setX((DisplayUtil.getScreenWidth(mContext) * 4 / 5))
