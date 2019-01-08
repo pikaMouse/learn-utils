@@ -24,12 +24,13 @@ public class MonitorManager {
 
     //提示信息只需要在源文件保留
     @Retention(RetentionPolicy.SOURCE)
-    @IntDef({MONITOR_INSTRUMENT_CLASS, MONITOR_CHART_CLASS, MONITOR_MEMORY_INFO_CLASS, MONITOR_NET_INFO_CLASS, MONITOR_CPU_INFO_CLASS})
+    @IntDef({MONITOR_INSTRUMENT_CLASS, MONITOR_CHART_CLASS, MONITOR_ALL_INFO_CLASS, MONITOR_NET_INFO_CLASS, MONITOR_CPU_INFO_CLASS})
     public @interface MonitorClass {
     }
 
     @Retention(RetentionPolicy.SOURCE)
     @StringDef({
+            MONITOR_TOTAL_TAG,
             MONITOR_TAG_DEFAULT,
             MONITOR_INSTRUMENT_TAG,
             MONITOR_MEM_TAG,
@@ -43,18 +44,19 @@ public class MonitorManager {
             MONITOR_CHART_TAG,
             MONITOR_CHART_TAG_PSS,
             MONITOR_CHART_TAG_HEAP
-
             })
     public @interface MonitorTag {
     }
 
     public final static int MONITOR_INSTRUMENT_CLASS = 0;
     public final static int MONITOR_CHART_CLASS = 1;
-    public final static int MONITOR_MEMORY_INFO_CLASS = 2;
+    public final static int MONITOR_ALL_INFO_CLASS = 2;
     public final static int MONITOR_NET_INFO_CLASS = 3;
     public final static int MONITOR_CPU_INFO_CLASS = 4;
 
     public static final String MONITOR_INSTRUMENT_TAG = "instrument";
+
+    public static final String MONITOR_TOTAL_TAG = "全部";
 
     public static final String MONITOR_TAG_DEFAULT = "默认";
 
@@ -178,6 +180,17 @@ public class MonitorManager {
 
         public static List<String> getTitles() {
             return sTitles;
+        }
+
+        public static List<String> getAllItems() {
+            List<String> allItems = new ArrayList<>();
+            List<String> titles = getTitles();
+            for (String title : titles) {
+                List<String> items = getItems(title);
+                if (items.isEmpty()) items = getDefaultItems(title);
+                allItems.addAll((items));
+            }
+            return allItems;
         }
 
         private static String Item2Title(String item) {

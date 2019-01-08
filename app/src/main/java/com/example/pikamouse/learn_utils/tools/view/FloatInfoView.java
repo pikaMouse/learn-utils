@@ -10,6 +10,7 @@ import com.example.pikamouse.learn_utils.tools.monitor.MonitorManager;
 import com.example.pikamouse.learn_utils.tools.util.DisplayUtil;
 import com.example.pikamouse.learn_utils.tools.util.MemoryUtil;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -115,7 +116,12 @@ public class FloatInfoView extends ConstraintLayout {
     }
 
     public void setViewVisibility(String type) {
-        List<String> items = MonitorManager.ItemBuilder.getItems(type);
+        List<String> items = new ArrayList<>();
+        if (type.equals(MonitorManager.MONITOR_TOTAL_TAG)) {
+            items = MonitorManager.ItemBuilder.getAllItems();
+        } else {
+            MonitorManager.ItemBuilder.getItems(type);
+        }
         if (items.isEmpty()) {
             items = MonitorManager.ItemBuilder.getDefaultItems(type);
         }

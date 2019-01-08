@@ -5,12 +5,10 @@ import android.app.Application;
 import android.content.Context;
 import android.os.Bundle;
 
-import com.example.pikamouse.learn_utils.tools.monitor.CPUMonitor;
 import com.example.pikamouse.learn_utils.tools.monitor.InstrumentMonitor;
-import com.example.pikamouse.learn_utils.tools.monitor.MemoryMonitor;
+import com.example.pikamouse.learn_utils.tools.monitor.AllInfoMonitor;
 import com.example.pikamouse.learn_utils.tools.monitor.ChartMonitor;
 import com.example.pikamouse.learn_utils.tools.monitor.MonitorManager;
-import com.example.pikamouse.learn_utils.tools.monitor.NetMonitor;
 
 import java.lang.ref.SoftReference;
 
@@ -31,9 +29,7 @@ public class MyApplication extends Application {
         MonitorManager.getInstance()
                 .add(MonitorManager.MONITOR_INSTRUMENT_CLASS, new InstrumentMonitor())
                 .add(MonitorManager.MONITOR_CHART_CLASS, new ChartMonitor())
-                .add(MonitorManager.MONITOR_MEMORY_INFO_CLASS, new MemoryMonitor())
-                .add(MonitorManager.MONITOR_NET_INFO_CLASS, new NetMonitor())
-                .add(MonitorManager.MONITOR_CPU_INFO_CLASS, new CPUMonitor())
+                .add(MonitorManager.MONITOR_ALL_INFO_CLASS, new AllInfoMonitor())
                 .init(this);
         registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
             @Override

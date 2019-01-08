@@ -79,26 +79,14 @@ public class FloatInstrumentView extends AppCompatTextView implements View.OnCli
                         case MonitorManager.MONITOR_INSTRUMENT_TAG:
                             MonitorManager.getInstance().stopAll();
                             break;
-                        case MonitorManager.MONITOR_MEM_TAG:
-                        case MonitorManager.MONITOR_MEM_TAG_HEAP:
-                        case MonitorManager.MONITOR_MEM_TAG_PSS:
-                        case MonitorManager.MONITOR_MEM_TAG_SYSTEM:
-                            MonitorManager.getInstance().get(MonitorManager.MONITOR_MEMORY_INFO_CLASS).stop();
-                            break ;
-                        case MonitorManager.MONITOR_CHART_TAG_HEAP:
-                        case MonitorManager.MONITOR_CHART_TAG_PSS:
                         case MonitorManager.MONITOR_CHART_TAG:
                             MonitorManager.getInstance().get(MonitorManager.MONITOR_CHART_CLASS).stop();
                             break;
+                        case MonitorManager.MONITOR_MEM_TAG:
                         case MonitorManager.MONITOR_NET_TAG:
-                        case MonitorManager.MONITOR_NET_TAG_RX:
-                        case MonitorManager.MONITOR_NET_TAG_TX:
-                        case MonitorManager.MONITOR_NET_TAG_RATE:
-                            MonitorManager.getInstance().get(MonitorManager.MONITOR_NET_INFO_CLASS).stop();
-                            break;
                         case MonitorManager.MONITOR_CPU_TAG:
-                        case MonitorManager.MONITOR_CPU_TAG_PERCENTAGE:
-                            MonitorManager.getInstance().get(MonitorManager.MONITOR_CPU_INFO_CLASS).stop();
+                        case MonitorManager.MONITOR_TOTAL_TAG:
+                            MonitorManager.getInstance().get(MonitorManager.MONITOR_ALL_INFO_CLASS).stop();
                             break;
                         default:
                             break;

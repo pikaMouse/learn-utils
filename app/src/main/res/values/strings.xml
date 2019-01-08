@@ -25,6 +25,7 @@
 
     <string name="monitor_config_confirm">确定</string>
     <string name="monitor_instrument_close">关闭</string>
+    <string name="monitor_instrument_total">全部</string>
 
 
 </resources>
