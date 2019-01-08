@@ -5,12 +5,9 @@ import android.view.WindowManager;
 
 import com.example.pikamouse.learn_utils.tools.util.CpuUtil;
 import com.example.pikamouse.learn_utils.tools.util.DisplayUtil;
-import com.example.pikamouse.learn_utils.tools.util.ThreadUtil;
-import com.example.pikamouse.learn_utils.tools.view.FloatCPUView;
+import com.example.pikamouse.learn_utils.tools.view.FloatInfoView;
 import com.example.pikamouse.learn_utils.tools.window.DefaultWindow;
 import com.example.pikamouse.learn_utils.tools.window.FloatWindow;
-
-import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -21,7 +18,7 @@ import java.util.TimerTask;
 public class CPUMonitor implements IMonitor {
 
     private Context mContext;
-    private FloatCPUView mFloatCPUView;
+    private FloatInfoView mFloatCPUView;
     private DefaultWindow mFloatCPUWindow;
     private final static int DURATION = 1000;
     private Timer mTimer;
@@ -34,12 +31,11 @@ public class CPUMonitor implements IMonitor {
 
     @Override
     public void start(String tag) {
-        List<String> items = MonitorManager.ItemBuilder.getItems(tag);
         if (mFloatCPUView == null) {
-            mFloatCPUView = new FloatCPUView(mContext);
+            mFloatCPUView = new FloatInfoView(mContext);
         }
         mFloatCPUWindow = new DefaultWindow(mContext);
-        mFloatCPUView.setViewVisibility(items);
+        mFloatCPUView.setViewVisibility(tag);
         WindowManager.LayoutParams layoutParams = new FloatWindow.WMLayoutParamsBuilder()
                 .setFlag(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 .setX(DisplayUtil.getScreenWidth(mContext) - mFloatCPUView.getMeasuredWidth())
@@ -51,6 +47,7 @@ public class CPUMonitor implements IMonitor {
         }
         mTask = new CPUTimerTask();
         mTimer.scheduleAtFixedRate(mTask, 0, DURATION);
+        CpuUtil.getCPUPercenter();
     }
 
     @Override
@@ -68,13 +65,13 @@ public class CPUMonitor implements IMonitor {
 
         @Override
         public void run() {
-            final String str = CpuUtil.getCPURateDesc() + "%";
-            ThreadUtil.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    mFloatCPUView.setData(str);
-                }
-            });
+//            final String str = CpuUtil.getCPURateDesc() + "%";
+//            ThreadUtil.runOnUiThread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    mFloatCPUView.setMemoryData(str);
+//                }
+//            });
         }
     }
 }

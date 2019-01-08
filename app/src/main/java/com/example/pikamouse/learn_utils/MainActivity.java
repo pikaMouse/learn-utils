@@ -64,15 +64,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .addItem(MonitorManager.MONITOR_NET_TAG_RATE)
                 .build();
         MonitorListItemBean item3 = new MonitorListItemBean.Builder()
+                .title(MonitorManager.MONITOR_CPU_TAG)
+                .addItem(MonitorManager.MONITOR_TAG_DEFAULT)
+                .addItem(MonitorManager.MONITOR_CPU_TAG_PERCENTAGE)
+                .build();
+        MonitorListItemBean item4 = new MonitorListItemBean.Builder()
                 .title(MonitorManager.MONITOR_CHART_TAG)
                 .addItem(MonitorManager.MONITOR_TAG_DEFAULT)
                 .addItem(MonitorManager.MONITOR_CHART_TAG_HEAP)
                 .addItem(MonitorManager.MONITOR_CHART_TAG_PSS)
-                .build();
-        MonitorListItemBean item4 = new MonitorListItemBean.Builder()
-                .title(MonitorManager.MONITOR_CPU_TAG)
-                .addItem(MonitorManager.MONITOR_TAG_DEFAULT)
-                .addItem(MonitorManager.MONITOR_CPU_TAG_PERCENTAGE)
                 .build();
         mData.add(item1);
         mData.add(item2);

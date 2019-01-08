@@ -172,11 +172,15 @@ public class MonitorManager {
             return sItems.get(title);
         }
 
+        public static List<String> getDefaultItems(String title) {
+            return Title2Item(title);
+        }
+
         public static List<String> getTitles() {
             return sTitles;
         }
 
-        public String Item2Title(String item) {
+        private static String Item2Title(String item) {
             if (item.equals(MONITOR_MEM_TAG_HEAP) || item.equals(MONITOR_MEM_TAG_PSS) || item.equals(MONITOR_MEM_TAG_SYSTEM)) {
                 return MONITOR_MEM_TAG;
             }
@@ -186,7 +190,29 @@ public class MonitorManager {
             if (item.equals(MONITOR_CHART_TAG_HEAP) || item.equals(MONITOR_CHART_TAG_PSS)) {
                 return MONITOR_CHART_TAG;
             }
+            if (item.equals(MONITOR_CPU_TAG_PERCENTAGE)) {
+                return MONITOR_CPU_TAG;
+            }
             return null;
+        }
+
+        private static List<String>Title2Item(String title) {
+            List<String> items = new ArrayList<>();
+            if (title.equals(MONITOR_MEM_TAG)) {
+                items.add(MONITOR_MEM_TAG_HEAP);
+                items.add(MONITOR_MEM_TAG_PSS);
+                items.add(MONITOR_MEM_TAG_SYSTEM);
+            } else if (title.equals(MONITOR_NET_TAG)) {
+                items.add(MONITOR_NET_TAG_RX);
+                items.add(MONITOR_NET_TAG_TX);
+                items.add(MONITOR_NET_TAG_RATE);
+            } else if (title.equals(MONITOR_CHART_TAG)) {
+                items.add(MONITOR_CHART_TAG_HEAP);
+                items.add(MONITOR_CHART_TAG_PSS);
+            } else if (title.equals(MONITOR_CPU_TAG)) {
+                items.add(MONITOR_CPU_TAG_PERCENTAGE);
+            }
+            return items;
         }
     }
 }

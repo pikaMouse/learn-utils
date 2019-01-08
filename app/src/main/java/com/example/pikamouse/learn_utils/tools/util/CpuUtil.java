@@ -5,6 +5,8 @@ import android.util.Log;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -18,6 +20,22 @@ public class CpuUtil {
     private final static String TAG = "CpuUtil";
 
 
+    public static String getCPUPercenter() {
+        try {
+            Process runtime = Runtime.getRuntime().exec("adb shell cat /proc/stat");
+            InputStream is = runtime.getInputStream();
+            BufferedReader br = new BufferedReader(new InputStreamReader(is));
+            StringBuffer sb = new StringBuffer();
+            String line;
+            while ((line = br.readLine()) != null) {
+                sb.append(line  + "\n");
+            }
+            Log.d(TAG, sb.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
 
     /**获取当前CPU占比
      * 在实际测试中发现，有的手机会隐藏CPU状态，不会完全显示所有CPU信息，例如MX5，所有建议只做参考

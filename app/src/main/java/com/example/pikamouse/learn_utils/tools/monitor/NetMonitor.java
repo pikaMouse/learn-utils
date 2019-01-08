@@ -7,8 +7,8 @@ import android.view.WindowManager;
 
 import com.example.pikamouse.learn_utils.tools.util.DisplayUtil;
 import com.example.pikamouse.learn_utils.tools.util.ThreadUtil;
-import com.example.pikamouse.learn_utils.tools.view.FloatNetView;
-import com.example.pikamouse.learn_utils.tools.window.FloatNetWindow;
+import com.example.pikamouse.learn_utils.tools.view.FloatInfoView;
+import com.example.pikamouse.learn_utils.tools.window.DefaultWindow;
 import com.example.pikamouse.learn_utils.tools.window.FloatWindow;
 
 import java.util.Timer;
@@ -22,8 +22,8 @@ public class NetMonitor implements IMonitor{
 
     private Context mContext;
     private Timer mTimer;
-    private FloatNetView mView;
-    private FloatNetWindow mWindow;
+    private FloatInfoView mView;
+    private DefaultWindow mWindow;
     private NetInfoTask mTask;
     private final static long DURATION = 1000;
     private int mProcessUid;
@@ -44,9 +44,9 @@ public class NetMonitor implements IMonitor{
             throw new IllegalStateException("init must be called");
         }
         stop();
-        mView = new FloatNetView(mContext);
-        mView.setViewVisibility(MonitorManager.ItemBuilder.getItems(type));
-        mWindow = new FloatNetWindow(mContext);
+        mView = new FloatInfoView(mContext);
+        mView.setViewVisibility(type);
+        mWindow = new DefaultWindow(mContext);
         WindowManager.LayoutParams layoutParams = new FloatWindow.WMLayoutParamsBuilder()
                 //可以唤起输入法，不接受任何触摸事件全部由下层window接受
                 .setFlag(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
@@ -79,7 +79,7 @@ public class NetMonitor implements IMonitor{
                 ThreadUtil.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        mView.setData(tx, rx, rate);
+                        mView.setNetData(tx, rx, rate);
                     }
                 });
             } catch (ArithmeticException e) {
