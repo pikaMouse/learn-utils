@@ -5,6 +5,7 @@ import android.content.Context;
 import android.net.TrafficStats;
 import android.view.WindowManager;
 
+import com.example.pikamouse.learn_utils.tools.util.CpuUtil;
 import com.example.pikamouse.learn_utils.tools.util.DisplayUtil;
 import com.example.pikamouse.learn_utils.tools.util.MemoryUtil;
 import com.example.pikamouse.learn_utils.tools.util.ThreadUtil;
@@ -110,7 +111,13 @@ public class AllInfoMonitor implements IMonitor{
             }
 
             if (mTag.equals(MonitorManager.MONITOR_TOTAL_TAG) || mTag.equals(MonitorManager.MONITOR_CPU_TAG)) {
-                //todo
+                final float value = CpuUtil.getInstance().getCPUData();
+                ThreadUtil.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (mAllInfoView != null) mAllInfoView.setCPUData(value);
+                    }
+                });
             }
 
         }

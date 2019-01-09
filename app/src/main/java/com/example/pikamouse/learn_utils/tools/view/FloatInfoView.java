@@ -23,7 +23,12 @@ import java.util.Map;
 public class FloatInfoView extends ConstraintLayout {
 
     private final static String TAG = "FloatAllInfoView";
-    private final static String UNIT = "M";
+    private final static String UNIT_PERCENTAGE = "%";
+    private final static String UNIT_B = "B";
+    private final static String UNIT_K = "K";
+    private final static String UNIT_M = "M";
+    private final static String UNIT_G = "G";
+    private final static String DOLL = ".";
 
     private TextView mTotalPSS;
     private TextView mDalvikPSS;
@@ -112,7 +117,7 @@ public class FloatInfoView extends ConstraintLayout {
         mRX = findViewById(R.id.net_monitor_receive_flow_info);
         mRate = findViewById(R.id.net_monitor_rate_info);
 
-        mPercentage = findViewById(R.id.cpu_monitor_percentage);
+        mPercentage = findViewById(R.id.cpu_monitor_percentage_info);
     }
 
     public void setViewVisibility(String type) {
@@ -172,23 +177,42 @@ public class FloatInfoView extends ConstraintLayout {
     }
 
     public void setNetData(long txByte, long rxByte, long rate) {
-        //todo 优化单位显示
-        String txStr = String.format(Locale.getDefault(), VALUE_FORMAT_TXT,(float)txByte / 1024 / 1024) + "M";
-        if (mTX != null) mTX.setText(txStr);
-        String rxStr = String.format(Locale.getDefault(), VALUE_FORMAT_TXT,(float)rxByte / 1024 / 1024) + "M";
-        if (mRX != null) mRX.setText(rxStr);
-        String rateStr = String.format(Locale.getDefault(), VALUE_FORMAT_TXT, (float)(rate / 1024)) + "k/s";
-        if (mRate != null) mRate.setText(rateStr);
+        if (mTX != null) mTX.setText(formatNet(txByte));
+        if (mRX != null) mRX.setText(formatNet(rxByte));
+        if (mRate != null) mRate.setText(formatNet(rate));
     }
 
-    public void setCPUData(String str) {
-        //todo
+    public void setCPUData(float value) {
         if (mPercentage != null) {
-            mPercentage.setText(str);
+            mPercentage.setText(formatCPU(value));
         }
     }
 
     private String formatMemory(long mem) {
-        return String.format(Locale.getDefault(), VALUE_FORMAT_TXT, (float)mem / 1024) + UNIT;
+        return String.format(Locale.getDefault(), VALUE_FORMAT_TXT, (float)mem / 1024) + UNIT_M;
+    }
+
+    private String formatCPU(float percentage) {
+        return String.format(Locale.getDefault(), VALUE_FORMAT_TXT, percentage) + UNIT_PERCENTAGE;
+    }
+
+    private String formatNet(long rate) {
+        if (rate < 1024) {
+            return String.valueOf(rate) + UNIT_B;
+        } else {
+            rate = rate / 1024;
+        }
+        if (rate < 1024) {
+            return String.valueOf(rate) + UNIT_K;
+        } else {
+            rate = rate / 1024;
+        }
+        if (rate < 1024) {
+            rate = rate * 100;
+            return String.valueOf(rate / 100) + DOLL + String.valueOf(rate % 100) + UNIT_M;
+        } else {
+            rate = rate * 100 / 1024;
+            return String.valueOf(rate / 100) + DOLL + String.valueOf(rate % 100) + UNIT_G;
+        }
     }
 }
