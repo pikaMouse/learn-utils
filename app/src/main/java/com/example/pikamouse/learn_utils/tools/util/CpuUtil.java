@@ -3,6 +3,10 @@ package com.example.pikamouse.learn_utils.tools.util;
 import android.os.Build;
 import android.util.Log;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.RandomAccessFile;
 
 /**
@@ -17,6 +21,11 @@ public class CpuUtil {
     private Long mLastCpuTime;
     private Long mLastAppCpuTime;
     private boolean mAboveAndroidO;
+
+    public interface CallBack {
+        void success(float value);
+        void fail(String err);
+    }
 
     private CpuUtil() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -33,13 +42,16 @@ public class CpuUtil {
     }
 
 
-    public float getCPUData() {
+    public void getCPUData(CallBack callBack) {
         if (mAboveAndroidO) {
-            //todo
-            return 0;
+            getCPUDataAboveAndroidO(callBack);
         } else {
-            return getCPUDataBellowAndroidO();
+            callBack.success(getCPUDataBellowAndroidO());
         }
+    }
+
+    private void getCPUDataAboveAndroidO(CallBack callBack) {
+
     }
 
     private float getCPUDataBellowAndroidO() {
@@ -77,6 +89,28 @@ public class CpuUtil {
             e.printStackTrace();
         }
         return value;
+    }
+
+    public float parseCPUData(String data) {
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(data.getBytes())));
+        String line;
+        try {
+            while ((line = bufferedReader.readLine()) != null) {
+                line = line.trim();
+                if (line.contains("Permission Denial")) {
+                    break;
+                } else {
+                    String[] lineItems = line.split("\\s+");
+                    if (lineItems.length > 1) {
+                        bufferedReader.close();
+                        return Float.parseFloat(lineItems[0].replace("%", ""));
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 
 }

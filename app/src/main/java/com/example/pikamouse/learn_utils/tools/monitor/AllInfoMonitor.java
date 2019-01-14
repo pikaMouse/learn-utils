@@ -111,13 +111,23 @@ public class AllInfoMonitor implements IMonitor{
             }
 
             if (mTag.equals(MonitorManager.MONITOR_TOTAL_TAG) || mTag.equals(MonitorManager.MONITOR_CPU_TAG)) {
-                final float value = CpuUtil.getInstance().getCPUData();
-                ThreadUtil.runOnUiThread(new Runnable() {
+                 CpuUtil.getInstance().getCPUData(new CpuUtil.CallBack() {
                     @Override
-                    public void run() {
-                        if (mAllInfoView != null) mAllInfoView.setCPUData(value);
+                    public void success(final float value) {
+                        ThreadUtil.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (mAllInfoView != null) mAllInfoView.setCPUData(value);
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void fail(String err) {
+
                     }
                 });
+
             }
 
         }
