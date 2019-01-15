@@ -1,7 +1,10 @@
 package com.example.pikamouse.learn_utils.tools.util;
 
+import android.content.Context;
 import android.os.Build;
 import android.util.Log;
+
+import com.example.pikamouse.learn_utils.tools.util.adb.AdbConnector;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -21,10 +24,12 @@ public class CpuUtil {
     private Long mLastCpuTime;
     private Long mLastAppCpuTime;
     private boolean mAboveAndroidO;
+    private Context mContext;
+    private String mPackageName;
 
     public interface CallBack {
-        void success(float value);
-        void fail(String err);
+        void onSuccess(float value);
+        void onFail(String msg);
     }
 
     private CpuUtil() {
@@ -42,16 +47,31 @@ public class CpuUtil {
     }
 
 
-    public void getCPUData(CallBack callBack) {
+    public void getCPUData(Context context, CallBack callBack) {
+        mContext = context;
+        mPackageName = mContext.getPackageName();
         if (mAboveAndroidO) {
             getCPUDataAboveAndroidO(callBack);
         } else {
-            callBack.success(getCPUDataBellowAndroidO());
+            callBack.onSuccess(getCPUDataBellowAndroidO());
         }
     }
 
-    private void getCPUDataAboveAndroidO(CallBack callBack) {
-
+    private void getCPUDataAboveAndroidO(final CallBack callBack) {
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    String msg = AdbConnector.getInstance().openShell("shell:dumpsys cpuinfo | grep '" + mPackageName + "'");
+                    callBack.onSuccess(parseCPUData(msg));
+                    Log.d(TAG, msg);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    callBack.onFail(e.getMessage());
+                }
+            }
+        };
+        ThreadUtil.executeInExcecutor(runnable);
     }
 
     private float getCPUDataBellowAndroidO() {
@@ -77,7 +97,7 @@ public class CpuUtil {
                     + Long.parseLong(procStats[6]) + Long.parseLong(procStats[7])
                     + Long.parseLong(procStats[8]);
             appTime = Long.parseLong(appStats[13]) + Long.parseLong(appStats[14]);
-            if (mLastCpuTime == null && mLastAppCpuTime == null) {
+            if (mLastCpuTime == null || mLastAppCpuTime == null) {
                 mLastCpuTime = cpuTime;
                 mLastAppCpuTime = appTime;
                 return value;

@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import android.net.TrafficStats;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import com.example.pikamouse.learn_utils.tools.util.CpuUtil;
 import com.example.pikamouse.learn_utils.tools.util.DisplayUtil;
@@ -111,9 +112,9 @@ public class AllInfoMonitor implements IMonitor{
             }
 
             if (mTag.equals(MonitorManager.MONITOR_TOTAL_TAG) || mTag.equals(MonitorManager.MONITOR_CPU_TAG)) {
-                 CpuUtil.getInstance().getCPUData(new CpuUtil.CallBack() {
+                 CpuUtil.getInstance().getCPUData(mContext, new CpuUtil.CallBack() {
                     @Override
-                    public void success(final float value) {
+                    public void onSuccess(final float value) {
                         ThreadUtil.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -123,8 +124,13 @@ public class AllInfoMonitor implements IMonitor{
                     }
 
                     @Override
-                    public void fail(String err) {
-
+                    public void onFail(final String err) {
+                        ThreadUtil.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(mContext, err, Toast.LENGTH_LONG).show();
+                            }
+                        });
                     }
                 });
 

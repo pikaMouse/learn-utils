@@ -6,5 +6,5 @@ package com.example.pikamouse.learn_utils.tools.util.adb;
  */
 public class AdbConstant {
     public final static String HOST = "127.0.0.1";
-    public final static int PORT = 5237;
+    public final static int PORT = 5037;
 }

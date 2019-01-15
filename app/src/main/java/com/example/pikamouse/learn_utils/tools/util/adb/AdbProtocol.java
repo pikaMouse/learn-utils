@@ -52,7 +52,7 @@ public class AdbProtocol {
     }
 
     public static boolean validateMessage(AdbMessage msg) {
-        if (msg.checksum != ~msg.command) {
+        if (msg.command != ~msg.magic) {
             return false;
         } else {
             return msg.payloadLength == 0 || getPayloadChecksum(msg.payload) == msg.checksum;
