@@ -51,26 +51,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mData = new ArrayList<>();
         MonitorListItemBean item1 = new MonitorListItemBean.Builder()
                 .title(MonitorManager.MONITOR_MEM_TAG)
-                .addItem(MonitorManager.MONITOR_TAG_DEFAULT)
                 .addItem(MonitorManager.MONITOR_MEM_TAG_HEAP)
                 .addItem(MonitorManager.MONITOR_MEM_TAG_PSS)
                 .addItem(MonitorManager.MONITOR_MEM_TAG_SYSTEM)
                 .build();
         MonitorListItemBean item2 = new MonitorListItemBean.Builder()
                 .title(MonitorManager.MONITOR_NET_TAG)
-                .addItem(MonitorManager.MONITOR_TAG_DEFAULT)
                 .addItem(MonitorManager.MONITOR_NET_TAG_RX)
                 .addItem(MonitorManager.MONITOR_NET_TAG_TX)
                 .addItem(MonitorManager.MONITOR_NET_TAG_RATE)
                 .build();
         MonitorListItemBean item3 = new MonitorListItemBean.Builder()
                 .title(MonitorManager.MONITOR_CPU_TAG)
-                .addItem(MonitorManager.MONITOR_TAG_DEFAULT)
                 .addItem(MonitorManager.MONITOR_CPU_TAG_PERCENTAGE)
                 .build();
         MonitorListItemBean item4 = new MonitorListItemBean.Builder()
                 .title(MonitorManager.MONITOR_CHART_TAG)
-                .addItem(MonitorManager.MONITOR_TAG_DEFAULT)
                 .addItem(MonitorManager.MONITOR_CHART_TAG_HEAP)
                 .addItem(MonitorManager.MONITOR_CHART_TAG_PSS)
                 .build();

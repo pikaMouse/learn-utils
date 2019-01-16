@@ -4,4 +4,6 @@
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
     <color name="monitor_bg_chart">#aa000000</color>
+    <color name="monitor_net_text">#acf1ee</color>
+    <color name="monitor_cpu_text">#a3f593</color>
 </resources>

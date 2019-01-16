@@ -58,20 +58,14 @@ public class CpuUtil {
     }
 
     private void getCPUDataAboveAndroidO(final CallBack callBack) {
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    String msg = AdbConnector.getInstance().openShell("shell:dumpsys cpuinfo | grep '" + mPackageName + "'");
-                    callBack.onSuccess(parseCPUData(msg));
-                    Log.d(TAG, msg);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    callBack.onFail(e.getMessage());
-                }
-            }
-        };
-        ThreadUtil.executeInExcecutor(runnable);
+        try {
+            String msg = AdbConnector.getInstance().openShell("shell:dumpsys cpuinfo | grep '" + mPackageName + "'");
+            callBack.onSuccess(parseCPUData(msg));
+            Log.d(TAG, msg);
+        } catch (Exception e) {
+            e.printStackTrace();
+            callBack.onFail(e.getMessage());
+        }
     }
 
     private float getCPUDataBellowAndroidO() {
