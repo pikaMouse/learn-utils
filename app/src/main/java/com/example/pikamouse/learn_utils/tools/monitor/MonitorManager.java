@@ -31,12 +31,17 @@ public class MonitorManager {
     @Retention(RetentionPolicy.SOURCE)
     @StringDef({
             MONITOR_TOTAL_TAG,
-            MONITOR_TAG_DEFAULT,
             MONITOR_INSTRUMENT_TAG,
             MONITOR_MEM_TAG,
             MONITOR_MEM_TAG_HEAP,
+            MONITOR_MEM_TAG_HEAP_FREE,
+            MONITOR_MEM_TAG_HEAP_ALLOC,
             MONITOR_MEM_TAG_PSS,
+            MONITOR_MEM_TAG_PSS_DALVIK,
+            MONITOR_MEM_TAG_PSS_NATIVE,
+            MONITOR_MEM_TAG_PSS_OTHER,
             MONITOR_MEM_TAG_SYSTEM,
+            MONITOR_MEM_TAG_SYSTEM_AVAIL,
             MONITOR_NET_TAG,
             MONITOR_NET_TAG_RX,
             MONITOR_NET_TAG_TX,
@@ -56,12 +61,17 @@ public class MonitorManager {
 
     public static final String MONITOR_TOTAL_TAG = "全部";
 
-    public static final String MONITOR_TAG_DEFAULT = "默认";
 
     public static final String MONITOR_MEM_TAG = "内存";
     public static final String MONITOR_MEM_TAG_HEAP = "Heap";
+    public static final String MONITOR_MEM_TAG_HEAP_FREE = "Heap Free";
+    public static final String MONITOR_MEM_TAG_HEAP_ALLOC = "Heap Alloc";
     public static final String MONITOR_MEM_TAG_PSS = "PSS";
-    public static final String MONITOR_MEM_TAG_SYSTEM = "System";
+    public static final String MONITOR_MEM_TAG_PSS_DALVIK = "PSS Dalvik";
+    public static final String MONITOR_MEM_TAG_PSS_NATIVE = "PSS Native";
+    public static final String MONITOR_MEM_TAG_PSS_OTHER = "PSS Other";
+    public static final String MONITOR_MEM_TAG_SYSTEM = "System Total";
+    public static final String MONITOR_MEM_TAG_SYSTEM_AVAIL = "System Avail";
 
     public static final String MONITOR_NET_TAG = "网络";
     public static final String MONITOR_NET_TAG_RX = "RX";
@@ -116,7 +126,6 @@ public class MonitorManager {
         for (int i = 0; i < len; i++) {
             sMonitors.get(i).stop();
         }
-        ItemBuilder.clear();
     }
 
     public IMonitor get(@MonitorClass int key) {
@@ -124,33 +133,40 @@ public class MonitorManager {
     }
 
     public static class ItemBuilder {
-        private List<String> mList;
 
-        private static Map<String, ItemBuilder> sBuilders = new HashMap<>();
         private static List<String> sTitles = new ArrayList<>();
         private static Map<String, List<String>> sItems = new HashMap<>();
+        private static Map<String, Boolean> sCheckState = new HashMap<>();
 
-        private ItemBuilder () {
-            mList = new ArrayList<>();
-        }
-        public static ItemBuilder create(String title) {
-            ItemBuilder itemBuilder = sBuilders.get(title);
-            if (itemBuilder == null) {
-                itemBuilder = new ItemBuilder();
-                sBuilders.put(title, itemBuilder);
+        public static void setCheckState(boolean isCheck, @NonNull String tag) {
+            if (isTitle(tag)) {
+                sCheckState.put(tag, isCheck);
+                List<String> items = getItems(tag);
+                if (items == null) return;
+                for (String item : items) {
+                    sCheckState.put(item, false);
+                }
+            } else {
+               sCheckState.put(tag, isCheck);
             }
-            return itemBuilder;
         }
-        public void setTitle(boolean isAdd, @NonNull String title) {
+
+        public static boolean getCheckState(String tag) {
+            Boolean b = sCheckState.get(tag);
+            return b == null ? false : b;
+        }
+
+        public static void setTitle(boolean isAdd, @NonNull String title) {
             if (isAdd) {
-                sItems.put(title, mList);
+                List<String>list = new ArrayList<>();
+                sItems.put(title, list);
                 sTitles.add(title);
             } else {
                 sItems.remove(title);
                 sTitles.remove(title);
             }
         }
-        public void addItem(boolean isAdd, @NonNull String item) {
+        public static void addItem(boolean isAdd, @NonNull String item) {
             String title = Item2Title(item);
             if (title == null) return;
             List<String> list = sItems.get(title);
@@ -160,12 +176,17 @@ public class MonitorManager {
             } else {
                 list.remove(item);
             }
+            sItems.put(title, list);
         }
 
         public static void clear() {
-            sBuilders.clear();
             sItems.clear();
             sTitles.clear();
+        }
+
+        public static int getItemsSize(@NonNull String title) {
+            List<String>items = sItems.get(title);
+            return items == null ? 0 : items.size();
         }
 
         public static List<String> getItems(@NonNull String title) {
@@ -185,14 +206,19 @@ public class MonitorManager {
             List<String> titles = getTitles();
             for (String title : titles) {
                 List<String> items = getItems(title);
-                if (items.isEmpty()) items = getDefaultItems(title);
                 allItems.addAll((items));
             }
             return allItems;
         }
 
+        private static boolean isTitle(String tag) {
+            return tag.equals(MONITOR_MEM_TAG) || tag.equals(MONITOR_NET_TAG) || tag.equals(MONITOR_CHART_TAG) || tag.equals(MONITOR_CPU_TAG);
+        }
+
         private static String Item2Title(String item) {
-            if (item.equals(MONITOR_MEM_TAG_HEAP) || item.equals(MONITOR_MEM_TAG_PSS) || item.equals(MONITOR_MEM_TAG_SYSTEM)) {
+            if (item.equals(MONITOR_MEM_TAG_HEAP) || item.equals(MONITOR_MEM_TAG_HEAP_FREE) || item.equals(MONITOR_MEM_TAG_HEAP_ALLOC)
+                    || item.equals(MONITOR_MEM_TAG_PSS) || item.equals(MONITOR_MEM_TAG_PSS_DALVIK) || item.equals(MONITOR_MEM_TAG_PSS_NATIVE)
+                    || item.equals(MONITOR_MEM_TAG_PSS_OTHER) || item.equals(MONITOR_MEM_TAG_SYSTEM) || item.equals(MONITOR_MEM_TAG_SYSTEM_AVAIL)) {
                 return MONITOR_MEM_TAG;
             }
             if (item.equals(MONITOR_NET_TAG_RX) || item.equals(MONITOR_NET_TAG_TX) || item.equals(MONITOR_NET_TAG_RATE)) {
@@ -211,8 +237,14 @@ public class MonitorManager {
             List<String> items = new ArrayList<>();
             if (title.equals(MONITOR_MEM_TAG)) {
                 items.add(MONITOR_MEM_TAG_HEAP);
+                items.add(MONITOR_MEM_TAG_HEAP_FREE);
+                items.add(MONITOR_MEM_TAG_HEAP_ALLOC);
                 items.add(MONITOR_MEM_TAG_PSS);
+                items.add(MONITOR_MEM_TAG_PSS_DALVIK);
+                items.add(MONITOR_MEM_TAG_PSS_NATIVE);
+                items.add(MONITOR_MEM_TAG_PSS_OTHER);
                 items.add(MONITOR_MEM_TAG_SYSTEM);
+                items.add(MONITOR_MEM_TAG_SYSTEM_AVAIL);
             } else if (title.equals(MONITOR_NET_TAG)) {
                 items.add(MONITOR_NET_TAG_RX);
                 items.add(MONITOR_NET_TAG_TX);

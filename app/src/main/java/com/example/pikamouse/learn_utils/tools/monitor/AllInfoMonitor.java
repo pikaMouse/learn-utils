@@ -6,6 +6,7 @@ import android.net.TrafficStats;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import com.example.pikamouse.learn_utils.R;
 import com.example.pikamouse.learn_utils.tools.util.CpuUtil;
 import com.example.pikamouse.learn_utils.tools.util.DisplayUtil;
 import com.example.pikamouse.learn_utils.tools.util.MemoryUtil;
@@ -14,6 +15,7 @@ import com.example.pikamouse.learn_utils.tools.view.FloatInfoView;
 import com.example.pikamouse.learn_utils.tools.window.DefaultWindow;
 import com.example.pikamouse.learn_utils.tools.window.FloatWindow;
 
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -32,6 +34,8 @@ public class AllInfoMonitor implements IMonitor{
 
     private AllInfoTimerTask mTask;
     private Timer mTimer;
+    private int mTipNum;
+    private int mCpuItem;
 
     @Override
     public void init(Context context) {
@@ -48,6 +52,9 @@ public class AllInfoMonitor implements IMonitor{
         }
         stop();
         mTag = tag;
+        if (mTag.equals(MonitorManager.MONITOR_TOTAL_TAG)) {
+            mCpuItem = MonitorManager.ItemBuilder.getItemsSize(MonitorManager.MONITOR_CPU_TAG);
+        }
         mAllInfoView = new FloatInfoView(mContext);
         mAllInfoView.setViewVisibility(tag);
         mAllInfoWindow = new DefaultWindow(mContext);
@@ -110,8 +117,7 @@ public class AllInfoMonitor implements IMonitor{
                     e.printStackTrace();
                 }
             }
-
-            if (mTag.equals(MonitorManager.MONITOR_TOTAL_TAG) || mTag.equals(MonitorManager.MONITOR_CPU_TAG)) {
+            if (mCpuItem > 0 || mTag.equals(MonitorManager.MONITOR_CPU_TAG)) {
                  CpuUtil.getInstance().getCPUData(mContext, new CpuUtil.CallBack() {
                     @Override
                     public void onSuccess(final float value) {
@@ -128,7 +134,13 @@ public class AllInfoMonitor implements IMonitor{
                         ThreadUtil.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                Toast.makeText(mContext, err, Toast.LENGTH_LONG).show();
+                                if (mTipNum < 1) {
+                                    Toast.makeText(mContext, err, Toast.LENGTH_LONG).show();
+                                    mTipNum++;
+                                } else if (mTipNum < 3){
+                                    Toast.makeText(mContext, mContext.getResources().getString(R.string.cpu_monitor_tip), Toast.LENGTH_LONG).show();
+                                    mTipNum++;
+                                }
                             }
                         });
                     }

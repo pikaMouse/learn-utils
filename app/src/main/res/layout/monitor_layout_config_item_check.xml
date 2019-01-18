@@ -12,8 +12,9 @@
     <TextView
         tools:text="heap曲线"
         android:gravity="center"
-        android:textSize="16sp"
+        android:textSize="12sp"
         android:padding="5dp"
+        android:textColor="@color/monitor_check_box_uncheckable"
         android:id="@+id/monitor_item_check_box_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

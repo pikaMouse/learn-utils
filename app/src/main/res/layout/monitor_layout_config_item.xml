@@ -10,6 +10,7 @@
 
     <TextView
         tools:text="内存"
+        android:textColor="@color/monitor_check_box_checkable"
         android:gravity="center"
         android:textSize="18sp"
         android:padding="2dp"

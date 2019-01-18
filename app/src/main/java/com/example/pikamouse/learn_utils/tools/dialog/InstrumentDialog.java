@@ -52,6 +52,9 @@ public class InstrumentDialog extends DialogFragment implements View.OnClickList
         List<String> list = MonitorManager.ItemBuilder.getTitles();
         int len = list.size();
         for (int i = 0; i < len; i++) {
+            if (MonitorManager.ItemBuilder.getItemsSize(list.get(i)) <= 0) {
+                continue;
+            }
             Button button = new Button(getActivity().getApplicationContext());
             button.setWidth(DisplayUtil.dp2px(100));
             button.setHeight(DisplayUtil.dp2px(48));

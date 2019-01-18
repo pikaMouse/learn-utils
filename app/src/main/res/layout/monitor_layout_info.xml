@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:orientation="vertical">
 
-    <android.support.constraint.ConstraintLayout
-        android:layout_width="150dp"
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/mem_monitor_container1">
-
+        android:id="@+id/mem_monitor_total_pss_container"
+        android:padding="2dp"
+        android:orientation="horizontal">
         <TextView
             android:text="@string/mem_monitor_total_pss"
             android:textColor="#ffffff"
@@ -18,7 +19,6 @@
             android:layout_width="wrap_content"
             android:gravity="center"
             android:layout_height="wrap_content" />
-
         <TextView
             tools:text="0"
             android:textColor="#ffffff"
@@ -27,21 +27,25 @@
             android:maxLines="1"
             android:maxWidth="80dp"
             android:id="@+id/mem_monitor_total_pss_info"
-            app:layout_constraintLeft_toRightOf="@+id/mem_monitor_total_pss_title"
             android:layout_width="wrap_content"
             android:gravity="center"
             android:layout_height="wrap_content" />
+    </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/mem_monitor_dalvik_pss_container"
+        android:padding="2dp"
+        android:orientation="horizontal">
         <TextView
             android:text="@string/mem_monitor_dalvik_pss"
             android:textColor="#ffffff"
             android:textSize="12sp"
             android:id="@+id/mem_monitor_dalvik_pss_title"
-            app:layout_constraintTop_toBottomOf="@+id/mem_monitor_total_pss_title"
             android:layout_width="wrap_content"
             android:gravity="center"
             android:layout_height="wrap_content" />
-
         <TextView
             tools:text="0"
             android:textSize="12sp"
@@ -50,22 +54,26 @@
             android:maxLines="1"
             android:maxWidth="80dp"
             android:id="@+id/mem_monitor_dalvik_pss_info"
-            app:layout_constraintLeft_toRightOf="@+id/mem_monitor_dalvik_pss_title"
-            app:layout_constraintTop_toBottomOf="@id/mem_monitor_total_pss_info"
             android:layout_width="wrap_content"
             android:gravity="center"
             android:layout_height="wrap_content" />
+    </LinearLayout>
 
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/mem_monitor_native_pss_container"
+        android:padding="2dp"
+        android:orientation="horizontal">
         <TextView
             android:text="@string/mem_monitor_native_pss"
             android:textColor="#ffffff"
             android:textSize="12sp"
             android:id="@+id/mem_monitor_native_pss_title"
-            app:layout_constraintTop_toBottomOf="@+id/mem_monitor_dalvik_pss_title"
             android:layout_width="wrap_content"
             android:gravity="center"
             android:layout_height="wrap_content" />
-
         <TextView
             tools:text="0"
             android:textColor="#ffffff"
@@ -74,22 +82,25 @@
             android:maxLines="1"
             android:maxWidth="80dp"
             android:id="@+id/mem_monitor_native_pss_info"
-            app:layout_constraintLeft_toRightOf="@+id/mem_monitor_native_pss_title"
-            app:layout_constraintTop_toBottomOf="@id/mem_monitor_dalvik_pss_info"
             android:layout_width="wrap_content"
             android:gravity="center"
             android:layout_height="wrap_content" />
+    </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/mem_monitor_other_pss_container"
+        android:padding="2dp"
+        android:orientation="horizontal">
         <TextView
             android:text="@string/mem_monitor_other_pss"
             android:textColor="#ffffff"
             android:textSize="12sp"
             android:id="@+id/mem_monitor_other_pss_title"
-            app:layout_constraintTop_toBottomOf="@+id/mem_monitor_native_pss_title"
             android:layout_width="wrap_content"
             android:gravity="center"
             android:layout_height="wrap_content" />
-
         <TextView
             tools:text="0"
             android:textColor="#ffffff"
@@ -98,21 +109,17 @@
             android:maxLines="1"
             android:maxWidth="80dp"
             android:id="@+id/mem_monitor_other_pss_info"
-            app:layout_constraintLeft_toRightOf="@+id/mem_monitor_other_pss_title"
-            app:layout_constraintTop_toBottomOf="@id/mem_monitor_native_pss_info"
             android:layout_width="wrap_content"
             android:gravity="center"
             android:layout_height="wrap_content" />
+    </LinearLayout>
 
-    </android.support.constraint.ConstraintLayout>
-
-
-    <android.support.constraint.ConstraintLayout
-        android:layout_width="150dp"
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/mem_monitor_container1"
-        android:id="@+id/mem_monitor_container2">
-
+        android:id="@+id/mem_monitor_total_heap_container"
+        android:padding="2dp"
+        android:orientation="horizontal">
         <TextView
             android:text="@string/mem_monitor_total_heap"
             android:textColor="#ffffff"
@@ -121,7 +128,6 @@
             android:layout_width="wrap_content"
             android:gravity="center"
             android:layout_height="wrap_content" />
-
         <TextView
             tools:text="0"
             android:textColor="#ffffff"
@@ -130,21 +136,25 @@
             android:maxLines="1"
             android:maxWidth="80dp"
             android:id="@+id/mem_monitor_total_heap_info"
-            app:layout_constraintLeft_toRightOf="@+id/mem_monitor_total_heap_title"
             android:layout_width="wrap_content"
             android:gravity="center"
             android:layout_height="wrap_content" />
+    </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/mem_monitor_free_heap_container"
+        android:padding="2dp"
+        android:orientation="horizontal">
         <TextView
             android:text="@string/mem_monitor_free_heap"
             android:textColor="#ffffff"
             android:textSize="12sp"
             android:id="@+id/mem_monitor_free_heap_title"
-            app:layout_constraintTop_toBottomOf="@+id/mem_monitor_total_heap_title"
             android:layout_width="wrap_content"
             android:gravity="center"
             android:layout_height="wrap_content" />
-
         <TextView
             tools:text="0"
             android:textColor="#ffffff"
@@ -153,22 +163,25 @@
             android:maxLines="1"
             android:maxWidth="80dp"
             android:id="@+id/mem_monitor_free_heap_info"
-            app:layout_constraintLeft_toRightOf="@+id/mem_monitor_free_heap_title"
-            app:layout_constraintTop_toBottomOf="@id/mem_monitor_total_heap_info"
             android:layout_width="wrap_content"
             android:gravity="center"
             android:layout_height="wrap_content" />
+    </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/mem_monitor_allocated_heap_container"
+        android:padding="2dp"
+        android:orientation="horizontal">
         <TextView
             android:text="@string/mem_monitor_allocated_heap"
             android:textColor="#ffffff"
             android:textSize="12sp"
             android:id="@+id/mem_monitor_allocated_heap_title"
-            app:layout_constraintTop_toBottomOf="@+id/mem_monitor_free_heap_title"
             android:layout_width="wrap_content"
             android:gravity="center"
             android:layout_height="wrap_content" />
-
         <TextView
             tools:text="0"
             android:textColor="#ffffff"
@@ -177,23 +190,17 @@
             android:maxLines="1"
             android:maxWidth="80dp"
             android:id="@+id/mem_monitor_allocated_heap_info"
-            app:layout_constraintLeft_toRightOf="@+id/mem_monitor_allocated_heap_title"
-            app:layout_constraintTop_toBottomOf="@id/mem_monitor_free_heap_info"
             android:layout_width="wrap_content"
             android:gravity="center"
             android:layout_height="wrap_content" />
+    </LinearLayout>
 
-    </android.support.constraint.ConstraintLayout>
-
-
-
-
-    <android.support.constraint.ConstraintLayout
-        android:layout_width="150dp"
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/mem_monitor_container2"
-        android:id="@+id/mem_monitor_container3">
-
+        android:id="@+id/mem_monitor_total_mem_container"
+        android:padding="2dp"
+        android:orientation="horizontal">
         <TextView
             android:text="@string/mem_monitor_total_mem"
             android:textColor="#ffffff"
@@ -202,7 +209,6 @@
             android:layout_width="wrap_content"
             android:gravity="center"
             android:layout_height="wrap_content" />
-
         <TextView
             tools:text="0"
             android:textColor="#ffffff"
@@ -211,21 +217,25 @@
             android:maxLines="1"
             android:maxWidth="80dp"
             android:id="@+id/mem_monitor_total_mem_info"
-            app:layout_constraintLeft_toRightOf="@+id/mem_monitor_total_mem_title"
             android:layout_width="wrap_content"
             android:gravity="center"
             android:layout_height="wrap_content" />
+    </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/mem_monitor_avail_mem_container"
+        android:padding="2dp"
+        android:orientation="horizontal">
         <TextView
             android:text="@string/mem_monitor_avail_mem"
             android:textColor="#ffffff"
             android:textSize="12sp"
             android:id="@+id/mem_monitor_avail_mem_title"
-            app:layout_constraintTop_toBottomOf="@+id/mem_monitor_total_mem_title"
             android:layout_width="wrap_content"
             android:gravity="center"
             android:layout_height="wrap_content" />
-
         <TextView
             tools:text="0"
             android:textColor="#ffffff"
@@ -234,31 +244,28 @@
             android:maxLines="1"
             android:maxWidth="80dp"
             android:id="@+id/mem_monitor_avail_mem_info"
-            app:layout_constraintLeft_toRightOf="@+id/mem_monitor_avail_mem_title"
-            app:layout_constraintTop_toBottomOf="@id/mem_monitor_total_mem_info"
             android:layout_width="wrap_content"
             android:gravity="center"
             android:layout_height="wrap_content" />
-
-    </android.support.constraint.ConstraintLayout>
+    </LinearLayout>
 
     <TextView
         android:text="@string/mem_monitor_is_low_mem"
         android:textSize="12sp"
         android:textColor="#FFD81B2B"
         android:id="@+id/mem_monitor_is_low_mem_info"
-        app:layout_constraintTop_toBottomOf="@+id/mem_monitor_container3"
         android:layout_width="wrap_content"
         android:gravity="center"
         android:layout_height="wrap_content"
         android:visibility="gone"/>
 
 
-    <android.support.constraint.ConstraintLayout
-        android:layout_width="80dp"
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/net_monitor_tx_container"
-        app:layout_constraintTop_toBottomOf="@+id/mem_monitor_is_low_mem_info">
+        android:padding="2dp"
+        android:orientation="horizontal">
 
         <TextView
             android:text="@string/net_monitor_send_flow"
@@ -277,18 +284,18 @@
             android:maxLines="1"
             android:maxWidth="80dp"
             android:id="@+id/net_monitor_send_flow_info"
-            app:layout_constraintLeft_toRightOf="@+id/net_monitor_send_flow_title"
             android:layout_width="wrap_content"
             android:gravity="center"
             android:layout_height="wrap_content" />
 
-    </android.support.constraint.ConstraintLayout>
+    </LinearLayout>
 
-    <android.support.constraint.ConstraintLayout
-        android:layout_width="80dp"
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/net_monitor_rx_container"
-       app:layout_constraintTop_toBottomOf="@+id/net_monitor_tx_container">
+        android:padding="2dp"
+        android:orientation="horizontal">
 
         <TextView
             android:text="@string/net_monitor_receive_flow"
@@ -307,20 +314,18 @@
             android:maxLines="1"
             android:maxWidth="80dp"
             android:id="@+id/net_monitor_receive_flow_info"
-            app:layout_constraintLeft_toRightOf="@+id/net_monitor_receive_flow_title"
             android:layout_width="wrap_content"
             android:gravity="center"
             android:layout_height="wrap_content" />
 
-    </android.support.constraint.ConstraintLayout>
+    </LinearLayout>
 
-
-    <android.support.constraint.ConstraintLayout
-        android:layout_width="80dp"
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/net_monitor_rate_container"
-        app:layout_constraintTop_toBottomOf="@+id/net_monitor_rx_container">
-
+        android:padding="2dp"
+        android:orientation="horizontal">
         <TextView
             android:text="@string/net_monitor_rate"
             android:textColor="#acf1ee"
@@ -329,7 +334,6 @@
             android:layout_width="wrap_content"
             android:gravity="center"
             android:layout_height="wrap_content" />
-
         <TextView
             tools:text="0"
             android:textColor="#acf1ee"
@@ -339,18 +343,16 @@
             android:maxWidth="80dp"
             android:id="@+id/net_monitor_rate_info"
             android:layout_width="wrap_content"
-            app:layout_constraintLeft_toRightOf="@+id/net_monitor_rate_title"
             android:gravity="center"
             android:layout_height="wrap_content" />
+    </LinearLayout>
 
-    </android.support.constraint.ConstraintLayout>
-
-    <android.support.constraint.ConstraintLayout
-        android:layout_width="80dp"
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/net_monitor_rate_container"
-        android:id="@+id/cpu_monitor_percentage_container">
-
+        android:id="@+id/cpu_monitor_percentage_container"
+        android:padding="2dp"
+        android:orientation="horizontal">
         <TextView
             android:text="@string/cpu_monitor_percentage"
             android:textColor="#a3f593"
@@ -359,7 +361,6 @@
             android:layout_width="wrap_content"
             android:gravity="center"
             android:layout_height="wrap_content" />
-
         <TextView
             tools:text="0"
             android:textColor="#a3f593"
@@ -368,13 +369,8 @@
             android:maxLines="1"
             android:maxWidth="80dp"
             android:id="@+id/cpu_monitor_percentage_info"
-            app:layout_constraintLeft_toRightOf="@+id/cpu_monitor_percentage"
             android:layout_width="wrap_content"
             android:gravity="center"
             android:layout_height="wrap_content" />
-
-    </android.support.constraint.ConstraintLayout>
-
-
-
-</android.support.constraint.ConstraintLayout>
+    </LinearLayout>
+</LinearLayout>

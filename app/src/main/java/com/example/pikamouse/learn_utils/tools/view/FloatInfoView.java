@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.constraint.ConstraintLayout;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.example.pikamouse.learn_utils.R;
 import com.example.pikamouse.learn_utils.tools.monitor.MonitorManager;
@@ -48,14 +49,20 @@ public class FloatInfoView extends ConstraintLayout {
     private TextView mPercentage;
 
 
-    private ConstraintLayout mPSSContainer;
-    private ConstraintLayout mHeapContainer;
-    private ConstraintLayout mSystemContainer;
-    private ConstraintLayout mRxContainer;
-    private ConstraintLayout mTxContainer;
-    private ConstraintLayout mRateContainer;
-    private ConstraintLayout mPercentageContainer;
-    private Map<String,ConstraintLayout> mContainers = new HashMap<>();
+    private LinearLayout mTotalPSSContainer;
+    private LinearLayout mDalvikPSSContainer;
+    private LinearLayout mNativePSSContainer;
+    private LinearLayout mOtherPSSContainer;
+    private LinearLayout mTotalHeapContainer;
+    private LinearLayout mFreeHeapContainer;
+    private LinearLayout mAllocHeapContainer;
+    private LinearLayout mTotalSystemContainer;
+    private LinearLayout mAvailSystemContainer;
+    private LinearLayout mRxContainer;
+    private LinearLayout mTxContainer;
+    private LinearLayout mRateContainer;
+    private LinearLayout mPercentageContainer;
+    private Map<String,LinearLayout> mContainers = new HashMap<>();
 
     private static final String VALUE_FORMAT_TXT = "%.1f";
 
@@ -78,25 +85,43 @@ public class FloatInfoView extends ConstraintLayout {
         inflate(context, R.layout.monitor_layout_info, this);
         setBackgroundColor(getResources().getColor(R.color.monitor_bg_chart));
         setPadding(DisplayUtil.dp2px(10), DisplayUtil.dp2px(10), DisplayUtil.dp2px(10), DisplayUtil.dp2px(10));
-        mPSSContainer = findViewById(R.id.mem_monitor_container1);
-        mHeapContainer = findViewById(R.id.mem_monitor_container2);
-        mSystemContainer = findViewById(R.id.mem_monitor_container3);
+        mTotalPSSContainer = findViewById(R.id.mem_monitor_total_pss_container);
+        mDalvikPSSContainer = findViewById(R.id.mem_monitor_dalvik_pss_container);
+        mNativePSSContainer = findViewById(R.id.mem_monitor_native_pss_container);
+        mOtherPSSContainer = findViewById(R.id.mem_monitor_other_pss_container);
+        mTotalHeapContainer = findViewById(R.id.mem_monitor_total_heap_container);
+        mFreeHeapContainer = findViewById(R.id.mem_monitor_free_heap_container);
+        mAllocHeapContainer = findViewById(R.id.mem_monitor_allocated_heap_container);
+        mTotalSystemContainer = findViewById(R.id.mem_monitor_total_mem_container);
+        mAvailSystemContainer = findViewById(R.id.mem_monitor_avail_mem_container);
         mRxContainer = findViewById(R.id.net_monitor_rx_container);
         mTxContainer = findViewById(R.id.net_monitor_tx_container);
         mRateContainer = findViewById(R.id.net_monitor_rate_container);
         mPercentageContainer = findViewById(R.id.cpu_monitor_percentage_container);
 
-        mPSSContainer.setVisibility(View.GONE);
-        mHeapContainer.setVisibility(View.GONE);
-        mSystemContainer.setVisibility(View.GONE);
+        mTotalPSSContainer.setVisibility(View.GONE);
+        mDalvikPSSContainer.setVisibility(View.GONE);
+        mNativePSSContainer.setVisibility(View.GONE);
+        mOtherPSSContainer.setVisibility(View.GONE);
+        mTotalHeapContainer.setVisibility(View.GONE);
+        mFreeHeapContainer.setVisibility(View.GONE);
+        mAllocHeapContainer.setVisibility(View.GONE);
+        mTotalSystemContainer.setVisibility(View.GONE);
+        mAvailSystemContainer.setVisibility(View.GONE);
         mRxContainer.setVisibility(View.GONE);
         mTxContainer.setVisibility(View.GONE);
         mRateContainer.setVisibility(View.GONE);
         mPercentageContainer.setVisibility(GONE);
 
-        mContainers.put(MonitorManager.MONITOR_MEM_TAG_PSS, mPSSContainer);
-        mContainers.put(MonitorManager.MONITOR_MEM_TAG_HEAP, mHeapContainer);
-        mContainers.put(MonitorManager.MONITOR_MEM_TAG_SYSTEM, mSystemContainer);
+        mContainers.put(MonitorManager.MONITOR_MEM_TAG_PSS, mTotalPSSContainer);
+        mContainers.put(MonitorManager.MONITOR_MEM_TAG_PSS_DALVIK, mDalvikPSSContainer);
+        mContainers.put(MonitorManager.MONITOR_MEM_TAG_PSS_NATIVE, mNativePSSContainer);
+        mContainers.put(MonitorManager.MONITOR_MEM_TAG_PSS_OTHER, mOtherPSSContainer);
+        mContainers.put(MonitorManager.MONITOR_MEM_TAG_HEAP, mTotalHeapContainer);
+        mContainers.put(MonitorManager.MONITOR_MEM_TAG_HEAP_FREE, mFreeHeapContainer);
+        mContainers.put(MonitorManager.MONITOR_MEM_TAG_HEAP_ALLOC, mAllocHeapContainer);
+        mContainers.put(MonitorManager.MONITOR_MEM_TAG_SYSTEM, mTotalSystemContainer);
+        mContainers.put(MonitorManager.MONITOR_MEM_TAG_SYSTEM_AVAIL, mAvailSystemContainer);
         mContainers.put(MonitorManager.MONITOR_NET_TAG_TX, mTxContainer);
         mContainers.put(MonitorManager.MONITOR_NET_TAG_RX, mRxContainer);
         mContainers.put(MonitorManager.MONITOR_NET_TAG_RATE, mRateContainer);
@@ -125,13 +150,10 @@ public class FloatInfoView extends ConstraintLayout {
         if (type.equals(MonitorManager.MONITOR_TOTAL_TAG)) {
             items = MonitorManager.ItemBuilder.getAllItems();
         } else {
-            MonitorManager.ItemBuilder.getItems(type);
-        }
-        if (items.isEmpty()) {
-            items = MonitorManager.ItemBuilder.getDefaultItems(type);
+            items = MonitorManager.ItemBuilder.getItems(type);
         }
         for (String s : items) {
-            ConstraintLayout c = mContainers.get(s);
+            LinearLayout c = mContainers.get(s);
             if (c != null) c.setVisibility(VISIBLE);
         }
     }

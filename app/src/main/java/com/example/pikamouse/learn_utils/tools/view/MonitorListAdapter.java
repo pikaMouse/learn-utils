@@ -1,6 +1,7 @@
 package com.example.pikamouse.learn_utils.tools.view;
 
 
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -67,32 +68,37 @@ public class MonitorListAdapter extends RecyclerView.Adapter<MonitorListAdapter.
         public void bind(MonitorListItemBean config) {
             mTitle.setText(config.mTitle);
             mLength = config.mList.size();
-            mSwitch.setOnCheckedChangeListener(this);
             mSwitch.setTag(config.mTitle);//tag为title
+            boolean cache = getCacheChecked(config.mTitle);
+            mSwitch.setChecked(cache);
             for (int i = 0; i < mLength; i++) {
                 View view = LayoutInflater.from(itemView.getContext()).inflate(R.layout.monitor_layout_config_item_check, null);
                 TextView mInfo = view.findViewById(R.id.monitor_item_check_box_text);
                 CheckBox mCheckBox = view.findViewById(R.id.monitor_item_check_box);
                 String tag = config.mList.get(i);
                 mCheckBox.setTag(tag);//tag为item
-                mCheckBox.setClickable(false);
+                mCheckBox.setClickable(cache);
+                mCheckBox.setChecked(getCacheChecked(tag));
                 mCheckBox.setOnCheckedChangeListener(this);
                 mInfo.setText(tag);
                 mGrid.addView(view);
             }
+            mSwitch.setOnCheckedChangeListener(this);
         }
 
 
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
             String tag = (String) buttonView.getTag();
+            setCacheChecked(isChecked, tag);
             //switch按钮
             if (buttonView.getId() == R.id.monitor_item_switch) {
                 for (int i = 0; i < mLength; i++) {
                     View view = mGrid.getChildAt(i);
                     CheckBox checkBox = view.findViewById(R.id.monitor_item_check_box);
+                    TextView textView = view.findViewById(R.id.monitor_item_check_box_text);
                     checkBox.setClickable(isChecked);
-                    if (i == 0) checkBox.setChecked(isChecked);
+                    textView.setTextColor(isChecked ? Color.BLACK : buttonView.getContext().getResources().getColor(R.color.monitor_check_box_uncheckable));
                     if (!isChecked) checkBox.setChecked(false);
                 }
                 setTitle(isChecked, tag);
@@ -114,11 +120,18 @@ public class MonitorListAdapter extends RecyclerView.Adapter<MonitorListAdapter.
     }
 
     private void setTitle(boolean isChecked, String tag) {
-        MonitorManager.ItemBuilder.create(tag).setTitle(isChecked, tag);
+        MonitorManager.ItemBuilder.setTitle(isChecked, tag);
     }
 
     private void addItem(boolean isChecked, String tag) {
-        MonitorManager.ItemBuilder.create(tag).addItem(isChecked, tag);
+        MonitorManager.ItemBuilder.addItem(isChecked, tag);
     }
 
+    private void setCacheChecked(boolean isChecked, String tag) {
+        MonitorManager.ItemBuilder.setCheckState(isChecked, tag);
+    }
+
+    private boolean getCacheChecked(String tag) {
+        return MonitorManager.ItemBuilder.getCheckState(tag);
+    }
 }

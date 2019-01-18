@@ -54,6 +54,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .addItem(MonitorManager.MONITOR_MEM_TAG_HEAP)
                 .addItem(MonitorManager.MONITOR_MEM_TAG_PSS)
                 .addItem(MonitorManager.MONITOR_MEM_TAG_SYSTEM)
+                .addItem(MonitorManager.MONITOR_MEM_TAG_HEAP_FREE)
+                .addItem(MonitorManager.MONITOR_MEM_TAG_PSS_DALVIK)
+                .addItem(MonitorManager.MONITOR_MEM_TAG_SYSTEM_AVAIL)
+                .addItem(MonitorManager.MONITOR_MEM_TAG_HEAP_ALLOC)
+                .addItem(MonitorManager.MONITOR_MEM_TAG_PSS_NATIVE)
+                .addItem(MonitorManager.MONITOR_MEM_TAG_PSS_OTHER)
                 .build();
         MonitorListItemBean item2 = new MonitorListItemBean.Builder()
                 .title(MonitorManager.MONITOR_NET_TAG)
@@ -82,7 +88,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onResume() {
         super.onResume();
         MonitorManager.getInstance().stopAll();
-        MonitorManager.ItemBuilder.clear();
     }
     private static final int REQUEST_CODE = 1;
 
@@ -120,7 +125,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_config_confirm:
-                if (MonitorManager.ItemBuilder.getTitles().size() <= 0) {
+                if (MonitorManager.ItemBuilder.getAllItems().size() <= 0) {
                     Toast.makeText(MainActivity.this, "至少选中一个配置", Toast.LENGTH_SHORT).show();
                     MonitorManager.getInstance().stopAll();
                 } else {
