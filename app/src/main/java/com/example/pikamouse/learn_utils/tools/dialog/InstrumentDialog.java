@@ -93,6 +93,7 @@ public class InstrumentDialog extends DialogFragment implements View.OnClickList
             case MonitorManager.MONITOR_NET_TAG:
             case MonitorManager.MONITOR_CPU_TAG:
             case MonitorManager.MONITOR_TOTAL_TAG:
+            case MonitorManager.MONITOR_FRAME_TAG:
                 MonitorManager.getInstance().get(MonitorManager.MONITOR_ALL_INFO_CLASS).start(tag);
                 if (mCallback != null) {
                     mCallback.onStartFloat(tag);

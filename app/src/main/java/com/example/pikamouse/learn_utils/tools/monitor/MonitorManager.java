@@ -48,7 +48,9 @@ public class MonitorManager {
             MONITOR_NET_TAG_RATE,
             MONITOR_CHART_TAG,
             MONITOR_CHART_TAG_PSS,
-            MONITOR_CHART_TAG_HEAP
+            MONITOR_CHART_TAG_HEAP,
+            MONITOR_FRAME_TAG,
+            MONITOR_FRAME_TAG_FPS
             })
     public @interface MonitorTag {
     }
@@ -84,6 +86,9 @@ public class MonitorManager {
 
     public static final String MONITOR_CPU_TAG = "CPU";
     public static final String MONITOR_CPU_TAG_PERCENTAGE = "percentage";
+
+    public static final String MONITOR_FRAME_TAG = "帧率";
+    public static final String MONITOR_FRAME_TAG_FPS = "FPS";
 
 
     private static class SingleHolder {
@@ -212,7 +217,8 @@ public class MonitorManager {
         }
 
         private static boolean isTitle(String tag) {
-            return tag.equals(MONITOR_MEM_TAG) || tag.equals(MONITOR_NET_TAG) || tag.equals(MONITOR_CHART_TAG) || tag.equals(MONITOR_CPU_TAG);
+            return tag.equals(MONITOR_MEM_TAG) || tag.equals(MONITOR_NET_TAG)
+                    || tag.equals(MONITOR_CHART_TAG) || tag.equals(MONITOR_CPU_TAG) ||tag.equals(MONITOR_FRAME_TAG);
         }
 
         private static String Item2Title(String item) {
@@ -229,6 +235,9 @@ public class MonitorManager {
             }
             if (item.equals(MONITOR_CPU_TAG_PERCENTAGE)) {
                 return MONITOR_CPU_TAG;
+            }
+            if (item.equals(MONITOR_FRAME_TAG_FPS)) {
+                return MONITOR_FRAME_TAG;
             }
             return null;
         }
@@ -254,6 +263,8 @@ public class MonitorManager {
                 items.add(MONITOR_CHART_TAG_PSS);
             } else if (title.equals(MONITOR_CPU_TAG)) {
                 items.add(MONITOR_CPU_TAG_PERCENTAGE);
+            } else if (title.equals(MONITOR_FRAME_TAG)) {
+                items.add(MONITOR_FRAME_TAG_FPS);
             }
             return items;
         }

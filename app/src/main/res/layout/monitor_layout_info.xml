@@ -373,4 +373,31 @@
             android:gravity="center"
             android:layout_height="wrap_content" />
     </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/frame_monitor_container"
+        android:padding="2dp"
+        android:orientation="horizontal">
+        <TextView
+            android:text="@string/frame_monitor"
+            android:textColor="#f7e349"
+            android:textSize="12sp"
+            android:id="@+id/frame_monitor"
+            android:layout_width="wrap_content"
+            android:gravity="center"
+            android:layout_height="wrap_content" />
+        <TextView
+            tools:text="0"
+            android:textColor="#f7e349"
+            android:textSize="12sp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:maxWidth="80dp"
+            android:id="@+id/frame_monitor_info"
+            android:layout_width="wrap_content"
+            android:gravity="center"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
 </LinearLayout>

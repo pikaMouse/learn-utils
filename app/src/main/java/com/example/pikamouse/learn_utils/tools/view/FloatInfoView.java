@@ -48,6 +48,8 @@ public class FloatInfoView extends ConstraintLayout {
 
     private TextView mPercentage;
 
+    private TextView mFrame;
+
 
     private LinearLayout mTotalPSSContainer;
     private LinearLayout mDalvikPSSContainer;
@@ -62,6 +64,7 @@ public class FloatInfoView extends ConstraintLayout {
     private LinearLayout mTxContainer;
     private LinearLayout mRateContainer;
     private LinearLayout mPercentageContainer;
+    private LinearLayout mFrameContainer;
     private Map<String,LinearLayout> mContainers = new HashMap<>();
 
     private static final String VALUE_FORMAT_TXT = "%.1f";
@@ -98,6 +101,7 @@ public class FloatInfoView extends ConstraintLayout {
         mTxContainer = findViewById(R.id.net_monitor_tx_container);
         mRateContainer = findViewById(R.id.net_monitor_rate_container);
         mPercentageContainer = findViewById(R.id.cpu_monitor_percentage_container);
+        mFrameContainer = findViewById(R.id.frame_monitor_container);
 
         mTotalPSSContainer.setVisibility(View.GONE);
         mDalvikPSSContainer.setVisibility(View.GONE);
@@ -112,6 +116,7 @@ public class FloatInfoView extends ConstraintLayout {
         mTxContainer.setVisibility(View.GONE);
         mRateContainer.setVisibility(View.GONE);
         mPercentageContainer.setVisibility(GONE);
+        mFrameContainer.setVisibility(GONE);
 
         mContainers.put(MonitorManager.MONITOR_MEM_TAG_PSS, mTotalPSSContainer);
         mContainers.put(MonitorManager.MONITOR_MEM_TAG_PSS_DALVIK, mDalvikPSSContainer);
@@ -126,6 +131,7 @@ public class FloatInfoView extends ConstraintLayout {
         mContainers.put(MonitorManager.MONITOR_NET_TAG_RX, mRxContainer);
         mContainers.put(MonitorManager.MONITOR_NET_TAG_RATE, mRateContainer);
         mContainers.put(MonitorManager.MONITOR_CPU_TAG_PERCENTAGE, mPercentageContainer);
+        mContainers.put(MonitorManager.MONITOR_FRAME_TAG_FPS, mFrameContainer);
 
         mTotalPSS = findViewById(R.id.mem_monitor_total_pss_info);
         mDalvikPSS = findViewById(R.id.mem_monitor_dalvik_pss_info);
@@ -143,6 +149,8 @@ public class FloatInfoView extends ConstraintLayout {
         mRate = findViewById(R.id.net_monitor_rate_info);
 
         mPercentage = findViewById(R.id.cpu_monitor_percentage_info);
+
+        mFrame = findViewById(R.id.frame_monitor_info);
     }
 
     public void setViewVisibility(String type) {
@@ -196,6 +204,10 @@ public class FloatInfoView extends ConstraintLayout {
                 mIsLowMem.setVisibility(GONE);
             }
         }
+    }
+
+    public void setFrame(String frame) {
+        if (mFrame != null) mFrame.setText(frame);
     }
 
     public void setNetData(long txByte, long rxByte, long rate) {

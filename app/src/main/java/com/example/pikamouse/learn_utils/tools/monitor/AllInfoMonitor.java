@@ -3,12 +3,15 @@ package com.example.pikamouse.learn_utils.tools.monitor;
 import android.app.Application;
 import android.content.Context;
 import android.net.TrafficStats;
+import android.os.Build;
+import android.os.Process;
 import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.example.pikamouse.learn_utils.R;
 import com.example.pikamouse.learn_utils.tools.util.CpuUtil;
 import com.example.pikamouse.learn_utils.tools.util.DisplayUtil;
+import com.example.pikamouse.learn_utils.tools.util.FrameUtil;
 import com.example.pikamouse.learn_utils.tools.util.MemoryUtil;
 import com.example.pikamouse.learn_utils.tools.util.ThreadUtil;
 import com.example.pikamouse.learn_utils.tools.view.FloatInfoView;
@@ -52,13 +55,10 @@ public class AllInfoMonitor implements IMonitor{
         }
         stop();
         mTag = tag;
-        if (mTag.equals(MonitorManager.MONITOR_TOTAL_TAG)) {
-            mCpuItem = MonitorManager.ItemBuilder.getItemsSize(MonitorManager.MONITOR_CPU_TAG);
-        }
         mAllInfoView = new FloatInfoView(mContext);
         mAllInfoView.setViewVisibility(tag);
         mAllInfoWindow = new DefaultWindow(mContext);
-        mProcessUid = android.os.Process.myUid();
+        mProcessUid = Process.myUid();
         WindowManager.LayoutParams layoutParams = new FloatWindow.WMLayoutParamsBuilder()
                 //可以唤起输入法，不接受任何触摸事件全部由下层window接受
                 .setFlag(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
@@ -66,6 +66,18 @@ public class AllInfoMonitor implements IMonitor{
                 .setY(0)
                 .build();
         mAllInfoWindow.attachToWindow(mAllInfoView, layoutParams);
+        if (mTag.equals(MonitorManager.MONITOR_TOTAL_TAG)) {
+            mCpuItem = MonitorManager.ItemBuilder.getItemsSize(MonitorManager.MONITOR_CPU_TAG);
+        } else if (mTag.equals(MonitorManager.MONITOR_FRAME_TAG) || mTag.equals(MonitorManager.MONITOR_TOTAL_TAG)) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                FrameUtil.getInstance().getFrameInfo(new FrameUtil.CallBack() {
+                    @Override
+                    public void onSuccess(int value) {
+                        mAllInfoView.setFrame(value + "");
+                    }
+                });
+            }
+        }
         mTimer = new Timer();
         mTask = new AllInfoTimerTask();
         mTimer.scheduleAtFixedRate(mTask, 0, DURATION);

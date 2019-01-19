@@ -72,6 +72,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .addItem(MonitorManager.MONITOR_CPU_TAG_PERCENTAGE)
                 .build();
         MonitorListItemBean item4 = new MonitorListItemBean.Builder()
+                .title(MonitorManager.MONITOR_FRAME_TAG)
+                .addItem(MonitorManager.MONITOR_FRAME_TAG_FPS)
+                .build();
+        MonitorListItemBean item5 = new MonitorListItemBean.Builder()
                 .title(MonitorManager.MONITOR_CHART_TAG)
                 .addItem(MonitorManager.MONITOR_CHART_TAG_HEAP)
                 .addItem(MonitorManager.MONITOR_CHART_TAG_PSS)
@@ -80,6 +84,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mData.add(item2);
         mData.add(item3);
         mData.add(item4);
+        mData.add(item5);
         mAdapter.setData(mData);
     }
 
