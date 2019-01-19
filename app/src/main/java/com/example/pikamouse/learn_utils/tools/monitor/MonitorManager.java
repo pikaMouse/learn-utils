@@ -194,6 +194,10 @@ public class MonitorManager {
             return items == null ? 0 : items.size();
         }
 
+        public static boolean isExitItem(@NonNull String title) {
+            return (!sItems.get(title).isEmpty());
+        }
+
         public static List<String> getItems(@NonNull String title) {
             return sItems.get(title);
         }
