@@ -51,15 +51,17 @@ public class FrameUtil {
         void onSuccess(int value);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     public void getFrameInfo(CallBack callBack) {
-        Choreographer.getInstance().postFrameCallback(mFrameCallBack);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            Choreographer.getInstance().postFrameCallback(mFrameCallBack);
+        }
         mCallBack = callBack;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     public void stopFrameInfo() {
-        Choreographer.getInstance().removeFrameCallback(mFrameCallBack);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            Choreographer.getInstance().removeFrameCallback(mFrameCallBack);
+        }
         mCallBack = null;
     }
 }

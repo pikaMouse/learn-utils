@@ -2,19 +2,15 @@ package com.example.pikamouse.learn_utils.tools.model;
 
 import android.content.Context;
 import android.net.TrafficStats;
-import android.os.Build;
+import android.os.Process;
 import android.widget.Toast;
 
 import com.example.pikamouse.learn_utils.R;
-import com.example.pikamouse.learn_utils.tools.monitor.AllInfoMonitor;
-import com.example.pikamouse.learn_utils.tools.monitor.IMonitor;
 import com.example.pikamouse.learn_utils.tools.monitor.MonitorManager;
 import com.example.pikamouse.learn_utils.tools.util.CpuUtil;
 import com.example.pikamouse.learn_utils.tools.util.FrameUtil;
 import com.example.pikamouse.learn_utils.tools.util.MemoryUtil;
 import com.example.pikamouse.learn_utils.tools.util.ThreadUtil;
-
-import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -24,44 +20,88 @@ import java.util.TimerTask;
  */
 public class MonitorDataFactory {
 
-    private static volatile MonitorDataFactory sMonitorDataFactory;
+    private static volatile MonitorDataFactory sInstance;
     private IMonitorData mData;
     private Context mContext;
     private int mProcessUid;
     private boolean isMem;
+    private boolean isMemChart;
     private boolean isNet;
     private boolean isCpu;
     private boolean isFrame;
-    private final static int DURATION = 1000;
+    private final static int DURATION = 500;
     private AllInfoTimerTask mTask;
     private Timer mTimer;
     private int mTipNum;
-    private int mCpuItem;
+    private String mTag;
 
 
     private MonitorDataFactory(Context context) {
         mContext = context;
+        mProcessUid = Process.myUid();
     }
 
     public static MonitorDataFactory getInstance(Context context) {
-        if (sMonitorDataFactory == null) {
-            synchronized (sMonitorDataFactory) {
-                if (sMonitorDataFactory == null) {
-                    sMonitorDataFactory = new MonitorDataFactory(context);
+        if (sInstance == null) {
+            synchronized (MonitorDataFactory.class) {
+                if (sInstance == null) {
+                    sInstance = new MonitorDataFactory(context);
                 }
             }
         }
-        return sMonitorDataFactory;
+        return sInstance;
     }
 
-    public void createAllInfoData(IMonitorData data) {
+    public void subscribeAllInfoData(String tag, IMonitorData data) {
         mData = data;
-        isMem = MonitorManager.ItemBuilder.isExitItem(MonitorManager.MONITOR_MEM_TAG);
-        isNet = MonitorManager.ItemBuilder.isExitItem(MonitorManager.MONITOR_NET_TAG);
-        isCpu = MonitorManager.ItemBuilder.isExitItem(MonitorManager.MONITOR_CPU_TAG);
-        isFrame = MonitorManager.ItemBuilder.isExitItem(MonitorManager.MONITOR_FRAME_TAG);
-        if (isFrame) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+        mTag = tag;
+        starTimer();
+    }
+
+    private void starTimer() {
+        if (mTag.equals(MonitorManager.MONITOR_TOTAL_TAG)) {
+            isMem = MonitorManager.ItemBuilder.isExitItem(MonitorManager.MONITOR_MEM_TAG);
+            isNet = MonitorManager.ItemBuilder.isExitItem(MonitorManager.MONITOR_NET_TAG);
+            isCpu = MonitorManager.ItemBuilder.isExitItem(MonitorManager.MONITOR_CPU_TAG);
+            isFrame = MonitorManager.ItemBuilder.isExitItem(MonitorManager.MONITOR_FRAME_TAG);
+        } else {
+            isMem = mTag.equals(MonitorManager.MONITOR_MEM_TAG);
+            isNet = mTag.equals(MonitorManager.MONITOR_NET_TAG);
+            isCpu = mTag.equals(MonitorManager.MONITOR_CPU_TAG);
+            isFrame = mTag.equals(MonitorManager.MONITOR_FRAME_TAG);
+            isMemChart = mTag.equals(MonitorManager.MONITOR_CHART_TAG);
+        }
+        if (mTask == null) {
+            mTask = new AllInfoTimerTask();
+        }
+        if (mTimer == null) {
+            mTimer = new Timer();
+        }
+        mTimer.scheduleAtFixedRate(mTask, 0, DURATION);
+    }
+
+    public void release() {
+        isFrame = false;
+        isCpu = false;
+        isMem = false;
+        isNet = false;
+        if (mTimer != null) {
+            mTimer.cancel();
+            mTimer = null;
+        }
+        if (mTask != null) {
+            mTask = null;
+        }
+    }
+
+    private class AllInfoTimerTask extends TimerTask {
+
+        private long mLastTotalRxBytes = TrafficStats.getTotalRxBytes();
+        private long mLastTimeStamp = System.currentTimeMillis();
+
+        public AllInfoTimerTask() {
+            super();
+            if (isFrame) {
                 FrameUtil.getInstance().getFrameInfo(new FrameUtil.CallBack() {
                     @Override
                     public void onSuccess(int value) {
@@ -70,32 +110,10 @@ public class MonitorDataFactory {
                 });
             }
         }
-        mTask = new AllInfoTimerTask();
-        mTimer = new Timer();
-        mTimer.scheduleAtFixedRate(mTask, 0, DURATION);
-    }
 
-    public float createChartData(String tag) {
-        return 0;
-    }
-
-    public void release() {
-        isFrame = false;
-        isCpu = false;
-        isMem = false;
-        isNet = false;
-    }
-
-
-
-    private class AllInfoTimerTask extends TimerTask {
-
-        private long mLastTotalRxBytes = TrafficStats.getTotalRxBytes();
-        private long mLastTimeStamp = System.currentTimeMillis();
-
-
-        public AllInfoTimerTask() {
-            if (isMem) {
+        @Override
+        public void run() {
+            if (isMem || isMemChart) {
                 MemoryUtil.AllInfo allInfo = MemoryUtil.getMemoryInfoSync(mContext);
                 mData.createMemoryData(allInfo);
             }
@@ -137,12 +155,6 @@ public class MonitorDataFactory {
                     }
                 });
             }
-        }
-
-        @Override
-        public void run() {
-
-
         }
     }
 }

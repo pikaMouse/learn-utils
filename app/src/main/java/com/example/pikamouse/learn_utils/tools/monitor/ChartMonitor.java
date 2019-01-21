@@ -5,16 +5,16 @@ import android.content.Context;
 
 
 import com.example.pikamouse.learn_utils.R;
+import com.example.pikamouse.learn_utils.tools.model.MonitorDataFactory;
+import com.example.pikamouse.learn_utils.tools.model.MonitorDataImpl;
 import com.example.pikamouse.learn_utils.tools.util.DisplayUtil;
 import com.example.pikamouse.learn_utils.tools.util.MemoryUtil;
-import com.example.pikamouse.learn_utils.tools.util.ProcessUtil;
+import com.example.pikamouse.learn_utils.tools.util.ThreadUtil;
 import com.example.pikamouse.learn_utils.tools.view.FloatChartView;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
+
 
 /**
  * create by jiangfeng 2018/12/30
@@ -24,13 +24,44 @@ public class ChartMonitor implements IMonitor{
     private final static String TAG = "ChartMonitor";
     private Context mContext;
     private int mLocation = 0;
-    private static Map<String, Timer> sTimers = new HashMap<>();
     private static Map<String, FloatChartView> sFloatMemoryViews = new HashMap<>();
-
-    private Timer mTimer;
     private FloatChartView mFloatMemoryView;
+    private boolean isPss;
+    private boolean isHeap;
 
-    private static final long DURATION = 500;
+    private MonitorDataImpl mDataListener = new MonitorDataImpl() {
+        @Override
+        public void createMemoryData(MemoryUtil.AllInfo allInfo) {
+            if (isPss) {
+                final FloatChartView view = sFloatMemoryViews.get(MonitorManager.MONITOR_CHART_TAG_PSS);
+                if (view != null && allInfo != null && allInfo.mPssInfo != null) {
+                    final float value = (float)(allInfo.mPssInfo.mTotalPss /1024);
+                    view.addData(value);
+                    ThreadUtil.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            view.setText(value);
+                        }
+                    });
+
+                }
+            }
+            if (isHeap) {
+                final FloatChartView view = sFloatMemoryViews.get(MonitorManager.MONITOR_CHART_TAG_HEAP);
+                if (view != null && allInfo != null && allInfo.mDalvikHeapMem != null) {
+                    final float value = (float)(allInfo.mDalvikHeapMem.mAllocatedMem / 1024);
+                    view.addData(value);
+                    ThreadUtil.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            view.setText(value);
+                        }
+                    });
+
+                }
+            }
+        }
+    };
 
     @Override
     public void init(Context context) {
@@ -48,9 +79,15 @@ public class ChartMonitor implements IMonitor{
         stop();
         List<String> items = MonitorManager.ItemBuilder.getItems(tag);
         if (items.isEmpty()) {
-            items.add(MonitorManager.MONITOR_CHART_TAG_HEAP);
+            return;
         }
         for (String item : items) {
+            if (item.equals(MonitorManager.MONITOR_CHART_TAG_HEAP)) {
+                isHeap = true;
+            }
+            if (item.equals(MonitorManager.MONITOR_CHART_TAG_PSS)) {
+                isPss = true;
+            }
             if (sFloatMemoryViews.get(item) == null) {
                 mFloatMemoryView = new FloatChartView(mContext);
                 sFloatMemoryViews.put(item, mFloatMemoryView);
@@ -68,86 +105,12 @@ public class ChartMonitor implements IMonitor{
             config.mX = DisplayUtil.getScreenWidth(mContext) - mContext.getResources().getDimensionPixelSize(R.dimen.monitor_chart_width);
             mLocation = mLocation + mContext.getResources().getDimensionPixelSize(R.dimen.monitor_chart_height);
             mFloatMemoryView.attachToWindow(config);
-            if (sTimers.get(item) == null) {
-                mTimer = new Timer();
-                sTimers.put(item, mTimer);
-            } else {
-                mTimer = sTimers.get(item);
-            }
-            TimerTask timerTask;
-            switch (item) {
-                case MonitorManager.MONITOR_CHART_TAG_PSS:
-                    timerTask = new PssTimerTask(mContext, mFloatMemoryView);
-                    break;
-                case MonitorManager.MONITOR_CHART_TAG_HEAP:
-                    timerTask = new HeapTimerTask(mFloatMemoryView);
-                    break;
-                default:
-                    timerTask = new HeapTimerTask(mFloatMemoryView);
-                    break;
-            }
-            mTimer.scheduleAtFixedRate(timerTask, 0, DURATION);
         }
-    }
-
-    public static class PssTimerTask extends MemoryTimerTask {
-        private Context mContext;
-
-        public PssTimerTask(Context context, FloatChartView floatCurveView) {
-            super(floatCurveView);
-            this.mContext = context;
-        }
-
-        @Override
-        public float getValue() {
-            final int pid = ProcessUtil.getCurrentPid();
-            MemoryUtil.PssInfo pssInfo = MemoryUtil.getAppPssInfo(mContext, pid);
-            return (float) (pssInfo != null ? pssInfo.mTotalPss : 0) / 1024;
-        }
-    }
-
-    public static class HeapTimerTask extends MemoryTimerTask {
-
-        public HeapTimerTask(FloatChartView floatCurveView) {
-            super(floatCurveView);
-        }
-
-        @Override
-        public float getValue() {
-            final MemoryUtil.DalvikHeapMem dalvikHeapMem = MemoryUtil.getAppDalvikHeapMem();
-            return (float) dalvikHeapMem.mAllocatedMem / 1024;
-        }
-    }
-
-    public static abstract class MemoryTimerTask extends TimerTask {
-        protected FloatChartView mFloatContainerView;
-
-        public MemoryTimerTask(FloatChartView floatCurveView) {
-            this.mFloatContainerView = floatCurveView;
-        }
-
-        public abstract float getValue();
-
-        @Override
-        public void run() {
-            mFloatContainerView.addData(getValue());
-            mFloatContainerView.post(new Runnable() {
-                @Override
-                public void run() {
-                    mFloatContainerView.setText(getValue());
-                }
-            });
-        }
+        MonitorDataFactory.getInstance(mContext).subscribeAllInfoData(tag, mDataListener);
     }
 
     @Override
     public void stop() {
-        if (sTimers != null) {
-            for (Timer timer :sTimers.values()){
-                timer.cancel();
-            }
-            sTimers.clear();
-        }
         if (sFloatMemoryViews != null) {
             for (FloatChartView floatMemoryView : sFloatMemoryViews.values()) {
                 floatMemoryView.release();
@@ -155,6 +118,9 @@ public class ChartMonitor implements IMonitor{
             sFloatMemoryViews.clear();
         }
         mLocation = 0;
+        isHeap = false;
+        isPss = false;
+        MonitorDataFactory.getInstance(mContext).release();
     }
 
 }

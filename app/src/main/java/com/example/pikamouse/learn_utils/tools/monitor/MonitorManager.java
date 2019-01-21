@@ -195,7 +195,7 @@ public class MonitorManager {
         }
 
         public static boolean isExitItem(@NonNull String title) {
-            return (!sItems.get(title).isEmpty());
+            return sItems.get(title) != null && (!sItems.get(title).isEmpty());
         }
 
         public static List<String> getItems(@NonNull String title) {

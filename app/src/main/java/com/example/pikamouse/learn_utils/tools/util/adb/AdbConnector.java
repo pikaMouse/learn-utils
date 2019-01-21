@@ -151,4 +151,15 @@ public class AdbConnector {
         });
     }
 
+    public void release() {
+        try {
+            mSocket.close();
+            mSocket = null;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        mConnectionThread.interrupt();
+        sInstance = null;
+    }
+
 }
