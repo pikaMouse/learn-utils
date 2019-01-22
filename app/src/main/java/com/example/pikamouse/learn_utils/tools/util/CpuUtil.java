@@ -127,4 +127,7 @@ public class CpuUtil {
         return 0;
     }
 
+    public void release() {
+        AdbConnector.getInstance().release();
+    }
 }

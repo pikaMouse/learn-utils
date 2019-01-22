@@ -39,7 +39,7 @@ public class AllInfoMonitor implements IMonitor{
             ThreadUtil.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    mAllInfoView.setFrame(frame + "");
+                    if (mAllInfoView != null) mAllInfoView.setFrame(frame + "");
                 }
             });
         }

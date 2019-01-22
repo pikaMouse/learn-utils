@@ -107,6 +107,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 MonitorManager.getInstance().start();
                 finish();
             }
+        } else {
+            MonitorManager.getInstance().start();
+            finish();
         }
     }
 

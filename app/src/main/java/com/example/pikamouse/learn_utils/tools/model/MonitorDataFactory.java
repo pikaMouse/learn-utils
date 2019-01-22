@@ -92,6 +92,7 @@ public class MonitorDataFactory {
         if (mTask != null) {
             mTask = null;
         }
+        CpuUtil.getInstance().release();
     }
 
     private class AllInfoTimerTask extends TimerTask {
