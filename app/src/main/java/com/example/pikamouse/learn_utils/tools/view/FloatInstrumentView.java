@@ -85,6 +85,7 @@ public class FloatInstrumentView extends AppCompatTextView implements View.OnCli
                         case MonitorManager.MONITOR_MEM_TAG:
                         case MonitorManager.MONITOR_NET_TAG:
                         case MonitorManager.MONITOR_CPU_TAG:
+                        case MonitorManager.MONITOR_FRAME_TAG:
                         case MonitorManager.MONITOR_TOTAL_TAG:
                             MonitorManager.getInstance().get(MonitorManager.MONITOR_ALL_INFO_CLASS).stop();
                             break;

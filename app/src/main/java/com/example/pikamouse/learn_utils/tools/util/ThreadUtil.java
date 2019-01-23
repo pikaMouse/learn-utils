@@ -109,4 +109,8 @@ public class ThreadUtil {
     public static void runOnUiThread(Runnable r) {
         HANDLER.post(r);
     }
+
+    public static void runOnUiThread(Runnable r, int delay) {
+        HANDLER.postDelayed(r, delay);
+    }
 }

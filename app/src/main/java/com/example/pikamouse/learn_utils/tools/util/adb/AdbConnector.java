@@ -1,6 +1,11 @@
 package com.example.pikamouse.learn_utils.tools.util.adb;
 
 import android.util.Log;
+import android.widget.Toast;
+
+import com.example.pikamouse.learn_utils.MyApplication;
+import com.example.pikamouse.learn_utils.R;
+import com.example.pikamouse.learn_utils.tools.util.ThreadUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,6 +37,7 @@ public class AdbConnector {
     private volatile static AdbConnector sInstance;
     private AdbCrypto mAdbCrypto;
     private boolean mIsSentSignature;
+    private boolean mIsTimeOut;
 
     private AdbConnector() {
     }
@@ -51,6 +57,9 @@ public class AdbConnector {
     }
 
     private void connect() throws IOException, InterruptedException {
+        if (mIsTimeOut) {
+            return;
+        }
         if (mIsConnected) {
             return;
         }
@@ -72,9 +81,14 @@ public class AdbConnector {
         mOutputStream.flush();
         Log.d(TAG, "Socket is writing a connective cmd...");
         mConnectionThread.start();
+        checkTimeOut();
         synchronized (AdbConnector.this) {
             if (!mIsConnected) {
+                Log.d(TAG, "Socket is waiting for connection...");
                 this.wait();
+            }
+            if (mIsTimeOut) {
+                return;
             }
             if (!mIsConnected) {
                 throw new IllegalStateException("Connection is failed !");
@@ -82,10 +96,29 @@ public class AdbConnector {
         }
     }
 
+    private void checkTimeOut() {
+        ThreadUtil.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (mIsSentSignature && !mIsConnected) {
+                    Log.d(TAG, "Socket connected timeout!");
+                    Toast.makeText(MyApplication.getAppContext(),
+                            MyApplication.getAppContext().getResources().getString(R.string.cpu_monitor_time_out_tip),
+                            Toast.LENGTH_LONG).show();
+                    mIsTimeOut = true;
+                    disconnect();
+                }
+            }
+        }, 5000);
+    }
+
     private String open(String destination) throws InterruptedException, IOException {
         synchronized (AdbConnector.this) {
             if (!mIsConnected) {
                 this.wait();
+            }
+            if (mIsTimeOut) {
+                return null;
             }
             if (!mIsConnected) {
                 throw new IllegalStateException("Connection is failed !");
@@ -188,7 +221,7 @@ public class AdbConnector {
         });
     }
 
-    public void release() {
+    private void disconnect() {
         if (mSocket != null) {
             try {
                 mSocket.close();
@@ -197,6 +230,7 @@ public class AdbConnector {
             } finally {
                 mSocket = null;
             }
+            Log.d(TAG, "Socket is disconnected!");
         }
         if (mConnectionThread != null) {
             try {
@@ -205,11 +239,16 @@ public class AdbConnector {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } finally {
-                mIsConnected = false;
-                mIsSentSignature = false;
                 mConnectionThread = null;
             }
         }
+    }
+
+    public void release() {
+        disconnect();
+        mIsTimeOut = false;
+        mIsConnected = false;
+        mIsSentSignature = false;
     }
 
 }
