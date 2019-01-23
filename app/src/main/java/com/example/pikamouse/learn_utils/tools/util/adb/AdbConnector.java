@@ -189,19 +189,25 @@ public class AdbConnector {
     }
 
     public void release() {
-        if (mConnectionThread != null) {
+        if (mSocket != null) {
             try {
                 mSocket.close();
-                this.mConnectionThread.interrupt();
-                mConnectionThread.join();
-                mConnectionThread = null;
-                mSocket = null;
-                mIsConnected = false;
-                mIsSentSignature = false;
             } catch (IOException e) {
                 e.printStackTrace();
+            } finally {
+                mSocket = null;
+            }
+        }
+        if (mConnectionThread != null) {
+            try {
+                mConnectionThread.interrupt();
+                mConnectionThread.join();
             } catch (InterruptedException e) {
                 e.printStackTrace();
+            } finally {
+                mIsConnected = false;
+                mIsSentSignature = false;
+                mConnectionThread = null;
             }
         }
     }
