@@ -175,12 +175,11 @@ public class AdbConnector {
                                 mOutputStream.flush();
                                 continue;
                             case AdbProtocol.CMD_OKAY:
-                                Log.d(TAG, "Socket accepted A_OKAY");
                                 if (msg.arg1 != mLocalId) continue;
                                 mRemoteId = msg.arg0;
+                                Log.d(TAG, "Socket accepted A_OKAY   LocalId = " + mLocalId + " RemoteId =" + mRemoteId);
                                 continue;
                             case AdbProtocol.CMD_WRTE:
-                                Log.d(TAG, "Socket accepted A_WRTE");
                                 if (msg.arg1 != mLocalId) continue;
                                 mRemoteId = msg.arg0;
                                 mAcceptMessage = new String(msg.payload);
@@ -189,9 +188,10 @@ public class AdbConnector {
                                 }
                                 mOutputStream.write(AdbProtocol.generateReady(mLocalId, mRemoteId));
                                 mOutputStream.flush();
+                                Log.d(TAG, "Socket accepted A_WRTE   LocalId = " + mLocalId + " RemoteId =" + mRemoteId);
                                 continue;
                             case AdbProtocol.CMD_CLSE:
-                                Log.d(TAG, "Socket accepted A_CLSE");
+                                Log.d(TAG, "Socket accepted A_CLSE   LocalId = " + mLocalId + " RemoteId =" + mRemoteId);
                                 synchronized (AdbConnector.this) {
                                     AdbConnector.this.notifyAll();
                                 }

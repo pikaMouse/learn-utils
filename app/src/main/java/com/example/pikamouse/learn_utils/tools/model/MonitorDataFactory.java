@@ -92,6 +92,7 @@ public class MonitorDataFactory {
         if (mTask != null) {
             mTask = null;
         }
+        FrameUtil.getInstance().stopFrameInfo();
         CpuUtil.getInstance().release();
     }
 
