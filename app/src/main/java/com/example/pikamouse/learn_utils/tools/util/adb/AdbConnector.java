@@ -192,6 +192,9 @@ public class AdbConnector {
                                 continue;
                             case AdbProtocol.CMD_CLSE:
                                 Log.d(TAG, "Socket accepted A_CLSE");
+                                synchronized (AdbConnector.this) {
+                                    AdbConnector.this.notifyAll();
+                                }
                                 continue;
                             default:
                                 continue;
