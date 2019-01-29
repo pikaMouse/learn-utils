@@ -3,8 +3,9 @@ package com.example.pikamouse.learn_utils.tools.util;
 import android.content.Context;
 import android.os.Build;
 import android.util.Log;
-
+import com.example.pikamouse.learn_utils.R;
 import com.example.pikamouse.learn_utils.tools.util.adb.AdbConnector;
+import com.example.pikamouse.learn_utils.tools.util.adb.AdbConstant;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -26,6 +27,7 @@ public class CpuUtil {
     private boolean mAboveAndroidO;
     private Context mContext;
     private String mPackageName;
+    private boolean mIsShowCpuTip;
 
     public interface CallBack {
         void onSuccess(float value);
@@ -60,11 +62,19 @@ public class CpuUtil {
     private void getCPUDataAboveAndroidO(final CallBack callBack) {
         try {
             String msg = AdbConnector.getInstance().openShell("shell:dumpsys cpuinfo | grep '" + mPackageName + "'");
-            callBack.onSuccess(parseCPUData(msg));
-            Log.d(TAG, msg);
+            if (msg != null) {
+                Log.d(TAG, msg);
+                callBack.onSuccess(parseCPUData(msg));
+            }
         } catch (Exception e) {
             e.printStackTrace();
-            callBack.onFail(e.getMessage());
+            if (!mIsShowCpuTip) {
+                callBack.onFail(e.getMessage());
+                if (e.toString().contains(AdbConstant.HOST)) {
+                    callBack.onFail(ResourceUtils.getResources().getString(R.string.cpu_monitor_tip));
+                    mIsShowCpuTip = true;
+                }
+            }
         }
     }
 
@@ -128,6 +138,7 @@ public class CpuUtil {
     }
 
     public void release() {
+        mIsShowCpuTip = false;
         AdbConnector.getInstance().release();
     }
 }

@@ -32,7 +32,6 @@ public class MonitorDataFactory {
     private final static int DURATION = 500;
     private AllInfoTimerTask mTask;
     private Timer mTimer;
-    private int mTipNum;
     private String mTag;
 
 
@@ -145,13 +144,7 @@ public class MonitorDataFactory {
                         ThreadUtil.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                if (mTipNum < 1) {
-                                    Toast.makeText(mContext, msg, Toast.LENGTH_LONG).show();
-                                    mTipNum++;
-                                } else if (mTipNum < 3){
-                                    Toast.makeText(mContext, mContext.getResources().getString(R.string.cpu_monitor_tip), Toast.LENGTH_LONG).show();
-                                    mTipNum++;
-                                }
+                                Toast.makeText(mContext, msg, Toast.LENGTH_LONG).show();
                             }
                         });
                     }

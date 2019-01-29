@@ -22,7 +22,7 @@
     <string name="net_monitor_unit">&lt;unit:&#160;M&gt;</string>
 
     <string name="cpu_monitor_percentage">CPU:&#160;</string>
-    <string name="cpu_monitor_tip">\n安卓8.0之后由于权限问题只能通过adb的方式获取:\n\n(1)请先执行“adb tcpip 5037”命令\n\n(2)拔掉USB线后再次连接</string>
+    <string name="cpu_monitor_tip">\n安卓8.0之后由于权限问题只能通过adb的方式获取:\n\n(1)请执行“adb tcpip 5037”命令</string>
     <string name="cpu_monitor_time_out_tip">缺少USB调试权限，连接超时</string>
 
     <string name="frame_monitor">FPS:&#160;</string>

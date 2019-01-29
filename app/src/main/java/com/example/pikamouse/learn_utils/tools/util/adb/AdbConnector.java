@@ -1,12 +1,12 @@
 package com.example.pikamouse.learn_utils.tools.util.adb;
 
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.widget.Toast;
-
 import com.example.pikamouse.learn_utils.MyApplication;
 import com.example.pikamouse.learn_utils.R;
+import com.example.pikamouse.learn_utils.tools.util.ResourceUtils;
 import com.example.pikamouse.learn_utils.tools.util.ThreadUtil;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -14,7 +14,6 @@ import java.net.ConnectException;
 import java.net.Socket;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
@@ -37,7 +36,7 @@ public class AdbConnector {
     private volatile static AdbConnector sInstance;
     private AdbCrypto mAdbCrypto;
     private boolean mIsSentSignature;
-    private boolean mIsTimeOut;
+    private boolean mIsFail;
 
     private AdbConnector() {
     }
@@ -51,13 +50,13 @@ public class AdbConnector {
         return sInstance;
     }
 
-    public String openShell(String cmd) throws IOException, InterruptedException {
+    public @Nullable String openShell(String cmd) throws IOException, InterruptedException {
         connect();
         return open(cmd);
     }
 
     private void connect() throws IOException, InterruptedException {
-        if (mIsTimeOut) {
+        if (mIsFail) {
             return;
         }
         if (mIsConnected) {
@@ -87,7 +86,7 @@ public class AdbConnector {
                 Log.d(TAG, "Socket is waiting for connection...");
                 this.wait();
             }
-            if (mIsTimeOut) {
+            if (mIsFail) {
                 return;
             }
             if (!mIsConnected) {
@@ -102,23 +101,21 @@ public class AdbConnector {
             public void run() {
                 if (mIsSentSignature && !mIsConnected) {
                     Log.d(TAG, "Socket connected timeout!");
-                    Toast.makeText(MyApplication.getAppContext(),
-                            MyApplication.getAppContext().getResources().getString(R.string.cpu_monitor_time_out_tip),
-                            Toast.LENGTH_LONG).show();
-                    mIsTimeOut = true;
+                    mIsFail = true;
                     disconnect();
+                    Toast.makeText(MyApplication.getAppContext(),
+                            ResourceUtils.getResources().getString(R.string.cpu_monitor_time_out_tip),
+                            Toast.LENGTH_LONG).show();
                 }
             }
         }, 5000);
     }
 
     private String open(String destination) throws InterruptedException, IOException {
+        if (mIsFail) return null;
         synchronized (AdbConnector.this) {
             if (!mIsConnected) {
                 this.wait();
-            }
-            if (mIsTimeOut) {
-                return null;
             }
             if (!mIsConnected) {
                 throw new IllegalStateException("Connection is failed !");
@@ -201,6 +198,8 @@ public class AdbConnector {
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
+                        mIsFail = true;
+                        disconnect();
                     } catch (NoSuchPaddingException e) {
                         e.printStackTrace();
                     } catch (NoSuchAlgorithmException e) {
@@ -213,13 +212,7 @@ public class AdbConnector {
                         e.printStackTrace();
                     }
                 }
-                synchronized (AdbConnector.this) {
-                    Log.d(TAG, "Accepted Thread is interrupted !");
-                    mAcceptMessage = null;
-                    mLocalId = 0;
-                    mRemoteId = 0;
-                    AdbConnector.this.notifyAll();
-                }
+                Log.d(TAG, "Accepted Thread is interrupted !");
             }
         });
     }
@@ -236,20 +229,19 @@ public class AdbConnector {
             Log.d(TAG, "Socket is disconnected!");
         }
         if (mConnectionThread != null) {
-            try {
-                mConnectionThread.interrupt();
-                mConnectionThread.join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } finally {
-                mConnectionThread = null;
-            }
+            mConnectionThread.interrupt();
+        }
+        synchronized (AdbConnector.this) {
+            mAcceptMessage = null;
+            mLocalId = 0;
+            mRemoteId = 0;
+            AdbConnector.this.notifyAll();
         }
     }
 
     public void release() {
         disconnect();
-        mIsTimeOut = false;
+        mIsFail = false;
         mIsConnected = false;
         mIsSentSignature = false;
     }
